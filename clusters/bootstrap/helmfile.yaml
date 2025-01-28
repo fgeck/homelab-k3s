@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+helmDefaults:
+  timeout: 600
+  force: true
+  wait: true
+  waitForJobs: true
+
+repositories:
+  - name: cilium
+    url: https://helm.cilium.io
+
+  - name: coredns
+    url: https://coredns.github.io/helm
+
+  - name: fluxcd-community
+    url: https://fluxcd-community.github.io/helm-charts
+
+releases:
+  - name: prometheus-operator-crds
+    namespace: observability
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 17.0.2
+
+  - name: cilium
+    namespace: kube-system
+    chart: cilium/cilium
+    version: 1.16.5
+    values:
+      - ../../infrastructure/base/apps/cilium/app/helm-values.yaml
+    needs:
+      - observability/prometheus-operator-crds
+
+  - name: coredns
+    namespace: kube-system
+    chart: coredns/coredns
+    version: 1.37.0
+    values:
+      - ../../infrastructure/base/apps/coredns/app/helm-values.yaml
+    needs:
+      - kube-system/cilium
+
+  - name: spegel
+    namespace: kube-system
+    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
+    version: v0.0.29
+    values:
+      - ../../infrastructure/base/apps/spegel/app/helm-values.yaml
+    needs:
+      - kube-system/coredns
+      - kube-system/cilium
+
+  - name: flux2
+    namespace: flux-system
+    chart: oci://ghcr.io/fluxcd-community/charts/flux2
+    version: 2.14.1
+    values:
+      - ../../infrastructure/base/apps/flux/app/helm-values.yaml
+    needs:
+      - kube-system/coredns
+      - kube-system/cilium

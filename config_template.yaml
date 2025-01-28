@@ -1,0 +1,4 @@
+clusterName: ""
+gateway: ""
+vaultwardenURL: ""
+k3sIp: ""

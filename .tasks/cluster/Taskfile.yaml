@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  validate:
+    desc: "Validates all yaml files in ./clusters/ using kustomize and kubeconform"
+    cmd: "./scripts/validate.sh"
+    preconditions:
+      - which yq kustomize kubeconform
+
+  bootstrap:
+    desc: "Bootstraps the Kubernetes Cluster"
+    cmds:
+      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=600s; do sleep 10; done
+      - kubectl create namespace flux-system
+      - kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey="{{.AGE_KEY}}"
+      - |
+        kubectl create secret generic flux-system \
+        --dry-run=client -o yaml \
+        --namespace=flux-system \
+        --from-file=identity="{{.FLUX_GITHUB_READ_KEY}}" \
+        --from-file=identity.pub="{{.FLUX_GITHUB_READ_PUB_KEY}}" \
+        --from-literal=known_hosts="github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=" \
+        | kubectl apply -f -
+      - |
+        kubectl create secret generic cluster-secrets-ssh-key \
+        --dry-run=client -o yaml \
+        --namespace=flux-system \
+        --from-file=identity="{{.FLUX_SECRETS_GITHUB_READ_KEY}}" \
+        --from-file=identity.pub="{{.FLUX_SECRETS_GITHUB_READ_PUB_KEY}}" \
+        --from-literal=known_hosts="github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=" \
+        | kubectl apply -f -
+      - helmfile --file {{.CLUSTERS_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      # Delete all non Cilium managed pods
+      - kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 kubectl delete pod
+      - kubectl apply -f ./clusters/bootstrap/secrets-gitrepository.yaml
+      - kubectl apply -f ./clusters/bootstrap/secrets-ks.yaml
+      - kubectl apply -f ./clusters/bootstrap/flux-gitrepository.yaml
+      - kubectl apply -f ./clusters/bootstrap/flux-ks.yaml
+    preconditions:
+      - which kubectl sops helmfile
+      - helm plugin list | grep diff > /dev/null
+      - test -f {{.KUBECONFIG}}
+      - test -f {{.AGE_KEY}}
+      - test -f {{.FLUX_GITHUB_READ_KEY}}
+      - test -f {{.FLUX_GITHUB_READ_PUB_KEY}}
+      - test -f {{.FLUX_SECRETS_GITHUB_READ_KEY}}
+      - test -f {{.FLUX_SECRETS_GITHUB_READ_PUB_KEY}}
+
+  flux-reconcile:
+    desc: Force Flux to pull in changes from your Git repository
+    cmds:
+      - flux --namespace flux-system reconcile kustomization flux-system --with-source
+      - flux --namespace flux-system reconcile kustomization cluster-secrets-sync --with-source
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which flux

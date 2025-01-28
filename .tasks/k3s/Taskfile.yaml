@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  install:
+    desc: "Installs k3s on a single node, expecting that the node is reachable via ssh as root"
+    cmds:
+      - ssh root@{{.K3S_IP}} "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik --disable=servicelb' sh -"
+      - scp root@{{.K3S_IP}}:/etc/rancher/k3s/k3s.yaml ./secrets/k3s-kubeconfig
+
+  reset:
+    desc: "Resets the K3s cluster using "
+    cmds:
+      - ssh root@{{.K3S_IP}} "/usr/local/bin/k3s-killall.sh"
