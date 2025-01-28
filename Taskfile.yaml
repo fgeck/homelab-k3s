@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  SECRETS_DIR: "{{.ROOT_DIR}}/secrets"
+  CLUSTERS_DIR: "{{.ROOT_DIR}}/clusters"
+  KUBECONFIG_PATH: "{{.USER_WORKING_DIR}}/secrets/kubeconfig"
+  AGE_KEY: "{{env `HOME`}}/.age/key.txt"
+  FLUX_GITHUB_READ_KEY: "{{env `HOME`}}/.ssh/fluxGithubReadKeyK3s"
+  FLUX_GITHUB_READ_PUB_KEY: "{{env `HOME`}}/.ssh/fluxGithubReadKeyK3s.pub"
+  FLUX_SECRETS_GITHUB_READ_KEY: "{{env `HOME`}}/.ssh/fluxGithubSecretsReadKey"
+  FLUX_SECRETS_GITHUB_READ_PUB_KEY: "{{env `HOME`}}/.ssh/fluxGithubSecretsReadKey.pub"
+  K3S_IP:
+    sh: "yq eval '.k3sIp' config.yaml"
+env:
+  KUBECONFIG: "{{.KUBECONFIG_PATH}}"
+
+includes:
+  k3s: .tasks/k3s
+  cluster: .tasks/cluster
+
+tasks:
+  default:
+    cmd: task --list-all
+
+  fetch-secrets-vault:
+    desc: "Fetches all secrets from vaultwarden/bitwarden"
+    cmd: "./scripts/secrets/fetch_from_vault.sh"
+    preconditions:
+      - which yq bw
+
+  push-secrets-vault:
+    desc: "Pushes all secrets to vaultwarden/bitwarden"
+    cmd: "./scripts/secrets/push_to_vault.sh"
+    preconditions:
+      - which yq bw

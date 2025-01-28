@@ -1,0 +1,11 @@
+creation_rules:
+  - path_regex: .*values.yaml$
+    key_groups:
+      - age:
+          - age1rymwxl2d38f0dp2rgetprrn7nf40dexhhj5yz8h87gnrjn2qhd6s0rcmw6
+  - path_regex: ".*\\.yaml"
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    key_groups:
+      - age:
+          - age1rymwxl2d38f0dp2rgetprrn7nf40dexhhj5yz8h87gnrjn2qhd6s0rcmw6
