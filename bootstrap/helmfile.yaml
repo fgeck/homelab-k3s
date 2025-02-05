@@ -18,37 +18,20 @@ repositories:
     url: https://fluxcd-community.github.io/helm-charts
 
 releases:
-  - name: prometheus-operator-crds
-    namespace: observability
-    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
-    version: 17.0.2
-
   - name: cilium
     namespace: kube-system
     chart: cilium/cilium
     version: 1.16.5
     values:
-      - ../../infrastructure/base/apps/cilium/app/helm-values.yaml
-    needs:
-      - observability/prometheus-operator-crds
+      - ../clusters/base//apps/cilium/app/helm-values.yaml
 
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
     version: 1.37.0
     values:
-      - ../../infrastructure/base/apps/coredns/app/helm-values.yaml
+      - ../clusters/base//apps/coredns/app/helm-values.yaml
     needs:
-      - kube-system/cilium
-
-  - name: spegel
-    namespace: kube-system
-    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
-    version: v0.0.29
-    values:
-      - ../../infrastructure/base/apps/spegel/app/helm-values.yaml
-    needs:
-      - kube-system/coredns
       - kube-system/cilium
 
   - name: flux2
@@ -56,7 +39,7 @@ releases:
     chart: oci://ghcr.io/fluxcd-community/charts/flux2
     version: 2.14.1
     values:
-      - ../../infrastructure/base/apps/flux/app/helm-values.yaml
+      - ../clusters/base//apps/flux/app/helm-values.yaml
     needs:
       - kube-system/coredns
       - kube-system/cilium

@@ -7,7 +7,7 @@ if [[ ! -d ".git" ]]; then
   exit 1
 fi
 # Source the helper script
-source ./scripts/helper_funcs.sh
+source ./scripts/helper/helper.sh
 assert_tools_installed bw yq
 
 # --------------------------------CONFIG----------------------------------------
@@ -55,7 +55,7 @@ if [[ -z "$ITEM_ID" ]]; then
             {\"name\": \"fluxGithubReadKeyK3s\", \"value\": \"$FLUX_GITHUB_READ_KEY_BASE64\", \"type\": 1},
             {\"name\": \"fluxGithubReadKeyK3s.pub\", \"value\": \"$FLUX_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1},
             {\"name\": \"fluxGithubSecretsReadKey\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_KEY_BASE64\", \"type\": 1},
-            {\"name\": \"fluxGithubSecretsReadKey.pub\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1},
+            {\"name\": \"fluxGithubSecretsReadKey.pub\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1}
         ]" | \
     bw encode | \
     bw create item --session "$SESSION" > /dev/null
@@ -69,10 +69,10 @@ else
             {\"name\": \"fluxGithubReadKey\", \"value\": \"$FLUX_GITHUB_READ_KEY_BASE64\", \"type\": 1},
             {\"name\": \"fluxGithubReadKey.pub\", \"value\": \"$FLUX_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1},
             {\"name\": \"fluxGithubSecretsReadKey\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_KEY_BASE64\", \"type\": 1},
-            {\"name\": \"fluxGithubSecretsReadKey.pub\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1},
+            {\"name\": \"fluxGithubSecretsReadKey.pub\", \"value\": \"$FLUX_SECRETS_GITHUB_READ_PUB_KEY_BASE64\", \"type\": 1}
         ]" | \
     bw encode | \
     bw edit item "$ITEM_ID" --session "$SESSION" > /dev/null
 fi
 
-log_success "Successfully pushed all TalOS and Kubernetes secrets to $VAULTWARDEN_SERVER in folder '$FOLDER_NAME'"
+log_success "Successfully pushed all Keys to $VAULTWARDEN_SERVER in folder '$FOLDER_NAME'"

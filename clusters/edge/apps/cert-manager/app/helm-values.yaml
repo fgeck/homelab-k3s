@@ -1,0 +1,6 @@
+nameOverride: cert-manager
+fullnameOverride: cert-manager
+namespace: edge
+crds:
+  enabled: true
+  keep: false
