@@ -1,0 +1,24 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: capacitor
+  namespace: edge
+  labels:
+    app: capacitor
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`flux.home.${DOMAIN_NAME}`)
+    priority: 10
+    middlewares:
+    - name: local-ipallowlist
+      namespace: edge
+    services:
+    - kind: Service
+      name: capacitor
+      namespace: flux-system
+      passHostHeader: true
+      port: 9000

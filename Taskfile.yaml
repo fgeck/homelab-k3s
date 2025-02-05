@@ -5,7 +5,7 @@ version: "3"
 vars:
   SECRETS_DIR: "{{.ROOT_DIR}}/secrets"
   CLUSTERS_DIR: "{{.ROOT_DIR}}/clusters"
-  KUBECONFIG_PATH: "{{.USER_WORKING_DIR}}/secrets/kubeconfig"
+  KUBECONFIG_PATH: "{{.USER_WORKING_DIR}}/secrets/k3s-kubeconfig"
   AGE_KEY: "{{env `HOME`}}/.age/key.txt"
   FLUX_GITHUB_READ_KEY: "{{env `HOME`}}/.ssh/fluxGithubReadKeyK3s"
   FLUX_GITHUB_READ_PUB_KEY: "{{env `HOME`}}/.ssh/fluxGithubReadKeyK3s.pub"

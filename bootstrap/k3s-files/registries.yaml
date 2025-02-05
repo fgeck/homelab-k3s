@@ -1,0 +1,3 @@
+mirrors:
+  docker.io: # no default endpoint, pulls will fail if not available on a node
+  registry.k8s.io:

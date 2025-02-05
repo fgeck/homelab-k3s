@@ -8,7 +8,7 @@ metadata:
 spec:
   prune: true
   interval: 10m0s
-  path: ./infrastructure/base/namespaces/
+  path: ./clusters/base/namespaces/
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -22,7 +22,7 @@ metadata:
 spec:
   prune: true
   interval: 10m0s
-  path: ./infrastructure/base/repos/
+  path: ./clusters/base/repos/
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -39,7 +39,7 @@ spec:
     - name: repos
   prune: true
   interval: 10m0s
-  path: ./infrastructure/base/apps/
+  path: ./clusters/base/apps/
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -78,14 +78,14 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: persistence
+  name: edge
   namespace: flux-system
 spec:
   dependsOn:
     - name: base-apps
   prune: true
   interval: 10m0s
-  path: ./infrastructure/persistence/apps/
+  path: ./clusters/edge/apps/
   sourceRef:
     kind: GitRepository
     name: flux-system

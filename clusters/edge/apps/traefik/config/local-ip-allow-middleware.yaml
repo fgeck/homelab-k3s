@@ -1,0 +1,11 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local-ipallowlist
+  namespace: edge
+spec:
+  ipAllowList:
+    sourceRange:
+        - 127.0.0.1/32
+        - ${quote}${TRAEFIK_LOCAL_IP_ALLOW_CIDR}${quote}

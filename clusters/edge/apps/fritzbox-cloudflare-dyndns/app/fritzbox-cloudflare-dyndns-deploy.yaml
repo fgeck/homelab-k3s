@@ -1,0 +1,133 @@
+# https://github.com/cromefire/fritzbox-cloudflare-dyndns
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: edge
+    meta.helm.sh/release-namespace: edge
+  labels:
+    app.kubernetes.io/name: fritzbox-cloudflare-dyndns
+  name: fritzbox-cloudflare-dyndns
+  namespace: edge
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fritzbox-cloudflare-dyndns
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fritzbox-cloudflare-dyndns
+      annotations:
+        meta.helm.sh/release-name: edge
+        meta.helm.sh/release-namespace: edge
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: main
+        env:
+        - name: TZ
+          value: Europe/Berlin
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: DYNDNS_SERVER_BIND
+          value: ":8080"
+        - name: METRICS_BIND
+          value: ":8081"
+        - name: FRITZBOX_ENDPOINT_URL
+          value: ${quote}${FRITZBOX_DDNS_POLL_URL}${quote}
+        - name: FRITZBOX_ENDPOINT_INTERVAL
+          value: "120s"
+        - name: FRITZBOX_ENDPOINT_TIMEOUT
+          value: "30s"
+        - name: CLOUDFLARE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-dns-credentials
+              key: apiToken
+        - name: CLOUDFLARE_API_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-dns-credentials
+              key: userEmail
+        - name: CLOUDFLARE_ZONES_IPV4
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-dns-credentials
+              key: zonesToUpdate
+        - name: DYNDNS_SERVER_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: fritzbox-cloudflare-dyndns-credentials
+              key: user
+        - name: DYNDNS_SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fritzbox-cloudflare-dyndns-credentials
+              key: password
+        image: ghcr.io/cromefire/fritzbox-cloudflare-dyndns:1.3.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080
+          name: main
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 2
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        startupProbe:
+          failureThreshold: 60
+          httpGet:
+            path: /healthz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60

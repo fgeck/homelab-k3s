@@ -13,7 +13,7 @@ tasks:
   bootstrap:
     desc: "Bootstraps the Kubernetes Cluster"
     cmds:
-      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=600s; do sleep 10; done
+      - until kubectl wait --for=condition=Ready=True nodes --all --timeout=600s; do sleep 10; done
       - kubectl create namespace flux-system
       - kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey="{{.AGE_KEY}}"
       - |

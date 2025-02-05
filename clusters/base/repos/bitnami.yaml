@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/ocirepository-source-v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: bitnami-postgressql
+  namespace: flux-system
+spec:
+  interval: 12h
+  url: oci://registry-1.docker.io/bitnamicharts/postgresql
+  ref:
+    semver: "^16.4.3"
