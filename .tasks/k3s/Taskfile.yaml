@@ -6,9 +6,8 @@ tasks:
   install:
     desc: "Installs k3s on a single node, expecting that the node is reachable via ssh as root"
     cmds:
-      - ssh root@{{.K3S_IP}} "bash -s" < ./bootstrap/k3s-files/create-dirs.sh
-      - ssh root@{{.K3S_IP}} "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik --disable=servicelb --disable=coredns --embedded-registry --default-local-storage-path /opt/k3s/data/ --write-kubeconfig-mode 640 --write-kubeconfig-group sudo' sh -"
-      - scp {{.CLUSTERS_DIR}}/bootstrap/k3s-files/registries.yaml root@{{.K3S_IP}}:/etc/rancher/k3s/registries.yaml
+      - ssh root@{{.K3S_IP}} "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik --disable=servicelb --disable=coredns --disable=local-storage --embedded-registry --default-local-storage-path /opt/k3s/data/ --write-kubeconfig-mode 640 --write-kubeconfig-group sudo' sh -"
+      - scp ./bootstrap/k3s-files/registries.yaml root@{{.K3S_IP}}:/etc/rancher/k3s/registries.yaml
       - scp root@{{.K3S_IP}}:/etc/rancher/k3s/k3s.yaml ./secrets/k3s-kubeconfig
       - gsed -i "s|https://127.0.0.1:6443|https://{{.K3S_IP}}:6443|" ./secrets/k3s-kubeconfig
       - chmod 600 ./secrets/k3s-kubeconfig
