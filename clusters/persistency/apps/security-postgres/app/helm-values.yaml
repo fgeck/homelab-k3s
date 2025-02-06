@@ -1,0 +1,14 @@
+---
+auth:
+  username: securityuser
+  existingSecret: security-postgres-auth
+# nameOverride: security-postgresql
+# fullnameOverride: security-postgresql
+# namespaceOverride: security
+primary:
+  persistence:
+    enabled: true
+    existingClaim: security-postgres-pvc
+  containerSecurityContext:
+    runAsGroup: 1000
+    runAsUser: 1000

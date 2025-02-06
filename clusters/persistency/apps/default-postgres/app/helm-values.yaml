@@ -1,0 +1,14 @@
+---
+auth:
+  username: defaultuser
+  existingSecret: default-postgres-auth
+# nameOverride: default-postgresql
+# fullnameOverride: default-postgresql
+# namespaceOverride: default
+primary:
+  persistence:
+    enabled: true
+    existingClaim: default-postgres-pvc
+  containerSecurityContext:
+    runAsGroup: 1000
+    runAsUser: 1000
