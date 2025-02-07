@@ -1,0 +1,191 @@
+# for raw logs format: json or cri (docker|containerd)
+container_runtime: containerd
+config:
+  parsers:
+    s01-parse:
+      home.yaml: |
+        name: me/whitelist-home
+        description: "Whitelist events from Home"
+        whitelist:
+          reason: dont ban my IP
+          expression:
+            - evt.Meta.source_ip in LookupHost('home.geckeler.dev')
+            - evt.Meta.source_ip in LookupHost('home.fgeck.de')
+  profiles.yaml: |
+    name: default_ip_remediation
+    filters:
+    - Alert.Remediation == true && Alert.GetScope() == "Ip"
+    decisions:
+    - type: ban
+      duration: 24h
+    notifications:
+    - http_default   # Set the required http parameters in /etc/crowdsec/notifications/http.yaml before enabling this.
+    on_success: break
+  config.yaml.local: |
+    db_config:
+      type:     postgresql
+      user:     ${SECURITY_POSTGRES_CROWDSEC_USER}
+      password: ${SECURITY_POSTGRES_CROWDSEC_USER_PASSWORD}
+      db_name:  ${SECURITY_POSTGRES_CROWDSEC_DATABASE}
+      host:     ${SECURITY_POSTGRES_HOST}
+      port:     ${SECURITY_POSTGRES_PORT}
+
+  notifications:
+    http.yaml: |
+      type: http
+      name: http_default
+      log_level: info
+      format: |
+        {
+        "chat_id": "${TELEGRAM_BOT_CHAT_ID}",
+        "text": "
+          {{range . -}}
+          {{$alert := . -}}
+          {{range .Decisions -}}
+          {{.Value}} will get {{.Type}} for next {{.Duration}} for triggering {{.Scenario}}.
+          {{end -}}
+          {{end -}}
+        ",
+        "reply_markup": {
+            "inline_keyboard": [
+                {{ $arrLength := len . -}}
+                {{ range $i, $value := . -}}
+                {{ $V := $value.Source.Value -}}
+                [
+                    {
+                        "text": "See {{ $V }} on shodan.io",
+                        "url": "https://www.shodan.io/host/{{ $V -}}"
+                    },
+                    {
+                        "text": "See {{ $V }} on crowdsec.net",
+                        "url": "https://app.crowdsec.net/cti/{{ $V -}}"
+                    }
+                ]{{if lt $i ( sub $arrLength 1) }},{{end }}
+            {{end -}}
+            ]
+        }
+      url: https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage
+      method: POST
+      headers:
+        Content-Type: "application/json"
+
+agent:
+  # Specify each pod whose logs you want to process
+  acquisition:
+    # The namespace where the pod is located
+    - namespace: traefik
+      # The pod name
+      podName: traefik-*
+      # as in crowdsec configuration, we need to specify the program name to find a matching parser
+      program: traefik
+    - namespace: security
+      podName: vaultwarden-*
+      program: vaultwarden
+  resources:
+    limits:
+      memory: 250Mi
+      cpu: 500m
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  env:
+    - name: COLLECTIONS
+      value: "crowdsecurity/traefik crowdsecurity/http-cve Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux"
+    - name: PARSERS
+      value: "crowdsecurity/whitelists"
+lapi:
+  env:
+    # To enroll the Security Engine to the console
+    - name: ENROLL_KEY
+      value: ${quote}${CROWDSEC_ENROLL_KEY}${quote}
+    - name: ENROLL_INSTANCE_NAME
+      value: ${quote}${CROWDSEC_ENROLL_INSTANCE_NAME}${quote}
+    - name: ENROLL_TAGS
+      value: ${quote}${CROWDSEC_ENROLL_TAGS}${quote}
+  resources:
+    limits:
+      memory: 250Mi
+      cpu: 500m
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  extraInitContainers:
+    - name: init-postgres
+      image: bitnami/postgresql:17.2.0
+      envFrom:
+        - secretRef:
+            name: crowdsec-init-secret-env
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          #!/bin/bash
+
+          # Use environment variables provided
+          PGHOST=$PGHOST
+          PGUSER=$PGUSER
+          PGPASSWORD=$PGPASSWORD
+          MAIN_DB=$CROWDSEC__POSTGRES__DATABASE
+          CROWDSEC_USER=$CROWDSEC__POSTGRES__USER
+          CROWDSEC_PASSWORD=$CROWDSEC__POSTGRES__PASSWORD
+
+          # Set the database to connect to for checks and operations
+          DEFAULT_DB="postgres"
+
+          # Maximum time to wait for PostgreSQL to become available (in seconds)
+          MAX_WAIT=300
+          WAIT_INTERVAL=5
+
+          echo "Checking PostgreSQL connectivity..."
+
+          elapsed=0
+          while ! PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c '\q' 2>/dev/null; do
+              echo "PostgreSQL '$PGHOST' is not available yet. Retrying in $WAIT_INTERVAL seconds..."
+              sleep $WAIT_INTERVAL
+              elapsed=$((elapsed + WAIT_INTERVAL))
+              if [ "$elapsed" -ge "$MAX_WAIT" ]; then
+                  echo "Failed to connect to PostgreSQL after $MAX_WAIT seconds."
+                  exit 1
+              fi
+          done
+
+          echo "PostgreSQL is available. Proceeding with database setup."
+
+          # Ensure the user exists
+          echo "Ensuring user '$CROWDSEC_USER' exists..."
+          PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '$CROWDSEC_USER') THEN CREATE ROLE \"$CROWDSEC_USER\" WITH LOGIN ENCRYPTED PASSWORD '$CROWDSEC_PASSWORD'; END IF; END \$\$;"
+
+          # List of databases to process
+          DATABASES="$MAIN_DB"
+
+          # Loop through each database
+          for DBNAME in $DATABASES; do
+              echo "Processing database: $DBNAME"
+
+              # Check if the target database exists
+              if PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -tc "SELECT 1 FROM pg_database WHERE datname = '$DBNAME';" | grep -q 1; then
+                  echo "Database '$DBNAME' already exists."
+              else
+                  # Create the database if it doesn't exist
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "CREATE DATABASE \"$DBNAME\";"
+                  echo "Database '$DBNAME' created successfully."
+              fi
+
+              # Grant permissions on the database
+              echo "Granting permissions on database: $DBNAME"
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT ALL PRIVILEGES ON DATABASE \"$DBNAME\" TO \"$CROWDSEC_USER\";"
+
+              # Grant schema permissions on the public schema
+              echo "Granting schema permissions for 'public' in database: $DBNAME"
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, CREATE ON SCHEMA public TO \"$CROWDSEC_USER\";"
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"$CROWDSEC_USER\";"
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"$CROWDSEC_USER\";"
+
+              # Alter default privileges (correct syntax)
+              # echo "Setting default privileges for '$CROWDSEC_USER' in schema 'public' for database: $DBNAME"
+              # PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \"$CROWDSEC_USER\";"
+              # PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO \"$CROWDSEC_USER\";"
+              # PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DATABASE $DBNAME OWNER TO \"$CROWDSEC_USER\";"
+              echo "Finished processing database: $DBNAME"
+          done
+
+          echo "Database setup completed."
