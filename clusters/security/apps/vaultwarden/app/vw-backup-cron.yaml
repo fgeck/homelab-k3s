@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vaultwarden-backup
+  namespace: security
+spec:
+  schedule: "0 7 * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 100
+      template:
+        spec:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: vaultwarden-backup
+              image: ttionya/vaultwarden-backup:1.21.3
+              imagePullPolicy: Always
+              args: [ "backup" ]
+              env:
+              - name: TIMEZONE
+                value: Europe/Berlin
+              - name: BACKUP_KEEP_DAYS
+                value: "14"
+              - name: RCLONE_REMOTE_DIR
+                value: "Backups/vaultwarden"
+              envFrom:
+              - secretRef:
+                  name: vaultwarden-backup-secret
+              volumeMounts:
+                - name: vaultwarden
+                  mountPath: /bitwarden/data
+                - name: rclone-config
+                  mountPath: /home/backuptool/.rclone.conf
+                  subPath: rclone.conf
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+          volumes:
+            - name: vaultwarden
+              persistentVolumeClaim:
+                claimName: vaultwarden-pvc
+            - name: rclone-config
+              secret:
+                secretName: vaultwarden-rclone-secret
+          restartPolicy: OnFailure
