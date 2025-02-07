@@ -22,6 +22,16 @@ config:
     - http_default   # Set the required http parameters in /etc/crowdsec/notifications/http.yaml before enabling this.
     on_success: break
   config.yaml.local: |
+    api:
+      server:
+        auto_registration:
+          enabled: true
+          token: "${CROWDSEC_LAPI_REGISTRATION_TOKEN_WORKAROUND}"
+          allowed_ranges:
+            - "127.0.0.1/32"
+            - "192.168.0.0/16"
+            - "10.0.0.0/8"
+            - "172.16.0.0/12"
     db_config:
       type:     postgresql
       user:     ${SECURITY_POSTGRES_CROWDSEC_USER}
