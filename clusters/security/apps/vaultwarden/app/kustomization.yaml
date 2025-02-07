@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - vw-backup-cron.yaml
+  - vw-backup-secret.yaml
+  - vw-deployment.yaml
+  - vw-ingressroute.yaml
+  - vw-init-secret-env.yaml
+  - vw-pvc.yaml
+  - vw-secret.yaml
+  - vw-svc.yaml

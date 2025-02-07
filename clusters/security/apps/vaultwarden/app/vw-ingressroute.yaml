@@ -1,0 +1,30 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vaultwarden
+  namespace: security
+  labels:
+    app.kubernetes.io/name: vaultwarden
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`vw.${DOMAIN_NAME}`) && PathPrefix(`/`) || Host(`vw.home.${DOMAIN_NAME}`) && PathPrefix(`/`)
+    priority: 10
+    services:
+    - kind: Service
+      name: vaultwarden
+      namespace: security
+      passHostHeader: true
+      port: 8080
+      scheme: http
+  - kind: Rule
+    match: Host(`vw.${DOMAIN_NAME}`) && Path(`/notifications/hub`) || Host(`vw.home.${DOMAIN_NAME}`) && Path(`/notifications/hub`)
+    services:
+    - kind: Service
+      name: vaultwarden
+      namespace: security
+      passHostHeader: true
+      port: 3012

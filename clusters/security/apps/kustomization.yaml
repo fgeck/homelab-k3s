@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./authentik/ks.yaml
   - ./crowdsec/ks.yaml
-  # - ./vaultwarden/ks.yaml
+  - ./vaultwarden/ks.yaml

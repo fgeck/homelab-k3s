@@ -4,7 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./security-postgres-auth-secret.yaml
-  # - ./security-postgres-pv.yaml
   - ./security-postgres-pvc.yaml
   - ./helmrelease.yaml
 configMapGenerator:
