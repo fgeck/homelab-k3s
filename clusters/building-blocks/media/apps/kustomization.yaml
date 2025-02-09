@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./calibre-web-automated/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./jellyseerr/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr/ks.yaml
   - ./sabnzbd/ks.yaml
