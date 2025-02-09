@@ -1,0 +1,195 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: readarr
+  name: readarr
+  namespace: media
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: readarr
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: readarr
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      initContainers:
+        - name: init-postgres
+          image: bitnami/postgresql:17.2.0
+          envFrom:
+            - configMapRef:
+                name: readarr-env
+            - secretRef:
+                name: readarr-init-secret-env
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              #!/bin/bash
+
+              # Use environment variables provided
+              PGHOST=$PGHOST
+              PGUSER=$PGUSER
+              PGPASSWORD=$PGPASSWORD
+              LOG_DB=$LOG_DB
+              MAIN_DB=$MAIN_DB
+              CACHE_DB=$CACHE_DB
+              READARR_USER=$READARR__POSTGRES_USER
+              READARR_PASSWORD=$READARR__POSTGRES_PASSWORD
+
+              # Set the database to connect to for checks and operations
+              DEFAULT_DB="postgres"
+
+              # Maximum time to wait for PostgreSQL to become available (in seconds)
+              MAX_WAIT=300
+              WAIT_INTERVAL=5
+
+              echo "Checking PostgreSQL connectivity..."
+
+              elapsed=0
+              while ! PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c '\q' 2>/dev/null; do
+                  echo "PostgreSQL is not available yet. Retrying in $WAIT_INTERVAL seconds..."
+                  sleep $WAIT_INTERVAL
+                  elapsed=$((elapsed + WAIT_INTERVAL))
+                  if [ "$elapsed" -ge "$MAX_WAIT" ]; then
+                      echo "Failed to connect to PostgreSQL after $MAX_WAIT seconds."
+                      exit 1
+                  fi
+              done
+
+              echo "PostgreSQL is available. Proceeding with database setup."
+
+              # Ensure the user exists
+              echo "Ensuring user '$READARR_USER' exists..."
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '$READARR_USER') THEN CREATE ROLE \"$READARR_USER\" WITH LOGIN ENCRYPTED PASSWORD '$READARR_PASSWORD'; END IF; END \$\$;"
+
+              # List of databases to process
+              DATABASES="$LOG_DB $MAIN_DB $CACHE_DB"
+
+              # Loop through each database
+              for DBNAME in $DATABASES; do
+                  echo "Processing database: $DBNAME"
+                  
+                  # Check if the target database exists
+                  if PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -tc "SELECT 1 FROM pg_database WHERE datname = '$DBNAME';" | grep -q 1; then
+                      echo "Database '$DBNAME' already exists."
+                  else
+                      # Create the database if it doesn't exist
+                      PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "CREATE DATABASE \"$DBNAME\";"
+                      echo "Database '$DBNAME' created successfully."
+                  fi
+
+                  # Grant permissions on the database
+                  echo "Granting permissions on database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT ALL PRIVILEGES ON DATABASE \"$DBNAME\" TO \"$READARR_USER\";"
+
+                  # Grant schema permissions on the public schema
+                  echo "Granting schema permissions for 'public' in database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, CREATE ON SCHEMA public TO \"$READARR_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"$READARR_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"$READARR_USER\";"
+
+                  # Alter default privileges (correct syntax)
+                  echo "Setting default privileges for '$READARR_USER' in schema 'public' for database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \"$READARR_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO \"$READARR_USER\";"
+
+                  echo "Finished processing database: $DBNAME"
+              done
+
+              echo "Database setup completed."
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      containers:
+      - name: main
+        env:
+        - name: TZ
+          value: Europe/Berlin
+        envFrom:
+        - configMapRef:
+            name: readarr-env
+        - secretRef:
+            name: readarr-secret-env
+        image: ghcr.io/elfhosted/readarr-develop:0.4.7.2718
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /ping
+            port: 8787
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8787
+          name: main
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /ping
+            port: 8787
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 2
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        startupProbe:
+          failureThreshold: 60
+          httpGet:
+            path: /ping
+            port: 8787
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        volumeMounts:
+        - mountPath: /config
+          name: readarr-config
+        - mountPath: /mnt/data
+          name: data
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: readarr-config
+        persistentVolumeClaim:
+          claimName: readarr-pvc
+      - name: data
+        hostPath:
+         path: /mnt/data/
+         type: Directory
