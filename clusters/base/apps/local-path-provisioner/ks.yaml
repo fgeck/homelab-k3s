@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./clusters/persistency/apps/local-path-provisioner/app
+  path: ./clusters/base/apps/local-path-provisioner/app
   prune: false
   sourceRef:
     kind: GitRepository
