@@ -23,14 +23,14 @@ releases:
     chart: cilium/cilium
     version: 1.16.5
     values:
-      - ../clusters/base/apps/cilium/app/helm-values.yaml
+      - ../clusters/building-blocks/base/apps/cilium/app/helm-values.yaml
 
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
     version: 1.37.0
     values:
-      - ../clusters/base/apps/coredns/app/helm-values.yaml
+      - ../clusters/building-blocks/base/apps/coredns/app/helm-values.yaml
     needs:
       - kube-system/cilium
 
@@ -39,7 +39,7 @@ releases:
     chart: oci://ghcr.io/fluxcd-community/charts/flux2
     version: 2.14.1
     values:
-      - ../clusters/base/apps/flux/app/helm-values.yaml
+      - ../clusters/building-blocks/base/apps/flux/app/helm-values.yaml
     needs:
       - kube-system/coredns
       - kube-system/cilium

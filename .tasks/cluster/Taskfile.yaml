@@ -5,7 +5,7 @@ version: '3'
 
 tasks:
   validate:
-    desc: "Validates all yaml files in ./clusters/ using kustomize and kubeconform"
+    desc: "Validates all yaml files in ./clusters/building-blocks/ using kustomize and kubeconform"
     cmd: "./scripts/validate.sh"
     preconditions:
       - which yq kustomize kubeconform
