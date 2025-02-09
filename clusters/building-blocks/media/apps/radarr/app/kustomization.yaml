@@ -3,6 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./calibre-web-automated/ks.yaml
-  - ./radarr/ks.yaml
-  - ./sabnzbd/ks.yaml
+  - ./radarr-deploy.yaml
+  - ./radarr-env.yaml
+  - ./radarr-ingressroute.yaml
+  - ./radarr-pvc.yaml
+  - ./radarr-svc.yaml

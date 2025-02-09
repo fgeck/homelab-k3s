@@ -1,0 +1,25 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: radarr
+  namespace: media
+  labels:
+    app: radarr
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`radarr.home.${DOMAIN_NAME}`)
+    priority: 10
+    middlewares:
+    - name: local-ipallowlist
+      namespace: edge
+    services:
+    - kind: Service
+      name: radarr
+      namespace: media
+      passHostHeader: true
+      port: 7878
+      scheme: http
