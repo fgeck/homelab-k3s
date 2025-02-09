@@ -14,3 +14,4 @@ resources:
   - jetstack.yaml
   - metrics-server.yaml
   - traefik.yaml
+  - uptime-kuma.yaml
