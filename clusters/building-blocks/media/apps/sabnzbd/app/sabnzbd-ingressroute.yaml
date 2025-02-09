@@ -1,0 +1,25 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sabnzbd
+  namespace: media
+  labels:
+    app: sabnzbd
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`dl.home.${DOMAIN_NAME}`)
+    priority: 10
+    middlewares:
+    - name: local-ipallowlist
+      namespace: edge
+    services:
+    - kind: Service
+      name: sabnzbd
+      namespace: media
+      passHostHeader: true
+      port: 10097
+      scheme: http
