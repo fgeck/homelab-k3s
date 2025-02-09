@@ -1,0 +1,25 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: calibre-wa
+  namespace: media
+  labels:
+    app: calibre-wa
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`books.home.${DOMAIN_NAME}`)
+    priority: 10
+    middlewares:
+    - name: local-ipallowlist
+      namespace: edge
+    services:
+    - kind: Service
+      name: calibre-wa
+      namespace: media
+      passHostHeader: true
+      port: 8083
+      scheme: http
