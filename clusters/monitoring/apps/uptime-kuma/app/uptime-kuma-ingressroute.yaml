@@ -1,0 +1,27 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: uptime-kuma
+  namespace: monitoring
+  labels:
+    app: uptime-kuma
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`uptime.home.${DOMAIN_NAME}`)
+    priority: 10
+    middlewares:
+    - name: local-ipallowlist
+      namespace: edge
+    # - name: ssl-header  
+    #   namespace: edge
+    services:
+    - kind: Service
+      name: uptime-kuma
+      namespace: monitoring
+      passHostHeader: true
+      port: 3001
+      scheme: http

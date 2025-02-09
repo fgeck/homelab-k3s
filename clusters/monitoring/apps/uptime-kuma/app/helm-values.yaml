@@ -1,0 +1,21 @@
+nameOverride: uptime-kuma
+fullnameOverride: uptime-kuma
+namespaceOverride: monitoring
+image:
+  repository: ghcr.io/louislam/uptime-kuma
+  tag: 2.0.0-beta-rootless.1
+volume:
+  existingClaim: uptime-kuma-pvc
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  fsGroupChangePolicy: Always
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
