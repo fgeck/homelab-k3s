@@ -46,6 +46,11 @@ ports:
     port: 443
     expose:
       enabled: true
+  smb:
+    port: 445
+    expose: true
+    exposedPort: 445
+    protocol: TCP
 ingressRoute:
   dashboard:
     enabled: true
