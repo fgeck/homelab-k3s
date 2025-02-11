@@ -18,26 +18,24 @@ spec:
       labels:
         app.kubernetes.io/name: spoolman
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+      #   fsGroup: 1000
+        # fsGroupChangePolicy: OnRootMismatch
+        # seccompProfile:
+          # type: RuntimeDefault
       automountServiceAccountToken: false
       containers:
       - name: main
         env:
         - name: TZ
           value: Europe/Berlin
-        - name: HOSTNAME
-          value: "spoolman"
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
+        - name: SPOOLMAN_PORT
+          value: "8000"
+        - name: SPOOLMAN_HOST
+          value: "0.0.0.0"
         image: ghcr.io/donkie/spoolman:0.21.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -81,11 +79,11 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: spoolman-config
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        #   capabilities:
+        #     drop:
+        #       - ALL
       dnsConfig:
         options:
         - name: ndots
