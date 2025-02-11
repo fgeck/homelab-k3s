@@ -18,6 +18,7 @@ service:
   type: LoadBalancer
   spec:
     externalTrafficPolicy: Local # https://kubernetes.io/docs/tutorials/services/source-ip/
+    loadBalancerIP: ${quote}${TRAEFIK_LB_IP}${quote}
 securityContext:
   seccompProfile:
     type: RuntimeDefault

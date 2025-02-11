@@ -6,7 +6,8 @@ metadata:
   labels:
     app.kubernetes.io/name: samba
 spec:
-  type: ClusterIP # NodePort
+  type: LoadBalancer # ClusterIP # NodePort
+  loadBalancerIP: "192.168.178.141"
   selector:
     app.kubernetes.io/name: samba
   ports:

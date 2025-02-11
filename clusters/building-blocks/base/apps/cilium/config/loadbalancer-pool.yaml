@@ -6,4 +6,4 @@ metadata:
 spec:
   allowFirstLastIPs: "Yes"
   blocks:
-    - cidr: ${quote}${CIDR_TRAEFIK}${quote}
+    - cidr: ${quote}${CIDR_CILIUM}${quote}
