@@ -1,0 +1,22 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: portainer
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: portainer
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`portainer.home.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: portainer
+      namespace: monitoring
+      passHostHeader: true
+      port: 9000
+      scheme: http

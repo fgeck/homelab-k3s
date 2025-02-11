@@ -13,5 +13,6 @@ resources:
   - flux.yaml
   - jetstack.yaml
   - metrics-server.yaml
+  - portainer.yaml
   - traefik.yaml
   - uptime-kuma.yaml
