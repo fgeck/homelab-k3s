@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: samba
+  name: samba
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: samba
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: samba
+    spec:
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+      #   fsGroup: 1000
+        # fsGroupChangePolicy: OnRootMismatch
+        # seccompProfile:
+          # type: RuntimeDefault
+      automountServiceAccountToken: false
+      containers:
+      - name: main
+        env:
+        - name: MODEL
+          value: TimeCapsule
+        - name: AVAHI_NAME
+          value: k3s
+        - name: SAMBA_CONF_LOG_LEVEL
+          value: "3"
+        - name: WSDD2_DISABLE
+          value: "1"
+        - name: ACCOUNT_fgeck
+          valueFrom:
+            secretKeyRef:
+              name: samba-secrets
+              key: SAMBA_PASSWORD
+        - name: UID_fgeck
+          value: "1000"
+        - name: SAMBA_VOLUME_CONFIG_public
+          value: "[data]; path=/mnt/data; valid users = fgeck; guest ok = yes; read only = no;"
+        image: ghcr.io/servercontainers/samba
+        imagePullPolicy: IfNotPresent
+        # livenessProbe:
+        #   failureThreshold: 5
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        #   successThreshold: 1
+        #   timeoutSeconds: 5
+        ports:
+        - containerPort: 137
+          name: netbios-ns
+          protocol: UDP
+        - containerPort: 138
+          name: netbios-dgm
+          protocol: UDP
+        - containerPort: 139
+          name: netbios-ssn
+          protocol: TCP
+        - containerPort: 445
+          name: smb
+          protocol: TCP
+        # readinessProbe:
+        #   failureThreshold: 5
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        #   successThreshold: 2
+        #   timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        # startupProbe:
+        #   failureThreshold: 60
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
+        #   successThreshold: 1
+        #   timeoutSeconds: 2
+        volumeMounts:
+        - mountPath: /mnt/data
+          name: data
+        - mountPath: /external/avahi
+          name: avahi
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        #   capabilities:
+        #     drop:
+        #       - ALL
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: data
+        hostPath:
+         path: /mnt/data
+         type: Directory
+      - name: avahi
+        hostPath:
+          path: /etc/avahi/services
+          type: Directory
