@@ -6,6 +6,7 @@ resources:
   - ./homepage.yaml
   - ./homepage-ingressroute.yaml
   - ./homepage-secret.yaml
+  - ./ homepage-settings.yaml
 configMapGenerator:
   - name: homepage-helm-values
     namespace: default
