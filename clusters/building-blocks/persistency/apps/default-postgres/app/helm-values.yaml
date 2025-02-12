@@ -1,11 +1,4 @@
 ---
-global:
-  security:
-    allowInsecureImages: "true"
-image:
-  registry: docker.io
-  repository: tensorchord/pgvecto-rs
-  tag: pg17-v0.4.0-rootless
 auth:
   username: defaultuser
   existingSecret: default-postgres-auth
