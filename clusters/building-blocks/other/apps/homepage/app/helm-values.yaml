@@ -1,0 +1,358 @@
+---
+image:
+  repository: ghcr.io/gethomepage/homepage
+  tag: v0.10.9
+
+# Enable RBAC. RBAC is necessary to use Kubernetes integration
+enableRbac: true
+
+extraClusterRoles:
+  # - apiGroups:
+  #   - some-group
+  #   resources:
+  #   - some-resource
+  #   verbs:
+  #   - get
+
+serviceAccount:
+  # Specify a different service account name. When blank it will default to the release
+  # name if *create* is enabled, otherwise it will refer to the default service account.
+  name: ""
+  # Create service account. Needed when RBAC is enabled.
+  create: true
+
+service:
+  main:
+    ports:
+      http:
+        port: 3000
+
+controller:
+  strategy: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
+# Enable the ingress to expose Homepage to the network.
+ingress:
+  main:
+    enabled: false
+
+
+# All the config files for Homepage can be specified under their relevant config block.
+config:
+  # To use an existing ConfigMap uncomment this line and specify the name
+  # useExistingConfigMap: existing-homepage-configmap
+  bookmarks:
+    - Development:
+        - Github:
+            - abbr: GH
+              href: https://github.com/fgeck
+    - Social:
+        - Whatsapp:
+            - abbr: WA
+              href: https://web.whatsapp.com/
+        - Telegram:
+            - abbr: T
+              href: https://web.telegram.org/
+    - Entertainment:
+        - YouTube:
+            - abbr: YT
+              href: https://youtube.com/
+        - Pr0gramm:
+            - abbr: Pr0
+              href: https://pr0gramm.com/
+  services:
+    - Calendar:
+        - Calendar:
+            widget:
+                type: calendar
+                view: agenda # optional - possible values monthly, agenda
+                maxEvents: 10 # optional - defaults to 10
+                integrations:
+                    - type: ical # Show calendar events from another service
+                      url: '{{HOMEPAGE_VAR_FLORIAN_CALENDAR}}'
+                      name: Florian # required - name for these calendar events
+                      color: zinc # optional - defaults to pre-defined color for the service (zinc for ical)
+                      params: # optional - additional params for the service
+                        showName: true # optional - show name before event title in event line - defaults to false
+    - Network:
+        - FritzBox:
+            href:  http://192.168.178.1
+            icon: avmfritzbox.png
+            siteMonitor:  http://192.168.178.1
+            widget:
+                type: fritzbox
+                url: http://192.168.178.1
+        - PiHole:
+            href:  http://192.168.178.111/admin
+            icon: pi-hole.png
+            siteMonitor: http://192.168.178.111
+            widget:
+                type: pihole
+                url: http://192.168.178.111
+                key: '{{HOMEPAGE_VAR_PIHOLE_KEY}}'
+        - Traefik:
+            href:  https://traefik-dashboard.home.geckeler.dev
+            icon: traefik.svg
+            siteMonitor: http://192.168.178.100:8443/ping
+            widget:
+                type: traefik
+                url: https://traefik-dashboard.home.geckeler.dev
+                username: traefik
+                password: '{{HOMEPAGE_VAR_TRAEFIK_DASHBOARD_PASSWORD}}'
+        - CrowdSec:
+            icon: crowdsec.png
+            siteMonitor: http://192.168.178.100:8888
+            widget:
+                type: crowdsec
+                url: http://192.168.178.100:8888
+                username: localhost
+                password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
+
+    - Infrastructure:
+        - Proxmox:
+            href: https://192.168.178.10:8006
+            icon: proxmox.png
+            siteMonitor: https://192.168.178.10:8006
+            widget:
+                type: proxmox
+                url: https://192.168.178.10:8006
+                username: '{{HOMEPAGE_VAR_PROXMOX_USERNAME}}'
+                password: '{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}'
+        - Portainer:
+            href: https://portainer.home.geckeler.dev/
+            icon: portainer.png
+            siteMonitor: https://192.168.178.100:9443/ #https://portainer.home.geckeler.dev/
+            widget:
+                type: portainer
+                url: https://192.168.178.100:9443
+                env: 2
+                key: '{{HOMEPAGE_VAR_PORTAINER_KEY}}'
+        - UptimeKuma:
+            href: https://monitoring.home.geckeler.dev
+            icon: uptime-kuma.png
+            siteMonitor: http://192.168.178.100:3001/
+            widget:
+                type: uptimekuma
+                url: https://monitoring.home.geckeler.dev
+                slug: externals
+
+    - Home:
+        - HomeAssistant:
+            href: https://homeassistant.geckeler.dev
+            icon: home-assistant.png
+            siteMonitor: http://192.168.178.150:8123/
+            widget:
+                type: homeassistant
+                url: http://192.168.178.150:8123
+                key: '{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}'
+                custom:
+                    - template: "{{ ['person.carolin', 'person.florian'] | select('is_state','home') | map('state_attr', 'friendly_name') | join(', ') }}"
+                      label: At home
+                    - template: "{{ ['switch.espressomaschine', 'switch.subwoofer', 'switch.shelly_lueftung_switch_0', 'switch.proxmox'] | select('is_state', 'on') | map('state_attr', 'friendly_name') | join(', ') }}"
+                      label: Switches On
+                    - template: "{{ ['light.schlafzimmer_ecke', 'light.kuche', 'light.esszimmer', ] | select('is_state', 'on') | map('state_attr', 'friendly_name') | join(', ') }}"
+                      label: Lights On
+                    - state: sensor.house_total_energy
+                      label: Energy consumed this year
+        - Creality K1C:
+            href: https://print.home.geckeler.dev/
+            siteMonitor: http://192.168.178.190:4409/
+            icon: mainsail.png
+            widget:
+                type: moonraker
+                url: http://192.168.178.190:7125
+                fields:
+                    - printer_state
+                    - print_status
+                    - print_progress
+
+    - Media:
+        - Immich:
+            href: https://photos.geckeler.dev/
+            icon: immich.png
+            siteMonitor: http://192.168.178.100:2283/
+            widget:
+                type: immich
+                url: https://photos.geckeler.dev
+                key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
+                version: 2
+        - Jellyfin:
+            href: https://watch.home.geckeler.dev
+            icon: jellyfin.png
+            siteMonitor: http://192.168.178.100:8080/web/index.html
+            widget:
+                type: jellyfin
+                url: https://watch.home.geckeler.dev
+                key: '{{HOMEPAGE_VAR_JELLYFIN_KEY}}'
+                enableBlocks: true # optional, defaults to false
+        - Jellyseer:
+            href: https://search.home.geckeler.dev
+            icon: jellyseerr.png
+            siteMonitor: http://192.168.178.100:8181
+            widget:
+                type: jellyseerr
+                url: https://search.home.geckeler.dev
+                key: '{{HOMEPAGE_VAR_JELLYSEERR_KEY}}'
+        - Calibre-Web:
+            href: https://books.geckeler.dev
+            icon: calibre-web.png
+            siteMonitor: http://192.168.178.100:9083/
+            widget:
+                type: calibreweb
+                url: https://books.geckeler.dev
+                username: '{{HOMEPAGE_VAR_CALIBRE_WEB_USER}}'
+                password: '{{HOMEPAGE_VAR_CALIBRE_WEB_PASSWORD}}'
+                fields:
+                    - books
+    - Downloads:
+        - Radarr:
+            href: https://radarr.home.geckeler.dev
+            icon: radarr.png
+            siteMonitor: http://192.168.178.100:8484/
+            widget:
+                type: radarr
+                url: http://192.168.178.100:8484
+                key: '{{HOMEPAGE_VAR_RADARR_KEY}}'
+                enableQueue: true # optional, defaults to false
+        - Sonarr:
+            href: https://sonarr.home.geckeler.dev
+            icon: sonarr.png
+            siteMonitor: http://192.168.178.100:8383/
+            widget:
+                type: sonarr
+                url: http://192.168.178.100:8383
+                key: '{{HOMEPAGE_VAR_SONARR_KEY}}'
+                enableQueue: true # optional, defaults to false
+        - Readarr:
+            href: https://readarr.home.geckeler.dev
+            icon: readarr
+            siteMonitor: http://192.168.178.100:8585/
+            widget:
+                type: readarr
+                url: http://192.168.178.100:8585
+                key: '{{HOMEPAGE_VAR_READARR_KEY}}'
+        - Sabnzbd:
+            href: https://sabnzbd.home.geckeler.dev
+            icon: sabnzbd.png
+            siteMonitor: http://192.168.178.100:8282/
+            widget:
+                type: sabnzbd
+                url: http://192.168.178.100:8282
+                key: '{{HOMEPAGE_VAR_SABNZBD_KEY}}'
+  widgets:
+    - resources:
+        # change backend to 'kubernetes' to use Kubernetes integration. Requires RBAC.
+        backend: kubernetes
+        cpu: true
+        memory: true
+        # disk: /mnt/data
+    - search:
+        provider: duckduckgo
+        target: _blank
+    - openweathermap:
+        label: Neustadt
+        latitude: 49.35009
+        longitude: 8.13886
+        units: metric # or imperial
+        provider: openweathermap
+        apiKey: '{{HOMEPAGE_VAR_OPENWEATHERMAP_KEY}}'
+        cache: 5 # Time in minutes to cache API responses, to stay within limits
+        format: # optional, Intl.NumberFormat options
+          maximumFractionDigits: 1
+    - datetime:
+        text_size: xl
+        format:
+          timeStyle: short
+    ## Uncomment to enable Kubernetes integration
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+  kubernetes:
+    # change mode to 'cluster' to use RBAC service account
+    mode: cluster
+  # docker:
+  settings:
+    title: HomeLab @ Merowinger
+    useEqualHeights: true
+    providers:
+      openweathermap: openweathermapapikey
+      weatherapi: weatherapiapikey
+
+    background:
+      image: /images/code.jpg
+      blur: sm # sm, "", md, xl... see https://tailwindcss.com/docs/backdrop-blur
+      saturate: 50 # 0, 50, 100... see https://tailwindcss.com/docs/backdrop-saturate
+      brightness: 50 # 0, 50, 75... see https://tailwindcss.com/docs/backdrop-brightness
+      opacity: 10 # 0-100
+    layout:
+      Calendar:
+        style: row
+        columns: 1
+      Network:
+        style: row
+        columns: 4
+      Infrastructure:
+        style: row
+        columns: 2
+      Home:
+        style: row
+        columns: 1  
+      Media:
+        style: row
+        columns: 4
+      Downloads:
+        style: row
+        columns: 4
+
+# -- Main environment variables. Template enabled.
+# Syntax options:
+# A) TZ: UTC
+# B) PASSWD: '{{ .Release.Name }}'
+# C) PASSWD:
+#      configMapKeyRef:
+#        name: config-map-name
+#        key: key-name
+# D) PASSWD:
+#      valueFrom:
+#        secretKeyRef:
+#          name: secret-name
+#          key: key-name
+#      ...
+# E) - name: TZ
+#      value: UTC
+# F) - name: TZ
+#      value: '{{ .Release.Name }}'
+# env:
+
+# To include environment variables from other configs or other secrets for use in
+# Homepage's variable substitutions. Refer to them here.
+envFrom:
+  - secretRef:
+      name: homepage-secret
+#   - configMapRef:
+#       name: my-configmap
+
+persistence:
+  logs:
+    enabled: true
+    type: emptyDir
+    mountPath: /app/config/logs
+
+# resources:
+#   requests:
+#     memory: 10Mi
+#     cpu: 10m
+#   limits:
+#     memory: 200Mi
+#     cpu: 500m

@@ -1,22 +1,22 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: spoolman
+  name: homepage
   namespace: default
   labels:
-    app.kubernetes.io/name: spoolman
+    app.kubernetes.io/name: homepage
 spec:
   entryPoints:
     - websecure
     - web
   routes:
   - kind: Rule
-    match: Host(`spools.home.${DOMAIN_NAME}`)
+    match: Host(`my.home.${DOMAIN_NAME}`)
     priority: 10
     services:
     - kind: Service
-      name: spoolman
-      namespace: security
+      name: homepage
+      namespace: default
       passHostHeader: true
-      port: 8000
+      port: 3000
       scheme: http

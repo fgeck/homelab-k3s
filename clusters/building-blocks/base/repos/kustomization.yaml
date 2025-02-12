@@ -11,6 +11,7 @@ resources:
   - coredns.yaml
   - crowdsec.yaml
   - flux.yaml
+  - homepage.yaml
   - jetstack.yaml
   - metrics-server.yaml
   - portainer.yaml
