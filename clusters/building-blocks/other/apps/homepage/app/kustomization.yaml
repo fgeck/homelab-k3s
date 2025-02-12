@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./homepage.yaml
+  - ./homepage-ingressroute.yaml
+  - ./homepage-secret.yaml
+configMapGenerator:
+  - name: homepage-helm-values
+    namespace: default
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml
