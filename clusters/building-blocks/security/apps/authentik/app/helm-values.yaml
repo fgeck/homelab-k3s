@@ -14,12 +14,15 @@ authentik:
     user: ${SECURITY_POSTGRES_AUTHENTIK_USER}
     password: ${quote}${SECURITY_POSTGRES_AUTHENTIK_USER_PASSWORD}${quote}
     port: 5432
+  redis:
+    host: "redis-master.default.svc.cluster.local"
+    password: ${quote}${REDIS_PASSWORD}${quote}
 
 redis:
-  enabled: true
-  master:
-    persistence:
-      size: 2Gi
+  enabled: false
+  # master:
+  #   persistence:
+  #     size: 2Gi
 
 worker:
   securityContext:
