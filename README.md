@@ -11,8 +11,8 @@
 - [x] Successfully deploy Mediastack incl. postgres communication
 - [ ] Successfully deploy [Immich](https://github.com/immich-app/immich-charts)
 - [x] Successfully deploy [Spoolman](https://github.com/Donkie/Spoolman)
-- [ ] Successfully deploy [Homepage](https://gethomepage.dev/installation/k8s/#install-with-helm)
-- [ ] Successfully deploy samba
-- [ ] Successfully deploy [Wallabag](https://github.com/wallabag/wallabag)
+- [x] Successfully deploy [Homepage](https://gethomepage.dev/installation/k8s/#install-with-helm)
+- [x] Successfully deploy samba
+- [ ] Successfully deploy [Wallabag](https://github.com/wallabag/wallabag) or https://hoarder.app/
 - [ ] Configure Renovate
 
