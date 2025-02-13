@@ -1,0 +1,12 @@
+---
+auth:
+  password: ${quote}${REDIS_PASSWORD}${quote}
+master:
+  existingClaim: redis-pvc
+  containerSecurityContext:
+    runAsGroup: 1000
+    runAsUser: 1000
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1000
+architecture: standalone

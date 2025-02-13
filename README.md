@@ -14,5 +14,8 @@
 - [x] Successfully deploy [Homepage](https://gethomepage.dev/installation/k8s/#install-with-helm)
 - [x] Successfully deploy samba
 - [ ] Successfully deploy [Wallabag](https://github.com/wallabag/wallabag) or https://hoarder.app/
+- [ ] Successfully deploy [it-tools](https://github.com/CorentinTh/it-tools)
+- [ ] Successfully deploy bitnami redis and use in authentik
+- [ ] Successfully deploy [paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) using default-postgres and redis
 - [ ] Configure Renovate
 
