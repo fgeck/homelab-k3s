@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-data-pvc
+  namespace: default
+spec:
+  storageClassName: "local-path"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-media-pvc
+  namespace: default
+spec:
+  storageClassName: "local-path"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

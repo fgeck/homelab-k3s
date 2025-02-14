@@ -1,0 +1,221 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: paperless
+  name: paperless
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paperless
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: paperless
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: main
+        env:
+        - name: PAPERLESS_PORT
+          value: "8000"
+        - name: PAPERLESS_DBHOST
+          value: ${quote}${DEFAULT_POSTGRES_HOST}${quote}
+        - name: PAPERLESS_DBPORT
+          value: ${quote}${DEFAULT_POSTGRES_PORT}${quote}
+        - name: PAPERLESS_DBNAME
+          value: ${quote}${DEFAULT_POSTGRES_PAPERLESS_DATABASE}${quote}
+        - name: PAPERLESS_OCR_LANGUAGE
+          value: deu
+        - name: PAPERLESS_TIME_ZONE
+          value: "Europe/Berlin"
+        - name: PAPERLESS_URL
+          value: "https://docs.home.${DOMAIN_NAME}"
+        - name: PAPERLESS_USE_X_FORWARD_HOST # to be verified
+          value: "true"
+        - name: PAPERLESS_TASK_WORKERS
+          value: "2"
+        - name: USERMAP_UID
+          value: "1000"
+        - name: USERMAP_GID
+          value: "1000"
+        envFrom:
+        - secretRef:
+            name: paperless
+        image: ghcr.io/paperless-ngx/paperless-ngx:2.14.7
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8000
+          name: main
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 2
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        startupProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/src/paperless/data
+          name: paperless-data
+        - mountPath: /usr/src/paperless/media
+          name: paperless-media
+        - mountPath: :/usr/src/paperless/consume
+          name: consume
+        - mountPath: /usr/src/paperless/export
+          name: export
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      initContainers:
+        - name: init-postgres
+          image: bitnami/postgresql:17.2.0
+          envFrom:
+            - secretRef:
+                name: paperless-init-db
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              #!/bin/bash
+
+              # Use environment variables provided
+              PGHOST=$PGHOST
+              PGUSER=$PGUSER
+              PGPASSWORD=$PGPASSWORD
+              MAIN_DB=$PAPERLESS_DBNAME
+              PAPERLESS_USER=$PAPERLESS_DBUSER
+              PAPERLESS_PASSWORD=$PAPERLESS_DBPASS
+
+              # Set the database to connect to for checks and operations
+              DEFAULT_DB="postgres"
+
+              # Maximum time to wait for PostgreSQL to become available (in seconds)
+              MAX_WAIT=300
+              WAIT_INTERVAL=5
+
+              echo "Checking PostgreSQL connectivity..."
+
+              elapsed=0
+              while ! PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c '\q' 2>/dev/null; do
+                  echo "PostgreSQL is not available yet. Retrying in $WAIT_INTERVAL seconds..."
+                  sleep $WAIT_INTERVAL
+                  elapsed=$((elapsed + WAIT_INTERVAL))
+                  if [ "$elapsed" -ge "$MAX_WAIT" ]; then
+                      echo "Failed to connect to PostgreSQL after $MAX_WAIT seconds."
+                      exit 1
+                  fi
+              done
+
+              echo "PostgreSQL is available. Proceeding with database setup."
+
+              # Ensure the user exists
+              echo "Ensuring user '$PAPERLESS_USER' exists..."
+              PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '$PAPERLESS_USER') THEN CREATE ROLE \"$PAPERLESS_USER\" WITH LOGIN ENCRYPTED PASSWORD '$PAPERLESS_PASSWORD'; END IF; END \$\$;"
+              # List of databases to process
+              DATABASES="$LOG_DB $MAIN_DB"
+
+              # Loop through each database
+              for DBNAME in $DATABASES; do
+                  echo "Processing database: $DBNAME"
+
+                  # Check if the target database exists
+                  if PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -tc "SELECT 1 FROM pg_database WHERE datname = '$DBNAME';" | grep -q 1; then
+                      echo "Database '$DBNAME' already exists."
+                  else
+                      # Create the database if it doesn't exist
+                      PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -c "CREATE DATABASE \"$DBNAME\";"
+                      echo "Database '$DBNAME' created successfully."
+                  fi
+
+                  # Grant permissions on the database
+                  echo "Granting permissions on database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT ALL PRIVILEGES ON DATABASE \"$DBNAME\" TO \"$PAPERLESS_USER\";"
+
+                  # Grant schema permissions on the public schema
+                  echo "Granting schema permissions for 'public' in database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, CREATE ON SCHEMA public TO \"$PAPERLESS_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \"$PAPERLESS_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"$PAPERLESS_USER\";"
+
+                  # Alter default privileges (correct syntax)
+                  echo "Setting default privileges for '$PAPERLESS_USER' in schema 'public' for database: $DBNAME"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \"$PAPERLESS_USER\";"
+                  PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DBNAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO \"$PAPERLESS_USER\";"
+
+                  echo "Finished processing database: $DBNAME"
+              done
+
+              echo "Database setup completed."
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: paperless-data
+        persistentVolumeClaim:
+          claimName: paperless-data-pvc
+      - name: paperless-media
+        persistentVolumeClaim:
+          claimName: paperless-media-pvc
+      - name: consume
+        hostPath:
+         path: /mnt/data/media/docs/consume
+         type: Directory
+      - name: export
+        hostPath:
+         path: /mnt/data/media/docs/export
+         type: Directory
