@@ -14,8 +14,8 @@
 - [x] Successfully deploy [Spoolman](https://github.com/Donkie/Spoolman)
 - [x] Successfully deploy [Homepage](https://gethomepage.dev/installation/k8s/#install-with-helm)
 - [x] Successfully deploy samba
-- [ ] Successfully deploy [Wallabag](https://github.com/wallabag/wallabag) or https://hoarder.app/ or https://github.com/sissbruecker/linkding
+- [x] Successfully deploy [Wallabag](https://github.com/wallabag/wallabag) or https://hoarder.app/ or https://github.com/sissbruecker/linkding --> currently trying out hoarder
 - [ ] Successfully deploy [it-tools](https://github.com/CorentinTh/it-tools)
 - [ ] Successfully deploy [configarr](https://github.com/raydak-labs/configarr)
 - [x] Successfully deploy [paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) using default-postgres and redis
-- [ ] Configure Renovate
+- [x] Configure Renovate
