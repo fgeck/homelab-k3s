@@ -63,38 +63,6 @@
       ],
     },
     {
-      description: [
-        'Flux Operator Group',
-      ],
-      groupName: 'Flux Operator',
-      matchDatasources: [
-        'docker',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-      matchPackageNames: [
-        '/flux-operator/',
-        '/flux-instance/',
-      ],
-    },
-    {
-      description: [
-        'Talos Group',
-      ],
-      groupName: 'Talos',
-      matchDatasources: [
-        'docker',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-      matchPackageNames: [
-        '/siderolabs/talosctl/',
-        '/siderolabs/installer/',
-      ],
-    },
-    {
       matchDatasources: [
         'docker',
       ],
@@ -116,6 +84,13 @@
       semanticCommitScope: 'container',
       commitMessageTopic: '{{depName}}',
       commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      automerge: true,
+      automergeType: 'branch',
+      ignoreTests: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
     },
     {
       matchDatasources: [
@@ -128,6 +103,13 @@
       semanticCommitScope: 'container',
       commitMessageTopic: '{{depName}}',
       commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      automerge: true,
+      automergeType: 'branch',
+      ignoreTests: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
     },
     {
       matchDatasources: [
@@ -163,6 +145,13 @@
       semanticCommitScope: 'helm',
       commitMessageTopic: '{{depName}}',
       commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      automerge: true,
+      automergeType: 'branch',
+      ignoreTests: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
     },
     {
       matchDatasources: [
@@ -175,6 +164,13 @@
       semanticCommitScope: 'helm',
       commitMessageTopic: '{{depName}}',
       commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      automerge: true,
+      automergeType: 'branch',
+      ignoreTests: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
     },
     {
       matchDatasources: [
