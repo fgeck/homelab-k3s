@@ -125,7 +125,7 @@ spec:
             name: sonarr-env
         - secretRef:
             name: sonarr-secret-env
-        image: ghcr.io/onedr0p/sonarr:4.0.12
+        image: ghcr.io/onedr0p/sonarr:4.0.13
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
