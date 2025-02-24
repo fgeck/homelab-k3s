@@ -35,7 +35,6 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Sonarr](https://sonarr.tv/)
 - [x] [Hoarder](https://docs.hoarder.app/)
 - [x] [Homepage](https://gethomepage.dev/)
-- [x] [IT-Tools](https://it-tools.tech/)
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
@@ -44,6 +43,7 @@ Renovate is taking care of updating the deployed releases.
 
 ## Todo
 
+- [ ] Webhook from github to flux
 - [ ] [crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
 - [ ] monitoring: signoz / Grafana LGTM Stack
 - [ ] [Immich](https://github.com/immich-app/immich-charts)

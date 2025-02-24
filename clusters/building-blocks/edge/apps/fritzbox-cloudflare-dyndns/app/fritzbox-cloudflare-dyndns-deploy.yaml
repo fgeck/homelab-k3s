@@ -2,9 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    meta.helm.sh/release-name: edge
-    meta.helm.sh/release-namespace: edge
   labels:
     app.kubernetes.io/name: fritzbox-cloudflare-dyndns
   name: fritzbox-cloudflare-dyndns
