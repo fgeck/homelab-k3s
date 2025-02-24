@@ -17,7 +17,7 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Local-Path-Provisioner](https://github.com/rancher/local-path-provisioner)
 - [x] [Cert-Manager](https://cert-manager.io/)
 - [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns)
-- [x] [Cloudflare-Tunnel] (https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
+- [x] [Cloudflare-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
@@ -45,8 +45,10 @@ Renovate is taking care of updating the deployed releases.
 ## Todo
 
 - [ ] Webhook from github to flux
+- [ ] Traefik use IP of VM instead of Cilium's L2 Announcement and Cloudflare to route all traffic to Traefik
+- [ ] [configarr](https://github.com/raydak-labs/configarr)
+- [ ] [ICloud Photo Dump](https://github.com/boredazfcuk/docker-icloudpd) as a cronJob
 - [ ] [crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
 - [ ] monitoring: signoz / Grafana LGTM Stack
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
-- [ ] [it-tools](https://github.com/CorentinTh/it-tools)
-- [ ] [configarr](https://github.com/raydak-labs/configarr)
+
