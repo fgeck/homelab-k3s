@@ -5,3 +5,8 @@ kind: Kustomization
 resources:
   - ./telegram-provider.yaml
   - ./telegram-token-secret.yaml
+  - ./webhook-receiver-token-secret.yaml
+  - ./webhook-receiver.yaml
+  - ./webhook-receiver-ingressroute.yaml
+  - ./webhook-receiver-netpol.yaml
+  - ./webhook-receiver-svc.yaml
