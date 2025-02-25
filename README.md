@@ -46,6 +46,7 @@ Renovate is taking care of updating the deployed releases.
 ## Todo
 
 - [ ] Traefik use IP of VM instead of Cilium's L2 Announcement 
+- [ ] [Reloader](https://github.com/stakater/Reloader)
 - [ ]Cloudflare to route all traffic to Traefik
 - [ ] [configarr](https://github.com/raydak-labs/configarr)
 - [ ] [ICloud Photo Dump](https://github.com/boredazfcuk/docker-icloudpd) as a cronJob

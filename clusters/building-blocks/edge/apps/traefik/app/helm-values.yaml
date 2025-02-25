@@ -38,6 +38,11 @@ ports:
     port: 80
     expose:
       enabled: true
+    forwardedHeaders:
+      trustedIPs:
+        - "127.0.0.1/32"
+        - "192.168.178.1/24"
+        - "10.0.0.0/8"
     redirections:
       entryPoint:
         to: websecure
@@ -49,8 +54,8 @@ ports:
       enabled: true
   smb:
     port: 445
-    expose: true
-    exposedPort: 445
+    expose:
+      enabled: true
     protocol: TCP
 ingressRoute:
   dashboard:
