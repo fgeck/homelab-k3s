@@ -1,0 +1,15 @@
+apiVersion: notification.toolkit.fluxcd.io/v1
+kind: Receiver
+metadata:
+  name: homelab-k3s-receiver
+  namespace: flux-system
+spec:
+  type: github
+  events:
+    - "ping"
+    - "push"
+  secretRef:
+    name: homelab-k3s-receiver-token
+  resources:
+    - kind: GitRepository
+      name: flux-system

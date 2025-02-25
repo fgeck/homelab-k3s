@@ -1,0 +1,17 @@
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-cert-manager-resolver
+  namespace: "flux-system"
+spec:
+  podSelector:
+    matchLabels:
+      app: notification-controller
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: cloudflared
+  policyTypes:
+  - Ingress
