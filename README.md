@@ -11,6 +11,7 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 
 ## Deployed
 
+- [x] [Webhook from github to flux](https://fluxcd.io/flux/guides/webhook-receivers/)
 - [x] [Cilium](https://docs.cilium.io/)
 - [x] [CoreDNS](https://coredns.io/)
 - [x] [FluxCD](https://fluxcd.io/flux/)
@@ -44,8 +45,8 @@ Renovate is taking care of updating the deployed releases.
 
 ## Todo
 
-- [ ] Webhook from github to flux
-- [ ] Traefik use IP of VM instead of Cilium's L2 Announcement and Cloudflare to route all traffic to Traefik
+- [ ] Traefik use IP of VM instead of Cilium's L2 Announcement 
+- [ ]Cloudflare to route all traffic to Traefik
 - [ ] [configarr](https://github.com/raydak-labs/configarr)
 - [ ] [ICloud Photo Dump](https://github.com/boredazfcuk/docker-icloudpd) as a cronJob
 - [ ] [crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
