@@ -16,7 +16,7 @@ spec:
     services:
     - kind: Service
       name: spoolman
-      namespace: security
+      namespace: default
       passHostHeader: true
       port: 8000
       scheme: http
