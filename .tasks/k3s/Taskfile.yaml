@@ -14,6 +14,15 @@ tasks:
     preconditions:
       - which ssh gsed
 
+  get-kubeconfig:
+    desc: "scp the kubeconfig to local machine and replace correct IP"
+    cmds:
+      - scp root@{{.K3S_IP}}:/etc/rancher/k3s/k3s.yaml ./secrets/k3s-kubeconfig
+      - gsed -i "s|https://127.0.0.1:6443|https://{{.K3S_IP}}:6443|" ./secrets/k3s-kubeconfig
+      - chmod 600 ./secrets/k3s-kubeconfig
+    preconditions:
+      - which scp gsed
+
   reset:
     desc: "Resets the K3s cluster"
     cmds:
