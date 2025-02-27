@@ -44,7 +44,9 @@ data:
     # - hostname: bookmarks.${DOMAIN_NAME}
     #   service: http://hoarder.default.svc.cluster.local
     # - hostname: docs.${DOMAIN_NAME}
-    #   service: http://paperless.default.svc.cluster.local      
+    #   service: http://paperless.default.svc.cluster.local
+    - hostname: obsidian.${DOMAIN_NAME}
+      service: http://couchdb.default.svc.cluster.local
     # - hostname: hello.${DOMAIN_NAME}
     #   service: hello_world
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
