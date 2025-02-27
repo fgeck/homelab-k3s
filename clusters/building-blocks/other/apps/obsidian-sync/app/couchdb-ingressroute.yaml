@@ -1,0 +1,23 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: couchdb
+  namespace: default
+  labels:
+    app.kubernetes.io/name: couchdb
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`obsidian.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: couchdb
+      namespace: default
+      passHostHeader: true
+      port: 5984
+      scheme: http

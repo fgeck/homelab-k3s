@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: couchdb
+  namespace: default
+  labels:
+    app.kubernetes.io/name: couchdb
+spec:
+  replicas: 1
+  serviceName: couchdb
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: couchdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: couchdb
+    spec:
+      containers:
+      - name: couchdb
+        image: couchdb:3.4.2
+        ports:
+        - containerPort: 5984
+        volumeMounts:
+        - name: couchdb-data
+          mountPath: /opt/couchdb/data
+        - name: couchdb-config
+          mountPath: /opt/couchdb/etc/local.d
+        env:
+        - name: TZ
+          value: Europe/Berlin
+        envFrom:
+        - secretRef:
+            name: couchdb-secret
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+      volumes:
+      - name: couchdb-data
+        persistentVolumeClaim:
+          claimName: couchdb-data-pvc
+      - name: couchdb-config
+        persistentVolumeClaim:
+          claimName: couchdb-config-pvc 
