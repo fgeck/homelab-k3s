@@ -41,13 +41,14 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
+- [x] [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob -- **Still untested**
 
 Renovate is taking care of updating the deployed releases.
 
 ## Todo
 
+- [ ] [Obsidian](https://www.reddit.com/r/selfhosted/comments/1eo7knj/guide_obsidian_with_free_selfhosted_instant_sync/)
 - [ ] [Configarr](https://github.com/raydak-labs/configarr)
-- [ ] [ICloud Photo Dump](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
 - [ ] monitoring: signoz / Grafana LGTM Stack
 - [ ] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
