@@ -4,6 +4,8 @@ kind: Deployment
 metadata:
   name: cloudflared
   namespace: edge
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
@@ -16,7 +18,7 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2022.3.0
+        image: cloudflare/cloudflared:2025.2.1
         args:
         - tunnel
         # Points cloudflared to the config file, which configures what

@@ -15,6 +15,7 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Cilium](https://docs.cilium.io/)
 - [x] [CoreDNS](https://coredns.io/)
 - [x] [FluxCD](https://fluxcd.io/flux/)
+- [x] [Reloader](https://github.com/stakater/Reloader)
 - [x] [Local-Path-Provisioner](https://github.com/rancher/local-path-provisioner)
 - [x] [Cert-Manager](https://cert-manager.io/)
 - [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns)
@@ -45,7 +46,6 @@ Renovate is taking care of updating the deployed releases.
 
 ## Todo
 
-- [ ] [Reloader](https://github.com/stakater/Reloader)
 - [ ] [Configarr](https://github.com/raydak-labs/configarr)
 - [ ] [ICloud Photo Dump](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
