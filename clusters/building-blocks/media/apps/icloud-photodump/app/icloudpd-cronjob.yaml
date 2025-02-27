@@ -1,0 +1,55 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: icloud-photodump
+  namespace: media
+spec:
+  schedule: "0 22 * * *"  # every day at 10PM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: icloudpd
+            image: boredazfcuk/icloudpd:1.0.1236_23-02-2025
+            env:
+            - name: TZ
+              value: "Europe/Berlin"
+            - name: user
+              value: "fgeck"
+            - name: user_id
+              value: "1000"
+            - name: group
+              value: "fgeck"
+            - name: group_id
+              value: "1000"
+            - name: download_notifications
+              value: "true"
+            - name: delete_notifications
+              value: "true"
+            - name: startup_notification
+              value: "true"
+            - name: single_pass
+              value: "true"
+            - name: notification_type
+              value: Telegram
+            - name: notification_title
+              value: "Icloud Photo Downloader"
+            envFrom:
+            - secretRef:
+                name: icloudpd-secret
+            volumeMounts:
+            - name: icloudpd-config
+              mountPath: /config
+            - name: icloud-photos
+              mountPath: /home/fgeck/iCloud
+          restartPolicy: never
+          volumes:
+          - name: icloudpd-config
+            persistentVolumeClaim:
+              claimName: icloudpd-config-pvc
+          - name: icloud-photos
+            hostPath:
+              path: /mnt/data/icloud-photos
+              type: Directory
