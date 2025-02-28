@@ -1,0 +1,88 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: default-postgres-backup
+  namespace: default
+spec:
+  schedule: "0 23 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: debian
+            image: debian:bookworm
+            env:
+            - name: TZ
+              value: "Europe/Berlin"
+            envFrom:
+            - secretRef:
+                name: default-postgres-backup-secret
+            volumeMounts:
+            - name: temp-backup
+              mountPath: /backup
+            command: ["/bin/bash", "-c"]
+            args:
+            - |
+              #!/bin/bash
+
+              # Function to send Telegram messages
+              send_telegram_message() {
+                local message="$1"
+                curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+                    -d chat_id="$TELEGRAM_CHAT_ID" \
+                    -d text="$message"
+              }
+
+              # Function to clean up backup files
+              cleanup() {
+                echo "Cleaning up backup files..."
+                rm -f "$BACKUP_FILE"
+              }
+
+              # Set up trap to call cleanup function on script exit
+              trap cleanup EXIT
+
+              apt-get update && \
+              apt-get install -y --no-install-recommends \
+                curl \
+                ca-certificates \
+                gnupg
+
+              echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+                curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+              curl -o /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg && \
+                echo "deb http://download.proxmox.com/debian/pbs-client bookworm main" > /etc/apt/sources.list.d/pbs-client.list
+
+              apt-get update && \
+              apt-get install -y \
+                postgresql-client-17 \
+                proxmox-backup-client \
+                && rm -rf /var/lib/apt/lists/*
+
+              LOG_FILE=/var/log/backup.log
+              TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+              PBS_BACKUP_NAME="default-postgres.pxar"
+              BACKUP_DIRECTORY="/backup"
+              BACKUP_FILE="/backup/default-postgres-backup-$TIMESTAMP.sql"
+              echo "Starting Postgres backup to file"
+              PGPASSWORD="$PGPASSWORD" pg_dumpall -h "$PGHOST" -U "$PGUSER" > "$BACKUP_FILE"
+              echo "Postgres successfully backupped to file: $(du -h "$BACKUP_FILE" | cut -f1)"
+
+              export PBS_FINGERPRINT=$PROXMOX_BACKUP_SERVER_FINGERPRINT
+              export PBS_PASSWORD=$PROXMOX_BACKUP_SERVER_PASSWORD 
+              proxmox-backup-client backup "$PBS_BACKUP_NAME:$BACKUP_DIRECTORY" --repository "$PROXMOX_BACKUP_SERVER_REPOSITORY"
+              if [[ $? -ne 0 ]]; then
+                ERROR_MSG="$(date '+%Y-%m-%d %H:%M:%S') - Backup failed for $BACKUP_FILE"
+                send_telegram_message "$ERROR_MSG"
+                exit 1
+              else
+                SUCCESS_MSG="$(date '+%Y-%m-%d %H:%M:%S') - Backup for $BACKUP_FILE completed successfully."
+                send_telegram_message "$SUCCESS_MSG"
+              fi
+          restartPolicy: never
+          volumes:
+          - name: temp-backup
+            emptyDir:
+              sizeLimit: 6Gi
