@@ -11,5 +11,5 @@ spec:
     app.kubernetes.io/name: calibre-wa
   ports:
     - protocol: TCP
-      port: 8083
+      port: 80
       targetPort: 8083
