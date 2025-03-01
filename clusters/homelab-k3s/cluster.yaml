@@ -175,6 +175,7 @@ metadata:
 spec:
   dependsOn:
     - name: base-apps
+    - name: edge
   prune: true
   interval: 10m0s
   path: ./clusters/building-blocks/security/apps/
@@ -221,6 +222,7 @@ metadata:
 spec:
   dependsOn:
     - name: base-apps
+    - name: edge
   prune: true
   interval: 10m0s
   path: ./clusters/building-blocks/monitoring/apps/
@@ -267,6 +269,7 @@ metadata:
 spec:
   dependsOn:
     - name: base-apps
+    - name: edge
   prune: true
   interval: 10m0s
   path: ./clusters/building-blocks/media/apps/
@@ -313,6 +316,7 @@ metadata:
 spec:
   dependsOn:
     - name: base-apps
+    - name: edge
   prune: true
   interval: 10m0s
   path: ./clusters/building-blocks/other/apps/
