@@ -44,6 +44,8 @@ spec:
               key: ADMIN_TOKEN
         - name: DISABLE_ADMIN_TOKEN
           value: "false"
+        - name: SIGNUPS_ALLOWED
+          value: "false"
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
