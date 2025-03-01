@@ -34,7 +34,7 @@ spec:
         - name: DATA_FOLDER
           value: "/data"
         - name: DOMAIN
-          value: "https://vw.home.${DOMAIN_NAME}"
+          value: "https://vw.${DOMAIN_NAME}"
         - name: ROCKET_PORT
           value: "8080"
         - name: ADMIN_TOKEN
