@@ -37,8 +37,8 @@ data:
       service: http://webhook-receiver.flux-system.svc.cluster.local
     - hostname: vw.${DOMAIN_NAME}
       service: http://vaultwarden.security.svc.cluster.local
-    - hostname: auth.${DOMAIN_NAME}
-      service: http://authentik-server.security.svc.cluster.local
+    # - hostname: auth.${DOMAIN_NAME}
+    #   service: http://authentik-server.security.svc.cluster.local
     - hostname: books.${DOMAIN_NAME}
       service: http://calibre-wa.media.svc.cluster.local
     - hostname: bookmarks.${DOMAIN_NAME}
