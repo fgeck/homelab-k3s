@@ -4,6 +4,8 @@ kind: CronJob
 metadata:
   name: default-postgres-backup
   namespace: default
+  annotations:
+     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   schedule: "0 23 * * *"
   jobTemplate:
@@ -101,8 +103,8 @@ spec:
                   echo "$SUCCESS_MSG"
                   # send_telegram_message "$SUCCESS_MSG"
               fi
-          restartPolicy: never
+          restartPolicy: Never
           volumes:
           - name: temp-backup
             emptyDir:
-              sizeLimit: 6Gi
+              sizeLimit: 2Gi
