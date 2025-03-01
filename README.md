@@ -48,9 +48,8 @@ Renovate is taking care of updating the deployed releases.
 
 ## Todo
 
+- [ ] Switch to docker image + scripts for PVC and Postgres backups to PBS
 - [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
-- [ ] Activate [Default Postgres PBS Backup](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/persistency/apps/default-postgres/app/kustomization.yaml)
-- [ ] Activate [Security Postgres PBS Backup](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/persistency/apps/security-postgres/app/kustomization.yaml)
 - [ ] [Configarr](https://github.com/raydak-labs/configarr)
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
 - [ ] monitoring: signoz / Grafana LGTM Stack
