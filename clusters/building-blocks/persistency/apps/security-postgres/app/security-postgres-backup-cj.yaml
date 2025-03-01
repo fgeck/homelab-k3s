@@ -2,8 +2,8 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: default-postgres-backup
-  namespace: default
+  name: security-postgres-backup
+  namespace: security
 spec:
   schedule: "0 23 * * *"
   jobTemplate:
@@ -18,7 +18,7 @@ spec:
               value: "Europe/Berlin"
             envFrom:
             - secretRef:
-                name: default-postgres-backup-secret
+                name: security-postgres-backup-secret
             volumeMounts:
             - name: temp-backup
               mountPath: /backup
@@ -63,9 +63,9 @@ spec:
 
               LOG_FILE=/var/log/backup.log
               TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-              PBS_BACKUP_NAME="default-postgres.pxar"
+              PBS_BACKUP_NAME="security-postgres.pxar"
               BACKUP_DIRECTORY="/backup"
-              BACKUP_FILE="/backup/default-postgres-backup-$TIMESTAMP.sql"
+              BACKUP_FILE="/backup/security-postgres-backup-$TIMESTAMP.sql"
               echo "Starting Postgres backup to file"
               PGPASSWORD="$PGPASSWORD" pg_dumpall -h "$PGHOST" -U "$PGUSER" > "$BACKUP_FILE"
               echo "Postgres successfully backupped to file: $(du -h "$BACKUP_FILE" | cut -f1)"
