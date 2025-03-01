@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: "${quote}${CERTIFICATE_NAME}${quote}"
   issuerRef:
-    name: letsencrypt-staging # TODO: Use Prod later
+    name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
     - "${quote}${CERTIFICATE_DOMAIN}${quote}"
