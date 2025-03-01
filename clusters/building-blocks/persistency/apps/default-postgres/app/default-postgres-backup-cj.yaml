@@ -80,7 +80,7 @@ spec:
                 exit 1
               else
                 SUCCESS_MSG="$(date '+%Y-%m-%d %H:%M:%S') - Backup for $BACKUP_FILE completed successfully."
-                echo $"SUCCESS_MSG"
+                echo "$SUCCESS_MSG"
                 # send_telegram_message "$SUCCESS_MSG"
               fi
           restartPolicy: never
