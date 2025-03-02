@@ -4,6 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./calibre-web-automated/ks.yaml
+  - ./configarr/ks.yaml
   # - ./icloud-photodump/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml

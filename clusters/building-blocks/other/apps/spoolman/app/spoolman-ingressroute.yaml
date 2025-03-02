@@ -18,5 +18,5 @@ spec:
       name: spoolman
       namespace: default
       passHostHeader: true
-      port: 8000
+      port: 80
       scheme: http

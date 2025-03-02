@@ -34,8 +34,9 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Jellyseerr](https://docs.jellyseerr.dev/)
 - [x] [Radarr](https://radarr.video/)
 - [x] [Readarr](https://readarr.com/)
-- [x] [Sabnzbd](https://sabnzbd.org/)
 - [x] [Sonarr](https://sonarr.tv/)
+- [x] [Configarr](https://github.com/raydak-labs/configarr)
+- [x] [Sabnzbd](https://sabnzbd.org/)
 - [x] [Hoarder](https://docs.hoarder.app/)
 - [x] [Homepage](https://gethomepage.dev/)
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
@@ -51,7 +52,6 @@ Renovate is taking care of updating the deployed releases.
 
 - [ ] Switch to docker image + scripts for PVC and Postgres backups to PBS
 - [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
-- [ ] [Configarr](https://github.com/raydak-labs/configarr)
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
 - [ ] monitoring: signoz / Grafana LGTM Stack
 - [ ] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)

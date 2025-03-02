@@ -94,7 +94,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: sabnzbd-config
-        - mountPath: /mnt/data
+        - mountPath: /data
           name: sabnzbd-data
         - mountPath: /dev/shm
           name: devshm
@@ -129,7 +129,7 @@ spec:
           claimName: sabnzbd-pvc
       - name: sabnzbd-data
         hostPath:
-         path: /mnt/data/usenet
+         path: /mnt/data
          type: Directory
       - emptyDir:
           medium: Memory

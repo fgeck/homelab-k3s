@@ -175,7 +175,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: radarr-config
-        - mountPath: /mnt/data
+        - mountPath: /data
           name: data
       dnsConfig:
         options:
