@@ -47,7 +47,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cert-manager-default-certificate
+  name: &app cert-manager-certificates
   namespace: flux-system
 spec:
   dependsOn:
@@ -55,7 +55,7 @@ spec:
   interval: 10m0s
   retryInterval: 1m0s
   timeout: 5m
-  path: ./clusters/building-blocks/edge/apps/cert-manager/default-certificate
+  path: ./clusters/building-blocks/edge/apps/cert-manager/certs
   sourceRef:
     kind: GitRepository
     name: flux-system

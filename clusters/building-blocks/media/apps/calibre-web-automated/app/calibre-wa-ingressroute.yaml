@@ -21,5 +21,5 @@ spec:
       name: calibre-wa
       namespace: media
       passHostHeader: true
-      port: 8083
+      port: 80
       scheme: http

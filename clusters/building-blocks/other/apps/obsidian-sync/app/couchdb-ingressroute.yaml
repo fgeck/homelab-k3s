@@ -19,5 +19,5 @@ spec:
       name: couchdb
       namespace: default
       passHostHeader: true
-      port: 5984
+      port: 80
       scheme: http

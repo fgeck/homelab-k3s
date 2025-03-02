@@ -11,5 +11,5 @@ spec:
     app.kubernetes.io/name: sabnzbd
   ports:
     - protocol: TCP
-      port: 10097
+      port: 80
       targetPort: 10097

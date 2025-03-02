@@ -176,7 +176,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: sonarr-config
-        - mountPath: /mnt/data
+        - mountPath: /data
           name: data
       dnsConfig:
         options:

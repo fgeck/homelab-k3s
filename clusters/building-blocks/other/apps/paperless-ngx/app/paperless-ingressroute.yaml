@@ -22,5 +22,5 @@ spec:
       name: paperless
       namespace: default
       passHostHeader: true
-      port: 8000
+      port: 80
       scheme: http

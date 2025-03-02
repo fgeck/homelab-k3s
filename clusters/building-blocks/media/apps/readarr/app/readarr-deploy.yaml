@@ -177,7 +177,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: readarr-config
-        - mountPath: /mnt/data
+        - mountPath: /data
           name: data
       dnsConfig:
         options:

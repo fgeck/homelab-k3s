@@ -18,7 +18,7 @@ spec:
       name: vaultwarden
       namespace: security
       passHostHeader: true
-      port: 8080
+      port: 80
       scheme: http
   - kind: Rule
     match: Host(`vw.${DOMAIN_NAME}`) && Path(`/notifications/hub`) || Host(`vw.home.${DOMAIN_NAME}`) && Path(`/notifications/hub`)
