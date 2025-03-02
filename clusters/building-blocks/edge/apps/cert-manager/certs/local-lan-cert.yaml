@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lan-ca-secret
+  namespace: edge
+type: kubernetes.io/tls
+data:
+  tls.crt: ${quote}${LAN_CA_CRT_BASE64}${quote}
+  tls.key: ${quote}${LAN_CA_KEY_BASE64}${quote}

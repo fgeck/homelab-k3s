@@ -69,8 +69,8 @@ spec:
             cpu: "4"
             memory: 10Gi
           requests:
-            cpu: 10m
-            memory: 50Mi
+            cpu: 100m
+            memory: 1Gi
         startupProbe:
           failureThreshold: 60
           httpGet:
