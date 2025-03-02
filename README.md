@@ -18,14 +18,14 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Reloader](https://github.com/stakater/Reloader)
 - [x] [Local-Path-Provisioner](https://github.com/rancher/local-path-provisioner)
 - [x] [Cert-Manager](https://cert-manager.io/)
-- [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns) *inactive - external Services are exposed via Cloudflared*
+- [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns) *Currently inactive - external Services are exposed via Cloudflared*
 - [x] [Cloudflared-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
 - [x] [Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use
 - [x] [Authentik](https://github.com/goauthentik/helm)
-- [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts)
+- [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
 - [x] [Portainer](https://portainer.github.io/k8s/charts/portainer/)
 - [x] [Uptime-Kuma](https://github.com/dirsigler/uptime-kuma-helm)
