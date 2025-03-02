@@ -43,7 +43,7 @@ spec:
         - name: PAPERLESS_TIME_ZONE
           value: "Europe/Berlin"
         - name: PAPERLESS_URL
-          value: "https://docs.home.${DOMAIN_NAME}"
+          value: "https://docs.${DOMAIN_NAME}"
         - name: PAPERLESS_USE_X_FORWARD_HOST # to be verified
           value: "true"
         - name: PAPERLESS_TASK_WORKERS
@@ -86,8 +86,8 @@ spec:
             cpu: "2"
             memory: 4Gi
           requests:
-            cpu: 10m
-            memory: 50Mi
+            cpu: 50m
+            memory: 200Mi
         startupProbe:
           failureThreshold: 5
           httpGet:
