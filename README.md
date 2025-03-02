@@ -19,7 +19,7 @@ To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were creat
 - [x] [Local-Path-Provisioner](https://github.com/rancher/local-path-provisioner)
 - [x] [Cert-Manager](https://cert-manager.io/)
 - [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns) *inactive - external Services are exposed via Cloudflared*
-- [x] [Cloudflare-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
+- [x] [Cloudflared-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
