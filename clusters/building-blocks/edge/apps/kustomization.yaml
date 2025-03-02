@@ -5,5 +5,5 @@ kind: Kustomization
 resources:
   - ./cert-manager/ks.yaml
   - ./cloudflared/ks.yaml
-  - ./fritzbox-cloudflare-dyndns/ks.yaml
+  # - ./fritzbox-cloudflare-dyndns/ks.yaml
   - ./traefik/ks.yaml
