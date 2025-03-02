@@ -3,6 +3,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./pvc-backup-cj.yaml
-  - ./pvc-backup-secret.yaml
-  
+  - ./security-postgres-backup-cj.yaml
+  - ./security-postgres-backup-secret.yaml
