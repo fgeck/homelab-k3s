@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: hoarder
   namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:
@@ -20,6 +22,8 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: HOARDER_VERSION
+              value: release
             - name: MEILI_ADDR
               value: http://meilisearch.default.svc.cluster.local
             - name: BROWSER_WEB_URL
@@ -35,8 +39,6 @@ spec:
           envFrom:
             - secretRef:
                 name: hoarder-secrets
-            - configMapRef:
-                name: hoarder-config
           resources:
             limits:
               cpu: 200m
