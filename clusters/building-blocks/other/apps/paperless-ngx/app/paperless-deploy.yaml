@@ -2,10 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app.kubernetes.io/name: paperless
   name: paperless
   namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/name: paperless
 spec:
   selector:
     matchLabels:
