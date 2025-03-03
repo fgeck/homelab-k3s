@@ -32,6 +32,8 @@ spec:
       containers:
       - name: main
         env:
+        - name: PAPERLESS_APPS 
+          value: "allauth.socialaccount.providers.openid_connect"
         - name: PAPERLESS_PORT
           value: "8000"
         - name: PAPERLESS_DBHOST
