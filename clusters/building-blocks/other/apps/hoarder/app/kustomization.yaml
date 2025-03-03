@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./chrome-deploy.yaml
   - ./chrome-svc.yaml
-  - ./hoarder-cm.yaml
   - ./hoarder-deploy.yaml
   - ./hoarder-ingressroute.yaml
   - ./hoarder-pvc.yaml
