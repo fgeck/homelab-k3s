@@ -16,8 +16,8 @@ spec:
     middlewares:
     - name: local-ipallowlist
       namespace: edge
-    # - name: ssl-header  
-    #   namespace: edge
+    - name: authentik
+      namespace: edge
     services:
     - kind: Service
       name: uptime-kuma
@@ -25,3 +25,11 @@ spec:
       passHostHeader: true
       port: 3001
       scheme: http
+  - kind: Rule
+    match: "Host(`uptime.home.${DOMAIN_NAME}`) && PathPrefix(`/outpost.goauthentik.io/`)"
+    priority: 15
+    services:
+        - kind: Service
+          name: authentik-server
+          namespace: security
+          port: 80
