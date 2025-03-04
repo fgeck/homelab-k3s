@@ -26,6 +26,7 @@ providers:
   kubernetesCRD:
     enabled: true
     allowCrossNamespace: true
+    allowExternalNameServices: true
 tlsStore:
   default:
     defaultCertificate:
