@@ -7,3 +7,4 @@ resources:
   - ./local-ip-allow-middleware.yaml
   - ./gateway-only-middleware.yaml
   - ./ssl-header-middleware.yaml
+  - ./websocket-middleware.yaml

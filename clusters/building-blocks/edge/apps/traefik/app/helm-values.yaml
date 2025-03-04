@@ -53,6 +53,15 @@ ports:
     expose:
       enabled: true
     protocol: TCP
+  websocket:
+    port: 9999
+    expose:
+      enabled: true
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
 ingressRoute:
   dashboard:
     enabled: true
