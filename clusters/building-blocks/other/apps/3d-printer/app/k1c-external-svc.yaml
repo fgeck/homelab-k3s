@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: printer-k1c
+  namespace: default
+  labels:
+    app.kubernetes.io/name: printer-k1c
+spec:
+  type: ExternalName
+  externalName: 192.168.178.190
+  ports:
+    - port: 80
+      targetPort: 4409
