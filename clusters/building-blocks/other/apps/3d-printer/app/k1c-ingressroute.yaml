@@ -1,0 +1,22 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: printer-k1c
+  namespace: default
+  labels:
+    app.kubernetes.io/name: printer-k1c
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`print.home.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: printer-k1c
+      namespace: default
+      passHostHeader: true
+      port: 80
+      scheme: http
