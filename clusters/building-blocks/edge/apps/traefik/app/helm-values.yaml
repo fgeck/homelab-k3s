@@ -1,19 +1,9 @@
----
 nameOverride: traefik
 fullnameOverride: traefik
 namespaceOverride: edge
 deployment:
   enabled: true
   kind: DaemonSet
-# TODO: enable access logs and feed them to crowdsec!
-# logs:
-#   access:
-#     enabled: true
-#     fields:
-#       defaultMode: keep
-#       names:
-#         Headers.X-Forwarded-For: keep
-#         Headers.User-Agent: keep
 service:
   type: LoadBalancer
   spec:
@@ -65,3 +55,9 @@ ports:
 ingressRoute:
   dashboard:
     enabled: true
+    matchRule: Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/dashboard`) || Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/api`)
+    middlewares: [{name: local-ipallowlist, namespace: edge}]
+    entryPoints: [websecure, web]
+    services:
+      - name: api@internal
+        kind: TraefikService
