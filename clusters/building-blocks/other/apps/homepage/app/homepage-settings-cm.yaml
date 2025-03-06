@@ -8,7 +8,7 @@ data:
   kubernetes.yaml: |
     mode: cluster
   settings.yaml: |
-    title: "HomeLab @ Merowinger"
+    title: "HomeLab K3s @ Merowinger"
     useEqualHeights: true
     providers:
       openweathermap: openweathermapapikey
@@ -127,20 +127,20 @@ data:
         - Traefik:
             href:  https://traefik-dashboard.home.geckeler.dev
             icon: traefik.svg
-            siteMonitor: http://192.168.178.100:8443/ping
+            siteMonitor: http://traefik.edge.svc.cluster.local:8443/ping
             widget:
               type: traefik
               url: https://traefik-dashboard.home.geckeler.dev
               username: traefik
               password: '{{HOMEPAGE_VAR_TRAEFIK_DASHBOARD_PASSWORD}}'
-        - CrowdSec:
-            icon: crowdsec.png
-            siteMonitor: http://192.168.178.100:8888
-            widget:
-              type: crowdsec
-              url: http://192.168.178.100:8888
-              username: localhost
-              password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
+        # - CrowdSec:
+        #     icon: crowdsec.png
+        #     siteMonitor: http://192.168.178.100:8888
+        #     widget:
+        #       type: crowdsec
+        #       url: http://192.168.178.100:8888
+        #       username: localhost
+        #       password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
     - Infrastructure:
         - Proxmox:
             href: https://192.168.178.10:8006
@@ -151,26 +151,26 @@ data:
               url: https://192.168.178.10:8006
               username: '{{HOMEPAGE_VAR_PROXMOX_USERNAME}}'
               password: '{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}'
-        - Portainer:
-            href: https://portainer.home.geckeler.dev/
-            icon: portainer.png
-            siteMonitor: https://192.168.178.100:9443/ #https://portainer.home.geckeler.dev/
-            widget:
-              type: portainer
-              url: https://192.168.178.100:9443
-              env: 2
-              key: '{{HOMEPAGE_VAR_PORTAINER_KEY}}'
+        # - Portainer:
+        #     href: https://portainer.home.geckeler.dev/
+        #     icon: portainer.png
+        #     siteMonitor: https://192.168.178.100:9443/ #https://portainer.home.geckeler.dev/
+        #     widget:
+        #       type: portainer
+        #       url: https://192.168.178.100:9443
+        #       env: 2
+        #       key: '{{HOMEPAGE_VAR_PORTAINER_KEY}}'
         - UptimeKuma:
-            href: https://monitoring.home.geckeler.dev
+            href: https://uptime.home.geckeler.dev
             icon: uptime-kuma.png
-            siteMonitor: http://192.168.178.100:3001/
+            siteMonitor: https://uptime.home.geckeler.dev
             widget:
               type: uptimekuma
-              url: https://monitoring.home.geckeler.dev
-              slug: externals
+              url: https://uptime.home.geckeler.dev
+              slug: all
     - Home:
         - HomeAssistant:
-            href: https://homeassistant.geckeler.dev
+            href: https://ha.geckeler.dev
             icon: home-assistant.png
             siteMonitor: http://192.168.178.150:8123/
             widget:
@@ -198,19 +198,19 @@ data:
                 - print_status
                 - print_progress
     - Media:
-        - Immich:
-            href: https://photos.geckeler.dev/
-            icon: immich.png
-            siteMonitor: http://192.168.178.100:2283/
-            widget:
-              type: immich
-              url: https://photos.geckeler.dev
-              key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
-              version: 2
+        # - Immich:
+        #     href: https://photos.geckeler.dev/
+        #     icon: immich.png
+        #     siteMonitor: http://192.168.178.100:2283/
+        #     widget:
+        #       type: immich
+        #       url: https://photos.geckeler.dev
+        #       key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
+        #       version: 2
         - Jellyfin:
             href: https://watch.home.geckeler.dev
             icon: jellyfin.png
-            siteMonitor: http://192.168.178.100:8080/web/index.html
+            siteMonitor: http://jellyfin.media.svc.cluster.local:8080/web/index.html
             widget:
               type: jellyfin
               url: https://watch.home.geckeler.dev
@@ -219,15 +219,15 @@ data:
         - Jellyseer:
             href: https://search.home.geckeler.dev
             icon: jellyseerr.png
-            siteMonitor: http://192.168.178.100:8181
+            siteMonitor: https://search.home.geckeler.dev
             widget:
               type: jellyseerr
               url: https://search.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_JELLYSEERR_KEY}}'
-        - Calibre-Web:
+        - Calibre-Web-Automated:
             href: https://books.geckeler.dev
             icon: calibre-web.png
-            siteMonitor: http://192.168.178.100:9083/
+            siteMonitor: https://books.geckeler.dev
             widget:
               type: calibreweb
               url: https://books.geckeler.dev
@@ -239,34 +239,34 @@ data:
         - Radarr:
             href: https://radarr.home.geckeler.dev
             icon: radarr.png
-            siteMonitor: http://192.168.178.100:8484/
+            siteMonitor: https://radarr.home.geckeler.dev
             widget:
               type: radarr
-              url: http://192.168.178.100:8484
+              url: https://radarr.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_RADARR_KEY}}'
               enableQueue: true # optional, defaults to false
         - Sonarr:
             href: https://sonarr.home.geckeler.dev
             icon: sonarr.png
-            siteMonitor: http://192.168.178.100:8383/
+            siteMonitor: https://sonarr.home.geckeler.dev
             widget:
               type: sonarr
-              url: http://192.168.178.100:8383
+              url: https://sonarr.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_SONARR_KEY}}'
               enableQueue: true # optional, defaults to false
         - Readarr:
             href: https://readarr.home.geckeler.dev
             icon: readarr
-            siteMonitor: http://192.168.178.100:8585/
+            siteMonitor: https://readarr.home.geckeler.dev
             widget:
               type: readarr
-              url: http://192.168.178.100:8585
+              url: https://readarr.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_READARR_KEY}}'
         - Sabnzbd:
-            href: https://sabnzbd.home.geckeler.dev
+            href: https://dl.home.geckeler.dev
             icon: sabnzbd.png
-            siteMonitor: http://192.168.178.100:8282/
+            siteMonitor: https://dl.home.geckeler.dev
             widget:
               type: sabnzbd
-              url: http://192.168.178.100:8282
+              url: https://dl.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_SABNZBD_KEY}}'
