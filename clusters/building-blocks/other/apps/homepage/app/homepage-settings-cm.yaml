@@ -127,10 +127,10 @@ data:
         - Traefik:
             href:  https://traefik-dashboard.home.geckeler.dev
             icon: traefik.svg
-            siteMonitor: http://traefik.edge.svc.cluster.local:8443/ping
+            siteMonitor: http://traefik.edge.svc.cluster.local/ping
             widget:
               type: traefik
-              url: https://traefik-dashboard.home.geckeler.dev
+              url: https://traefik.home.geckeler.dev
               username: traefik
               password: '{{HOMEPAGE_VAR_TRAEFIK_DASHBOARD_PASSWORD}}'
         # - CrowdSec:
@@ -217,12 +217,12 @@ data:
               key: '{{HOMEPAGE_VAR_JELLYFIN_KEY}}'
               enableBlocks: true # optional, defaults to false
         - Jellyseer:
-            href: https://search.home.geckeler.dev
+            href: https://browse.home.geckeler.dev
             icon: jellyseerr.png
-            siteMonitor: https://search.home.geckeler.dev
+            siteMonitor: https://browse.home.geckeler.dev
             widget:
               type: jellyseerr
-              url: https://search.home.geckeler.dev
+              url: https://browse.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_JELLYSEERR_KEY}}'
         - Calibre-Web-Automated:
             href: https://books.geckeler.dev

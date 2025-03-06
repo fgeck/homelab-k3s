@@ -16,6 +16,7 @@ spec:
         kind: HelmRepository
         name: jameswynn
         namespace: flux-system
+      reconcileStrategy: Revision
   install:
     remediation:
       retries: 3
