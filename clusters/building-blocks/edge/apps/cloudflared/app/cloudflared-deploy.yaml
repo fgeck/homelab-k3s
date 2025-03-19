@@ -27,6 +27,9 @@ spec:
         - --config
         - /etc/cloudflared/config/config.yaml
         - run
+        env:
+        - name: TUNNEL_TRANSPORT_PROTOCOL
+          value: "http2"
         livenessProbe:
           httpGet:
             # Cloudflared has a /ready endpoint which returns 200 if and only if
