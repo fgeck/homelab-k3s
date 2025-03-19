@@ -37,9 +37,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        - name: DOCKER_MODS
-          value: "lscr.io/linuxserver/mods:universal-calibre-v7.16.0"
-        image: crocodilestick/calibre-web-automated:V2.1.2
+        image: crocodilestick/calibre-web-automated:V3.0.4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
@@ -70,8 +68,8 @@ spec:
             cpu: "1"
             memory: 1Gi
           requests:
-            cpu: 10m
-            memory: 50Mi
+            cpu: 50m
+            memory: 100Mi
         startupProbe:
           failureThreshold: 60
           httpGet:
