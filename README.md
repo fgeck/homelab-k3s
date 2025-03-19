@@ -2,12 +2,11 @@
 
 ## Setup & Explanation
 
-This repository is the deployment entity for a homelab Kubernetes setup. It mainly relies und [FluxCD](https://fluxcd.io/flux/) to deploy the Helmreleases, Kubernetes Manifests and Kustomizations located in [clusters/building-blocks](./clusters/building-blocks). For templating secret values a dedicated secrets repository is used where the sops-age encoded secrets are stored. Flux syncs the resources defined in [bootstrap/flux-ks.yaml](./bootstrap/flux-ks.yaml) from this git repository defined in [bootstrap/flux-gitrepository.yaml](./bootstrap/flux-gitrepository.yaml) with the cluster in which flux is deployed.
+This repository serves as the deployment entity for a homelab Kubernetes setup, utilizing [FluxCD](https://fluxcd.io/flux/) to manage the Helm releases, Kubernetes Manifests, and Kustomizations located in [clusters/building-blocks](./clusters/building-blocks). For templating secret values, a dedicated secrets repository is employed where sops-age encoded secrets are stored. Flux synchronizes the resources specified in [bootstrap/flux-ks.yaml](./bootstrap/flux-ks.yaml) from this Git repository, as defined in [bootstrap/flux-gitrepository.yaml](./bootstrap/flux-gitrepository.yaml), with the cluster where Flux is deployed.
 
-The resources to be deployed in this repository expect an empty cluster. CNI will be deployed via Cilium and DNS via CoreDNS. Once flux takes over local-path-provisioner is used to provide dynamic storage handling for local volumes.
-To initially bootstrap the cluster a helmfile is used. Once flux is running all resources will be synced by flux and flux will take over the lifecycle management.
+The resources intended for deployment in this repository expect an empty cluster. CNI will be deployed using Cilium, and DNS will be managed by CoreDNS. Once Flux takes control, the local-path-provisioner will be deployed to offer dynamic storage management for local volumes. For initial cluster bootstrapping, a helmfile is utilized. Once Flux is operational, it will synchronize all resources and assume lifecycle management responsibilities.
 
-To automate reoccurring tasks some [taskfiles](https://taskfile.dev/) were created. To see all available commands just enter `task`.
+To facilitate the automation of recurring tasks, several [taskfiles](https://taskfile.dev/) have been created. To view all available commands, simply enter `task`.
 
 ## Deployed
 
