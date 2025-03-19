@@ -33,8 +33,6 @@ spec:
           envFrom:
             - secretRef:
                 name: hoarder-secrets
-            - configMapRef:
-                name: hoarder-config
           resources:
             limits:
               cpu: 200m
