@@ -29,11 +29,11 @@ ports:
     port: 80
     expose:
       enabled: true
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
+    # redirections:
+    #   entryPoint:
+    #     to: websecure
+    #     scheme: https
+    #     permanent: true
   websecure:
     port: 443
     expose:
