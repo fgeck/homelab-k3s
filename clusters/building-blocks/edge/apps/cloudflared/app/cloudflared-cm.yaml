@@ -36,7 +36,7 @@ data:
     - hostname: flux-webhook.${DOMAIN_NAME}
       service: http://webhook-receiver.flux-system.svc.cluster.local
     - hostname: vw.${DOMAIN_NAME}
-      service: http://vaultwarden.security.svc.cluster.local
+      service: http://traefik.edge.svc.cluster.local
     - hostname: auth.${DOMAIN_NAME}
       service: http://authentik-server.security.svc.cluster.local
     - hostname: books.${DOMAIN_NAME}
@@ -47,6 +47,8 @@ data:
       service: http://paperless.default.svc.cluster.local
     - hostname: obsidian.${DOMAIN_NAME}
       service: http://couchdb.default.svc.cluster.local
+    - hostname: whoami.${DOMAIN_NAME}
+      service: http://traefik.edge.svc.cluster.local
     # - hostname: hello.${DOMAIN_NAME}
     #   service: hello_world
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.

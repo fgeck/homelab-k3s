@@ -1,0 +1,22 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami
+  namespace: default
+  labels:
+    app.kubernetes.io/name: whoami
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`whoami.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: whoami
+      namespace: default
+      passHostHeader: true
+      port: 80
+      scheme: http
