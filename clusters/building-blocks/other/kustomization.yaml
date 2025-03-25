@@ -10,3 +10,4 @@ resources:
   - ./paperless-ngx/ks.yaml
   - ./samba/ks.yaml
   - ./spoolman/ks.yaml
+  # - ./whoami/ks.yaml
