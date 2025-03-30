@@ -16,8 +16,6 @@ spec:
     middlewares:
     - name: local-ipallowlist
       namespace: edge
-    - name: authentik
-      namespace: edge
     services:
     - kind: Service
       name: uptime-kuma
