@@ -23,11 +23,3 @@ spec:
       passHostHeader: true
       port: 3001
       scheme: http
-  - kind: Rule
-    match: "Host(`uptime.home.${DOMAIN_NAME}`) && PathPrefix(`/outpost.goauthentik.io/`)"
-    priority: 15
-    services:
-        - kind: Service
-          name: authentik-server
-          namespace: security
-          port: 80
