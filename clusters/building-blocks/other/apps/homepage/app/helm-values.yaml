@@ -67,7 +67,10 @@ config:
 #      value: UTC
 # F) - name: TZ
 #      value: '{{ .Release.Name }}'
-# env:
+env:
+  - name: HOMEPAGE_ALLOWED_HOSTS 
+    value: my.home.geckeler.dev
+
 
 # To include environment variables from other configs or other secrets for use in
 # Homepage's variable substitutions. Refer to them here.
