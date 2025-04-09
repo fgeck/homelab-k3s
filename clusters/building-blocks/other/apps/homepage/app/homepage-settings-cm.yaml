@@ -197,6 +197,14 @@ data:
                 - printer_state
                 - print_status
                 - print_progress
+        - Paperless:
+            href: https://docs.geckeler.dev
+            icon: paperless.png
+            siteMonitor: https://docs.geckeler.dev
+            widget:
+              type: paperlessngx
+              url: https://docs.geckeler.dev
+              key: '{{HOMEPAGE_VAR_PAPERLESS_KEY}}'
     - Media:
         # - Immich:
         #     href: https://photos.geckeler.dev/
