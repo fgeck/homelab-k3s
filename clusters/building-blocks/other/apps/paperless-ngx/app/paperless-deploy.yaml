@@ -113,11 +113,12 @@ spec:
           name: consume
         - mountPath: /usr/src/paperless/export
           name: export
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+        # reason: https://github.com/paperless-ngx/paperless-ngx/issues/9609 --> https://github.com/just-containers/s6-overlay/issues/600
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        #   capabilities:
+        #     drop:
+        #       - ALL
       initContainers:
         - name: init-postgres
           image: bitnami/postgresql:17.4.0
