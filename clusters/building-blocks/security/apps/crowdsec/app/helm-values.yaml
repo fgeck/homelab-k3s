@@ -121,7 +121,7 @@ lapi:
       memory: 100Mi
   extraInitContainers:
     - name: init-postgres
-      image: bitnami/postgresql:17.4.0
+      image: bitnami/postgresql:17.5.0
       envFrom:
         - secretRef:
             name: crowdsec-init-secret-env
