@@ -126,7 +126,7 @@ spec:
             name: readarr-env
         - secretRef:
             name: readarr-secret-env
-        image: ghcr.io/elfhosted/readarr-develop:0.4.16.2793
+        image: ghcr.io/elfhosted/readarr-develop:0.4.17.2801
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
