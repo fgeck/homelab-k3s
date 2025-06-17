@@ -17,7 +17,7 @@ config:
     - Alert.Remediation == true && Alert.GetScope() == "Ip"
     decisions:
     - type: ban
-      duration: 24h
+      duration: 48h
     notifications:
     - http_default   # Set the required http parameters in /etc/crowdsec/notifications/http.yaml before enabling this.
     on_success: break
@@ -26,7 +26,7 @@ config:
       server:
         auto_registration:
           enabled: true
-          token: "${CROWDSEC_LAPI_REGISTRATION_TOKEN_WORKAROUND}"
+          token: "${CROWDSEC_LAPI_REGISTRATION_TOKEN}"
           allowed_ranges:
             - "127.0.0.1/32"
             - "192.168.0.0/16"
@@ -102,7 +102,7 @@ agent:
     - name: COLLECTIONS
       value: "crowdsecurity/traefik crowdsecurity/http-cve Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux"
     - name: PARSERS
-      value: "crowdsecurity/whitelists"
+      value: "crowdsecurity/whitelists crowdsecurity/traefik-logs"
 lapi:
   env:
     # To enroll the Security Engine to the console
