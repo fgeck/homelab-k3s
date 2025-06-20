@@ -100,7 +100,7 @@ agent:
       memory: 100Mi
   env:
     - name: COLLECTIONS
-      value: "crowdsecurity/traefik crowdsecurity/http-cve Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux"
+      value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux"
     - name: PARSERS
       value: "crowdsecurity/whitelists crowdsecurity/traefik-logs"
 lapi:

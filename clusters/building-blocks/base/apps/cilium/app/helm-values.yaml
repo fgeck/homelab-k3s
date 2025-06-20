@@ -7,6 +7,8 @@ l2announcements:
   enabled: false
 externalIPs:
   enabled: true
+hostport:
+  enabled: true
 hostServices:
   enabled: true
 

@@ -8,6 +8,7 @@ spec:
   interval: 30m
   chart:
     spec:
+      reconcileStrategy: Revision
       chart: cilium
       version: 1.17.4
       sourceRef:
