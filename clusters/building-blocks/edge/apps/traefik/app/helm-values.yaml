@@ -8,7 +8,26 @@ service:
   type: LoadBalancer
   spec:
     externalTrafficPolicy: Local # https://kubernetes.io/docs/tutorials/services/source-ip/
-    loadBalancerIP: ${quote}${TRAEFIK_LB_IP}${quote}
+    # loadBalancerIP: "192.168.178.130"
+    loadBalancerClass: io.cilium/node
+logs:
+  access:
+    enabled: true
+    format: json
+    filters:
+      statuscodes: "400-599" # log failed http requests
+    # collect logs as in-memory buffer before writing into log file
+    bufferingSize: 0
+    fields:
+      headers:
+        defaultMode: keep
+    #     names:
+    #         User-Agent: keep # log user agent strings
+experimental:
+  plugins:
+    bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.4.2
 securityContext:
   seccompProfile:
     type: RuntimeDefault
@@ -56,7 +75,7 @@ ingressRoute:
   dashboard:
     enabled: true
     matchRule: Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/dashboard`) || Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/api`)
-    middlewares: [{name: local-ipallowlist, namespace: edge}]
+    middlewares: [{ name: local-ipallowlist, namespace: edge }]
     entryPoints: [websecure, web]
     services:
       - name: api@internal

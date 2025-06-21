@@ -7,9 +7,7 @@ l2announcements:
   enabled: false
 externalIPs:
   enabled: true
-hostport:
-  enabled: true
-hostServices:
+nodeIPAM:
   enabled: true
 
 k8sClientRateLimit:
