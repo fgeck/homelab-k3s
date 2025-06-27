@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./chrome-deploy.yaml
+  - ./chrome-svc.yaml
+  - ./karakeep-deploy.yaml
+  - ./karakeep-ingressroute.yaml
+  - ./karakeep-pvc.yaml
+  - ./karakeep-secrets.yaml
+  - ./karakeep-svc.yaml

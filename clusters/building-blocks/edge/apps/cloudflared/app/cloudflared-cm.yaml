@@ -44,7 +44,7 @@ data:
       service: http://calibre-wa.media.svc.cluster.local
     - hostname: bookmarks.${DOMAIN_NAME}
       # service: http://traefik.edge.svc.cluster.local
-      service: http://hoarder.default.svc.cluster.local
+      service: http://karakeep.default.svc.cluster.local
     - hostname: docs.${DOMAIN_NAME}
       # service: http://traefik.edge.svc.cluster.local
       service: http://paperless.default.svc.cluster.local

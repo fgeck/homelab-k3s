@@ -2,10 +2,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: hoarder
+  name: karakeep
   namespace: default
   labels:
-    app.kubernetes.io/name: hoarder
+    app.kubernetes.io/name: karakeep
 spec:
   entryPoints:
     - websecure
@@ -16,7 +16,7 @@ spec:
     priority: 10
     services:
     - kind: Service
-      name: hoarder
+      name: karakeep
       namespace: default
       passHostHeader: true
       port: 80
