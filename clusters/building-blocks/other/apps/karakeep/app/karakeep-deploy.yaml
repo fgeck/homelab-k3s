@@ -24,8 +24,8 @@ spec:
           env:
             - name: KARAKEEP_VERSION
               value: release
-            # - name: MEILI_ADDR
-            #   value: http://meilisearch.default.svc.cluster.local
+            - name: MEILI_ADDR
+              value: http://meilisearch.default.svc.cluster.local
             - name: BROWSER_WEB_URL
               value: http://chrome.default.svc.cluster.local
             - name: DATA_DIR
