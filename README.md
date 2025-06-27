@@ -36,7 +36,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Sonarr](https://sonarr.tv/)
 - [x] [Configarr](https://github.com/raydak-labs/configarr)
 - [x] [Sabnzbd](https://sabnzbd.org/)
-- [x] [Hoarder](https://docs.hoarder.app/)
+- [x] [karakeep](https://docs.karakeep.app/)
 - [x] [Homepage](https://gethomepage.dev/)
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
 - [x] [Samba](https://github.com/ServerContainers/samba)

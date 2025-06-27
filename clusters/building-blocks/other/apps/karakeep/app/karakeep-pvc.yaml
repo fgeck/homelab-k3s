@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: meilisearch-pvc
+  name: karakeep-pvc
   namespace: default
 spec:
   accessModes:

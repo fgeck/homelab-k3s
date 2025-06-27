@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hoarder
+  name: karakeep
   namespace: default
   annotations:
     reloader.stakater.com/auto: "true"
@@ -9,28 +9,28 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: hoarder
+      app.kubernetes.io/name: karakeep
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: hoarder
+        app.kubernetes.io/name: karakeep
     spec:
       containers:
-        - name: hoarder
-          image: ghcr.io/hoarder-app/hoarder:0.25.0
+        - name: karakeep
+          image: ghcr.io/karakeep-app/karakeep:0.25.0
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
-            - name: HOARDER_VERSION
+            - name: KARAKEEP_VERSION
               value: release
-            - name: MEILI_ADDR
-              value: http://meilisearch.default.svc.cluster.local
+            # - name: MEILI_ADDR
+            #   value: http://meilisearch.default.svc.cluster.local
             - name: BROWSER_WEB_URL
               value: http://chrome.default.svc.cluster.local
             - name: DATA_DIR
               value: /data
-            - name: COREPACK_INTEGRITY_KEYS # workaround https://github.com/hoarder-app/hoarder/issues/1015
+            - name: COREPACK_INTEGRITY_KEYS # workaround https://github.com/karakeep-app/karakeep/issues/1015
               value: "0"
             # Add OPENAI_API_KEY to the ConfigMap if necessary
           volumeMounts:
@@ -38,7 +38,7 @@ spec:
               name: data
           envFrom:
             - secretRef:
-                name: hoarder-secrets
+                name: karakeep-secrets
           resources:
             limits:
               cpu: 200m
@@ -57,4 +57,4 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: hoarder-pvc
+            claimName: karakeep-pvc
