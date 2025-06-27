@@ -37,7 +37,7 @@ releases:
   - name: flux2
     namespace: flux-system
     chart: oci://ghcr.io/fluxcd-community/charts/flux2
-    version: 2.16.0
+    version: 2.16.1
     values:
       - ../clusters/building-blocks/base/apps/flux/app/helm-values.yaml
     needs:
