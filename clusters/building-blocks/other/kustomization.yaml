@@ -6,6 +6,7 @@ resources:
   - ./3d-printer/ks.yaml
   - ./karakeep/ks.yaml
   - ./homepage/ks.yaml
+  - ./meilisearch/ks.yaml
   - ./obsidian-sync/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./samba/ks.yaml

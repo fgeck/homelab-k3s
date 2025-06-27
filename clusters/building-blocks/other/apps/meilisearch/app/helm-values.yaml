@@ -1,0 +1,7 @@
+---
+persistence:
+  enabled: true
+  storageClassName: "local-path"
+  existingClaim: meilisearch-data-pvc
+auth:
+  existingMasterKeySecret: meilisearch-secrets

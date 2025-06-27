@@ -13,6 +13,7 @@ resources:
   - flux.yaml
   - homepage.yaml
   - jetstack.yaml
+  - meilisearch.yaml
   - metrics-server.yaml
   - portainer.yaml
   - stakater.yaml
