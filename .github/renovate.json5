@@ -22,28 +22,28 @@
     '**/*.sops.*',
   ],
   flux: {
-    fileMatch: [
-      '(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$/',
     ],
   },
   'helm-values': {
-    fileMatch: [
-      '(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$/',
     ],
   },
   helmfile: {
-    fileMatch: [
-      '(^|/)(bootstrap|clusters|helmfile)\\.ya?ml$',
+    managerFilePatterns: [
+      '/(^|/)(bootstrap|clusters|helmfile)\\.ya?ml$/',
     ],
   },
   kubernetes: {
-    fileMatch: [
-      '(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$/',
     ],
   },
   kustomize: {
-    fileMatch: [
-      '(^|/)(bootstrap|clusters|kustomization)\\.ya?ml$',
+    managerFilePatterns: [
+      '/(^|/)(bootstrap|clusters|kustomization)\\.ya?ml$/',
     ],
   },
   packageRules: [
@@ -79,6 +79,7 @@
       ],
       matchUpdateTypes: [
         'minor',
+        'patch',
       ],
       semanticCommitType: 'feat',
       semanticCommitScope: 'container',
@@ -87,16 +88,13 @@
       automerge: true,
       automergeType: 'branch',
       ignoreTests: true,
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-      ],
     },
     {
       matchDatasources: [
         'docker',
       ],
       matchUpdateTypes: [
+        'minor',
         'patch',
       ],
       semanticCommitType: 'fix',
@@ -106,10 +104,6 @@
       automerge: true,
       automergeType: 'branch',
       ignoreTests: true,
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-      ],
     },
     {
       matchDatasources: [
@@ -140,6 +134,7 @@
       ],
       matchUpdateTypes: [
         'minor',
+        'patch',
       ],
       semanticCommitType: 'feat',
       semanticCommitScope: 'helm',
@@ -148,16 +143,13 @@
       automerge: true,
       automergeType: 'branch',
       ignoreTests: true,
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-      ],
     },
     {
       matchDatasources: [
         'helm',
       ],
       matchUpdateTypes: [
+        'minor',
         'patch',
       ],
       semanticCommitType: 'fix',
@@ -167,10 +159,6 @@
       automerge: true,
       automergeType: 'branch',
       ignoreTests: true,
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-      ],
     },
     {
       matchDatasources: [
@@ -309,8 +297,8 @@
       description: [
         'Process YAML custom dependencies',
       ],
-      fileMatch: [
-        '(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$',
+      managerFilePatterns: [
+        '/(^|/)(bootstrap|clusters|kubernetes)/.+\\.ya?ml$/',
       ],
       matchStrings: [
         'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)',
