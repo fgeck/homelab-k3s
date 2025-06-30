@@ -82,7 +82,7 @@ spec:
               # Loop through each database
               for DBNAME in $DATABASES; do
                   echo "Processing database: $DBNAME"
-                  
+
                   # Check if the target database exists
                   if PGPASSWORD=$PGPASSWORD psql -h "$PGHOST" -U "$PGUSER" -d "$DEFAULT_DB" -tc "SELECT 1 FROM pg_database WHERE datname = '$DBNAME';" | grep -q 1; then
                       echo "Database '$DBNAME' already exists."
@@ -117,79 +117,79 @@ spec:
               drop:
                 - ALL
       containers:
-      - name: main
-        env:
-        - name: TZ
-          value: Europe/Berlin
-        envFrom:
-        - configMapRef:
-            name: readarr-env
-        - secretRef:
-            name: readarr-secret-env
-        image: ghcr.io/elfhosted/readarr-develop:0.4.18.2805
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /ping
-            port: 8787
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        ports:
-        - containerPort: 8787
-          name: main
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /ping
-            port: 8787
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 2
-          timeoutSeconds: 5
-        resources:
-          limits:
-            cpu: "1"
-            memory: 1Gi
-          requests:
-            cpu: 10m
-            memory: 50Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
-        startupProbe:
-          failureThreshold: 60
-          httpGet:
-            path: /ping
-            port: 8787
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 2
-        volumeMounts:
-        - mountPath: /config
-          name: readarr-config
-        - mountPath: /data
-          name: data
+        - name: main
+          env:
+            - name: TZ
+              value: Europe/Berlin
+          envFrom:
+            - configMapRef:
+                name: readarr-env
+            - secretRef:
+                name: readarr-secret-env
+          image: ghcr.io/elfhosted/readarr-develop:0.4.18.2805
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /api/v1/health
+              port: 8787
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 8787
+              name: main
+              protocol: TCP
+          # readinessProbe:
+          #   failureThreshold: 5
+          #   httpGet:
+          #     path: /ping
+          #     port: 8787
+          #     scheme: HTTP
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          #   successThreshold: 2
+          #   timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          # startupProbe:
+          #   failureThreshold: 60
+          #   httpGet:
+          #     path: /api/v1/health
+          #     port: 8787
+          #     scheme: HTTP
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          #   successThreshold: 1
+          #   timeoutSeconds: 2
+          volumeMounts:
+            - mountPath: /config
+              name: readarr-config
+            - mountPath: /data
+              name: data
       dnsConfig:
         options:
-        - name: ndots
-          value: "1"
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: readarr-config
-        persistentVolumeClaim:
-          claimName: readarr-pvc
-      - name: data
-        hostPath:
-         path: /mnt/data/
-         type: Directory
+        - name: readarr-config
+          persistentVolumeClaim:
+            claimName: readarr-pvc
+        - name: data
+          hostPath:
+            path: /mnt/data/
+            type: Directory
