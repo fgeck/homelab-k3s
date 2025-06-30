@@ -25,19 +25,19 @@ data:
         columns: 1
       Network:
         style: row
-        columns: 4
+        columns: 3
       Infrastructure:
         style: row
         columns: 2
       Home:
         style: row
-        columns: 1  
+        columns: 1
       Media:
         style: row
-        columns: 4
+        columns: 3
       Downloads:
         style: row
-        columns: 4
+        columns: 3
   bookmarks.yaml: |
     - Development:
         - Github:
@@ -262,14 +262,6 @@ data:
               url: https://sonarr.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_SONARR_KEY}}'
               enableQueue: true # optional, defaults to false
-        - Readarr:
-            href: https://readarr.home.geckeler.dev
-            icon: readarr
-            siteMonitor: https://readarr.home.geckeler.dev
-            widget:
-              type: readarr
-              url: https://readarr.home.geckeler.dev
-              key: '{{HOMEPAGE_VAR_READARR_KEY}}'
         - Sabnzbd:
             href: https://dl.home.geckeler.dev
             icon: sabnzbd.png

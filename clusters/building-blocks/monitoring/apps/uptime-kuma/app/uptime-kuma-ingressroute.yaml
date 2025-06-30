@@ -23,4 +23,3 @@ spec:
           passHostHeader: true
           port: 3001
           scheme: http
-  tls: {}

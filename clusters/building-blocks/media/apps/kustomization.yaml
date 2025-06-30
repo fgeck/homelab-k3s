@@ -9,6 +9,5 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./radarr/ks.yaml
-  - ./readarr/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
