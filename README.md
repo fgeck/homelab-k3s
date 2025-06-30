@@ -20,6 +20,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns) *Currently inactive - external Services are exposed via Cloudflared*
 - [x] [Cloudflared-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
+- [x] Traefik use IP of VM instead of Cilium's L2 Announcement ([Cilium Node IPAM LB](https://docs.cilium.io/en/latest/network/node-ipam/#node-ipam-lb))
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
 - [x] [Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use
@@ -54,4 +55,3 @@ Renovate is taking care of updating the deployed releases.
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
 - [ ] monitoring: signoz / Grafana LGTM Stack
 - [ ] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
-- [ ] Traefik use IP of VM instead of Cilium's L2 Announcement
