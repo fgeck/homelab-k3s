@@ -4,6 +4,17 @@ namespaceOverride: edge
 deployment:
   enabled: true
   kind: DaemonSet
+volumes:
+  - name: dynamic-home-cert
+    mountPath: "/config"
+    readOnly: true
+    type: configMap
+  - name: ${CERTIFICATE_NAME_HOME}
+    mountPath: /certs
+    readOnly: true
+    type: secret
+additionalArguments:
+  - "--providers.file.filename=/config/dynamic-home-cert.yaml"
 service:
   type: LoadBalancer
   spec:
@@ -39,7 +50,7 @@ providers:
 tlsStore:
   default:
     defaultCertificate:
-      secretName: ${quote}${CERTIFICATE_NAME}${quote}
+      secretName: ${CERTIFICATE_NAME}
 ingressClass:
   enabled: true
   isDefaultClass: true
