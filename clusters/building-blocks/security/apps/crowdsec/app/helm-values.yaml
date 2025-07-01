@@ -101,8 +101,8 @@ agent:
   env:
     - name: COLLECTIONS
       value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux crowdsecurity/http-dos"
-    # - name: PARSERS
-    #   value: "crowdsecurity/whitelists crowdsecurity/traefik-logs"
+    - name: PARSERS
+      value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/traefik-logs"
 lapi:
   env:
     # To enroll the Security Engine to the console
@@ -113,8 +113,8 @@ lapi:
     - name: ENROLL_TAGS
       value: ${quote}${CROWDSEC_ENROLL_TAGS}${quote}
     - name: BOUNCER_KEY_traefik
-      value: ${quote}${CROWDSEC_BOUNCER_KEY_TRAEFIK}${quote}
-    - name: BOUNCER_KEY_ip-tables
+      value: ${CROWDSEC_BOUNCER_KEY_TRAEFIK}
+    - name: BOUNCER_KEY_iptables
       value: ${quote}${CROWDSEC_BOUNCER_KEY_IP_TABLES}${quote}
   resources:
     limits:
