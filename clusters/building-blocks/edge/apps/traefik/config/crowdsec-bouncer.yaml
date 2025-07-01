@@ -12,8 +12,8 @@ spec:
       logLevel: INFO
       crowdsecMode: stream
       crowdsecLapiScheme: http
-      crowdsecLapiHost: crowdsec-service.security.svc.cluster.local
-      crowdsecLapiKey: ${quote}${CROWDSEC_BOUNCER_KEY_TRAEFIK}${quote}
+      crowdsecLapiHost: crowdsec-service.security.svc.cluster.local:8080
+      crowdsecLapiKey: ${CROWDSEC_BOUNCER_KEY_TRAEFIK}
       forwardedHeadersTrustedIPs:
         # private class ranges
         - 10.0.0.0/8

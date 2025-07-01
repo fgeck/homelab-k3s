@@ -14,6 +14,8 @@ volumes:
     readOnly: true
     type: secret
 additionalArguments:
+  - "--entrypoints.web.http.middlewares=edge-bouncer@kubernetescrd"
+  - "--entrypoints.websecure.http.middlewares=edge-bouncer@kubernetescrd"
   - "--providers.file.filename=/config/dynamic-home-cert.yaml"
 service:
   type: LoadBalancer

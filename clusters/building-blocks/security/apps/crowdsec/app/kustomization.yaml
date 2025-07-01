@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./crowdsec.yaml
   - ./crowdsec-init-secret-env.yaml
+  - ./crowdsec-lapi-svc.yaml
 configMapGenerator:
   - name: crowdsec-helm-values
     files:

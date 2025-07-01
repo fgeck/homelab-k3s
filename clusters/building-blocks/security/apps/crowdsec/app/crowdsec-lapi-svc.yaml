@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec-lapi
+  namespace: security
+spec:
+  type: NodePort
+  selector:
+    k8s-app: crowdsec
+    type: lapi
+  ports:
+    - name: lapi
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080  # Pick a high port
