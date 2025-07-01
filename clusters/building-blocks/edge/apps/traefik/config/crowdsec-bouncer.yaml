@@ -9,7 +9,7 @@ spec:
     bouncer:
       enabled: true
       Enabled: "true"
-      logLevel: DEBUG
+      logLevel: INFO
       crowdsecMode: stream
       crowdsecLapiScheme: http
       crowdsecLapiHost: crowdsec-service.security.svc.cluster.local
