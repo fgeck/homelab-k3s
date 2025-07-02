@@ -12,6 +12,7 @@ resources:
   - crowdsec.yaml
   - flux.yaml
   - homepage.yaml
+  - influxdata.yaml
   - jetstack.yaml
   - meilisearch.yaml
   - metrics-server.yaml
