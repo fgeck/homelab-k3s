@@ -21,6 +21,8 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Cloudflared-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
 - [x] Traefik use IP of VM instead of Cilium's L2 Announcement ([Cilium Node IPAM LB](https://docs.cilium.io/en/latest/network/node-ipam/#node-ipam-lb))
+- [x] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
+- [x] [Crowdsec IP Tables Bouncer](https://docs.crowdsec.net/u/bouncers/firewall/#iptables) as I prefer Firewall based blocking over blocking in Reverse Proxy
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
 - [x] [Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use
@@ -53,5 +55,4 @@ Renovate is taking care of updating the deployed releases.
 - [ ] Switch to docker image + scripts for PVC and Postgres backups to PBS
 - [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
-- [ ] monitoring: signoz / Grafana LGTM Stack
-- [ ] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
+- [ ] Monitoring: [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml) sending metrics to Postgres ([resources](https://github.com/influxdata/telegraf/blob/release-1.35/plugins/outputs/postgresql/README.md)) + [Grafana](https://github.com/grafana/helm-charts) for visualization
