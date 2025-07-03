@@ -55,4 +55,7 @@ Renovate is taking care of updating the deployed releases.
 - [ ] Switch to docker image + scripts for PVC and Postgres backups to PBS
 - [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
-- [ ] Monitoring: [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml) sending metrics to Postgres ([resources](https://github.com/influxdata/telegraf/blob/release-1.35/plugins/outputs/postgresql/README.md)) + [Grafana](https://github.com/grafana/helm-charts) for visualization
+- [ ] Monitoring 
+  - [x] [InfluxDB2](https://github.com/influxdata/helm-charts/blob/master/charts/influxdb2/values.yaml) incl. user setup scripts
+  - [ ] [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml)
+  - [ ] [Grafana](https://github.com/grafana/helm-charts) for visualization
