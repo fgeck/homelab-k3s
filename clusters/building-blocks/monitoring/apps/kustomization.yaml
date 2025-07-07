@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./grafana/ks.yaml
   - ./portainer/ks.yaml
+  - ./telegraf/ks.yaml
   - ./uptime-kuma/ks.yaml

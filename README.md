@@ -57,5 +57,7 @@ Renovate is taking care of updating the deployed releases.
 - [ ] [Immich](https://github.com/immich-app/immich-charts)
 - [ ] Monitoring 
   - [x] [InfluxDB2](https://github.com/influxdata/helm-charts/blob/master/charts/influxdb2/values.yaml) incl. user setup scripts
-  - [ ] [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml)
-  - [ ] [Grafana](https://github.com/grafana/helm-charts) for visualization
+  - [x] [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml)
+  - [x] [Grafana](https://github.com/grafana/helm-charts) for visualization
+  - [ ] [FluentBit](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/README.md)
+  - [ ] [Loki](https://github.com/grafana/loki/tree/main/production/helm/loki)
