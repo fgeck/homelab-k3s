@@ -1,3 +1,13 @@
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+annotations:
+  reloader.stakater.com/auto: "true"
+
+admin:
+  existingSecret: "grafana-secret"
+  userKey: admin-user
+  passwordKey: admin-password
+
 persistence:
   type: pvc
   enabled: false
@@ -13,7 +23,7 @@ datasources:
      - name: InfluxDB_v2_Flux
        type: influxdb
        access: proxy
-       url: ${INFLUXDB2_HOST}
+       url: http://${INFLUXDB2_HOST}
        jsonData:
          version: Flux
          organization: homelab-k3s
