@@ -1,0 +1,141 @@
+env:
+  - name: INFLUX_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: telegraf-secret
+        key: influxToken
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTIP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  # HOST_PROC is required by the cpu, disk, mem, input plugins
+  - name: "HOST_PROC"
+    value: "/hostfs/proc"
+  # HOST_SYS is required by the diskio plugin
+  - name: "HOST_SYS"
+    value: "/hostfs/sys"
+  - name: "HOST_MOUNT_PREFIX"
+    value: "/hostfs"
+
+volumes:
+  - name: hostfsro
+    hostPath:
+      path: /
+      type: Directory
+    readOnly: true
+
+mountPoints:
+  - name: hostfsro
+    mountPath: /hostfs
+    readOnly: true
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Create only for the release namespace or cluster wide (Role vs ClusterRole)
+  clusterWide: true
+  # Rules for the created rule
+  rules:
+    # When using the prometheus input to scrape all pods you need extra rules set to the ClusterRole to be
+    # able to scan the pods for scraping labels. The following rules have been taken from:
+    # https://github.com/helm/charts/blob/master/stable/prometheus/templates/server-clusterrole.yaml#L8-L46
+    - apiGroups:
+        - ""
+      resources:
+        - nodes
+        - nodes/proxy
+        - nodes/metrics
+        - services
+        - endpoints
+        - pods
+        - ingresses
+        - configmaps
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - "extensions"
+      resources:
+        - ingresses/status
+        - ingresses
+      verbs:
+        - get
+        - list
+        - watch
+    - nonResourceURLs:
+        - "/metrics"
+      verbs:
+        - get
+
+config:
+  agent:
+    interval: "10s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "10s"
+    flush_jitter: "0s"
+    precision: ""
+    debug: false
+    quiet: false
+    logfile: ""
+    hostname: "$HOSTNAME"
+    omit_hostname: false
+  processors:
+    - enum:
+        mapping:
+          field: "status"
+          dest: "status_code"
+          value_mappings:
+            healthy: 1
+            problem: 2
+            critical: 3
+  outputs:
+    - influxdb_v2:
+        urls:
+          - http://${INFLUXDB2_HOST}
+        token: "$INFLUX_TOKEN"
+        organization: homelab-k3s
+        bucket: telegraf
+
+  inputs:
+    - statsd:
+        service_address: ":8125"
+        percentiles:
+          - 50
+          - 95
+          - 99
+        metric_separator: "_"
+        allowed_pending_messages: 10000
+        percentile_limit: 1000
+    - cpu:
+        percpu: false
+    - disk:
+        ignore_fs:
+          - tmpfs
+          - devtmpfs
+          - devfs
+          - overlay
+          - aufs
+          - squashfs
+    - mem: {}
+    - system: {}
+    - kubernetes:
+        url: https://kubernetes.default.svc.cluster.local/api/v1/nodes/$HOSTNAME/proxy/
+        bearer_token: /var/run/secrets/kubernetes.io/serviceaccount/token
+        insecure_skip_verify: true
+
+metrics:
+  health:
+    enabled: false
+    service_address: "http://:8888"
+    threshold: 5000.0
+  internal:
+    enabled: true
+    collect_memstats: false
