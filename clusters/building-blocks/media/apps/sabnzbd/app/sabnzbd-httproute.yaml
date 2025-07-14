@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: sabnzbd
+  namespace: media
+spec:
+  parentRefs:
+    - name: gateway
+      namespace: edge
+  hostnames:
+    - "dl.home.${DOMAIN_NAME}"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: sabnzbd
+          port: 80
