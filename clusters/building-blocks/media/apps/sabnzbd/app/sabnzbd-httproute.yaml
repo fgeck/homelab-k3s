@@ -4,8 +4,6 @@ kind: HTTPRoute
 metadata:
   name: sabnzbd
   namespace: media
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: edge-local-ipallowlist@kubernetescrd
 spec:
   parentRefs:
     - name: gateway
@@ -17,6 +15,12 @@ spec:
         - path:
             type: PathPrefix
             value: /
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: local-ipallowlist
       backendRefs:
         - name: sabnzbd
           port: 80

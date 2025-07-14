@@ -7,6 +7,6 @@ metadata:
 spec:
   ipAllowList:
     sourceRange:
-        - 127.0.0.1/32
-        - ${quote}${TRAEFIK_LOCAL_IP_ALLOW_CIDR}${quote}
-        - 10.0.0.0/8 # Cilium's default pod CIDR
+      - 127.0.0.1/32
+      - ${quote}${TRAEFIK_LOCAL_IP_ALLOW_CIDR}${quote}
+      - 10.0.0.0/8

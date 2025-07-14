@@ -17,6 +17,12 @@ spec:
         - path:
             type: PathPrefix
             value: /
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: local-ipallowlist
       backendRefs:
         - name: homepage
           port: 3000
