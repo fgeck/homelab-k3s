@@ -4,13 +4,14 @@ kind: HTTPRoute
 metadata:
   name: homepage
   namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: edge-local-ipallowlist@kubernetescrd
 spec:
   parentRefs:
     - name: gateway
       namespace: edge
   hostnames:
     - "my.home.${DOMAIN_NAME}"
-    - "my.${DOMAIN_NAME}"
   rules:
     - matches:
         - path:
