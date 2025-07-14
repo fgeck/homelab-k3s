@@ -4,9 +4,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./homepage.yaml
-  - ./homepage-ingressroute.yaml
   - ./homepage-secret.yaml
   - ./homepage-settings-cm.yaml
+  - ./httproute.yaml
 configMapGenerator:
   - name: homepage-helm-values
     namespace: default

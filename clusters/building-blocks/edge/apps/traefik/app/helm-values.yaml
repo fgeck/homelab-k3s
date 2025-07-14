@@ -45,10 +45,27 @@ securityContext:
   seccompProfile:
     type: RuntimeDefault
 providers:
-  kubernetesCRD:
+  # kubernetesCRD:
+  #   enabled: true
+  #   allowCrossNamespace: true
+  #   allowExternalNameServices: true
+  kubernetesGateway:
     enabled: true
-    allowCrossNamespace: true
-    allowExternalNameServices: true
+gateway:
+  enabled: true
+  name: gateway
+  listeners:
+    web:
+      port: 80
+      protocol: HTTP
+      namespacePolicy: All
+    websecure:
+      port: 443
+      protocol: HTTPS
+      namespacePolicy: All
+      certificateRefs:
+        - name: ${CERTIFICATE_NAME}
+          kind: Secret
 tlsStore:
   default:
     defaultCertificate:
@@ -61,11 +78,11 @@ ports:
     port: 80
     expose:
       enabled: true
-    # redirections:
-    #   entryPoint:
-    #     to: websecure
-    #     scheme: https
-    #     permanent: true
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
   websecure:
     port: 443
     expose:
@@ -79,11 +96,6 @@ ports:
     port: 9999
     expose:
       enabled: true
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
 ingressRoute:
   dashboard:
     enabled: true

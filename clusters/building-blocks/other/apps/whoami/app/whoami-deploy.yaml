@@ -23,11 +23,11 @@ spec:
             - containerPort: 80
           resources:
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: "48Mi"
+              cpu: "50m"
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              memory: "32Mi"
+              cpu: "25m"
           securityContext:
             allowPrivilegeEscalation: false # Prevent privilege escalation
             capabilities:

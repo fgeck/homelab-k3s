@@ -3,7 +3,6 @@ image:
   repository: ghcr.io/gethomepage/homepage
   tag: v1.3.2
 
-
 # Enable RBAC. RBAC is necessary to use Kubernetes integration
 enableRbac: true
 
@@ -42,7 +41,6 @@ ingress:
   main:
     enabled: false
 
-
 # All the config files for Homepage can be specified under their relevant config block.
 config:
   # To use an existing ConfigMap uncomment this line and specify the name
@@ -68,9 +66,8 @@ config:
 # F) - name: TZ
 #      value: '{{ .Release.Name }}'
 env:
-  - name: HOMEPAGE_ALLOWED_HOSTS 
-    value: my.home.geckeler.dev
-
+  - name: HOMEPAGE_ALLOWED_HOSTS
+    value: "my.home.geckeler.dev,my.geckeler.dev"
 
 # To include environment variables from other configs or other secrets for use in
 # Homepage's variable substitutions. Refer to them here.
@@ -85,7 +82,6 @@ persistence:
     enabled: true
     type: emptyDir
     mountPath: /app/config/logs
-
 # resources:
 #   requests:
 #     memory: 10Mi
