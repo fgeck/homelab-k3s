@@ -1,0 +1,32 @@
+# Disable bundled exporters, as they will be deployed separately
+alertmanager:
+  enabled: false
+kube-state-metrics:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false
+
+server:
+  persistentVolume:
+    enabled: true
+    storageClass: "local-path"
+    size: "4Gi"
+  retention: "7d"
+
+  # Resource limits for single-node homelab
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+  # Enable remote write receiver for Alloy
+  enableRemoteWriteReceiver: true
+
+  # Optimize for single-node setup
+  extraArgs:
+    web.enable-remote-write-receiver: ""

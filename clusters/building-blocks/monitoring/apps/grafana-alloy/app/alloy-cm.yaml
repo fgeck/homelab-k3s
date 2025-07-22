@@ -1,0 +1,95 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alloy-config
+data:
+  config.yaml: |
+    // This block discovers Kubernetes services. We'll use this to find node-exporter and kube-state-metrics.
+    discovery.kubernetes "services" {
+      role = "service"
+    }
+
+    // This block discovers Kubernetes nodes, which we'll use to scrape metrics from the kubelet.
+    discovery.kubernetes "nodes" {
+      role = "node"
+    }
+
+    // This block defines a remote_write endpoint to send our scraped metrics to Prometheus.
+    prometheus.remote_write "prometheus" {
+      endpoint {
+        url = "http://prometheus-server.monitoring.svc.cluster.local/api/v1/write"
+      }
+    }
+
+    // This block scrapes metrics from all services discovered.
+    prometheus.scrape "services" {
+      targets    = discovery.kubernetes.services.targets
+      forward_to = [
+        prometheus.relabel.node_exporter.receiver,
+        prometheus.relabel.kube_state_metrics.receiver,
+      ]
+    }
+
+    // This block relabels the metrics for the node-exporter service.
+    prometheus.relabel "node_exporter" {
+      forward_to = [prometheus.remote_write.prometheus.receiver]
+
+      // This rule keeps only the services with the correct label for node-exporter.
+      rule {
+        source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
+        action        = "keep"
+        regex         = "prometheus-node-exporter"
+      }
+    }
+
+    // This block relabels the metrics for the kube-state-metrics service.
+    prometheus.relabel "kube_state_metrics" {
+      forward_to = [prometheus.remote_write.prometheus.receiver]
+
+      // This rule keeps only the services with the correct label for kube-state-metrics.
+      rule {
+        source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
+        action        = "keep"
+        regex         = "kube-state-metrics"
+      }
+    }
+
+    // This block scrapes metrics from the kubelet on each node.
+    prometheus.scrape "kubelet" {
+      targets    = discovery.kubernetes.nodes.targets
+      forward_to = [prometheus.relabel.kubelet.receiver]
+
+      // We need to use HTTPS to connect to the kubelet.
+      scheme            = "https"
+      // This is the path to the cAdvisor metrics, which provide container resource usage.
+      metrics_path      = "/metrics/cadvisor"
+      // This is the token for the service account, which is needed to authenticate with the kubelet.
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      // We need to skip TLS verification because the kubelet's certificate is not signed by a trusted CA.
+      tls_config {
+        insecure_skip_verify = true
+      }
+    }
+
+    // This block relabels the metrics from the kubelet scrape.
+    prometheus.relabel "kubelet" {
+      forward_to = [prometheus.remote_write.prometheus.receiver]
+
+      // These relabeling rules are necessary to correctly connect to the kubelet API.
+      rule {
+        action = "labelmap"
+        regex  = "__meta_kubernetes_node_label_(.+)"
+      }
+      rule {
+        target_label = "__address__"
+        replacement  = "kubernetes.default.svc:443"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = "(.+)"
+        replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
+        target_label  = "__metrics_path__"
+      }
+    }
