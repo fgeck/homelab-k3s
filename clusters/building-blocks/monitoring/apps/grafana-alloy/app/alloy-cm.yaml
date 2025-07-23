@@ -24,7 +24,9 @@ data:
 
     // This block scrapes metrics from all services discovered.
     prometheus.scrape "services" {
-      targets    = discovery.kubernetes.services.targets
+      targets         = discovery.kubernetes.services.targets
+      scrape_interval = "20s"
+      scrape_timeout  = "10s"
       forward_to = [
         prometheus.relabel.node_exporter.receiver,
         prometheus.relabel.kube_state_metrics.receiver,
@@ -57,8 +59,10 @@ data:
 
     // This block scrapes metrics from the kubelet on each node.
     prometheus.scrape "kubelet" {
-      targets    = discovery.kubernetes.nodes.targets
-      forward_to = [prometheus.relabel.kubelet.receiver]
+      targets         = discovery.kubernetes.nodes.targets
+      scrape_interval = "20s"
+      scrape_timeout  = "10s"
+      forward_to      = [prometheus.relabel.kubelet.receiver]
 
       // We need to use HTTPS to connect to the kubelet.
       scheme            = "https"
