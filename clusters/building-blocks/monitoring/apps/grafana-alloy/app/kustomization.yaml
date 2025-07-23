@@ -3,16 +3,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./dashboards/application-performance-dashboard.yaml
-  - ./dashboards/cluster-overview-dashboard.yaml
-  - ./dashboards/node-monitoring-dashboard.yaml
-  - ./dashboards/pod-container-dashboard.yaml
-  - ./dashboards/storage-persistence-dashboard.yaml
-  - ./grafana-secret.yaml
+  - ./alloy-cm.yaml
   - ./helm-release.yaml
   - ./ingressroute.yaml
 configMapGenerator:
-  - name: grafana-helm-values
+  - name: grafana-alloy-helm-values
     files:
       - values.yaml=./helm-values.yaml
 configurations:

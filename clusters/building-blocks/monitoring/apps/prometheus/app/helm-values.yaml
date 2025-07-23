@@ -1,0 +1,49 @@
+# Disable bundled exporters, as they will be deployed separately
+alertmanager:
+  enabled: false
+kube-state-metrics:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false
+
+server:
+  persistentVolume:
+    enabled: true
+    storageClass: "local-path"
+    size: "4Gi"
+  retention: "7d"
+
+  # Optimized resource limits for homelab
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+
+  # Enable remote write receiver for Alloy
+  enableRemoteWriteReceiver: true
+
+  # Optimize for single-node setup and reduce memory usage
+  extraArgs:
+    web.enable-remote-write-receiver: ""
+    storage.tsdb.wal-compression: ""
+    query.max-concurrency: "4"
+    query.max-samples: "50000000"
+
+  # Global scrape configuration for efficiency
+  global:
+    scrape_interval: 20s
+    evaluation_interval: 20s
+    scrape_timeout: 10s
+
+  # Reduce cardinality and optimize storage
+  extraScrapeConfigs: |
+    - job_name: 'prometheus'
+      static_configs:
+        - targets: ['localhost:9090']
+      scrape_interval: 60s
+      metrics_path: /metrics

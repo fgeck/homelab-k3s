@@ -21,3 +21,4 @@ resources:
   - stakater.yaml
   - traefik.yaml
   - uptime-kuma.yaml
+  - prometheus-community.yaml

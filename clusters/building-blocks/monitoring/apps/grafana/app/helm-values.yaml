@@ -17,17 +17,30 @@ persistence:
   size: 6Gi
 
 datasources:
- datasources.yaml:
-   apiVersion: 1
-   datasources:
-     - name: InfluxDB_v2_Flux
-       type: influxdb
-       access: proxy
-       url: http://${INFLUXDB2_HOST}
-       jsonData:
-         version: Flux
-         organization: homelab-k3s
-         defaultBucket: telegraf
-         tlsSkipVerify: true
-       secureJsonData:
-         token: ${INFLUXDB2_GRAFANA_TOKEN}
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server.monitoring.svc.cluster.local:80
+        isDefault: true
+        jsonData:
+          timeInterval: "30s"
+          queryTimeout: "60s"
+          httpMethod: "POST"
+        editable: false
+
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: "monitoring"
+
+# Add resource limits for homelab
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
