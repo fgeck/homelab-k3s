@@ -30,8 +30,6 @@ server:
   # Optimize for single-node setup and reduce memory usage
   extraArgs:
     web.enable-remote-write-receiver: ""
-    storage.tsdb.retention.time: "7d"
-    storage.tsdb.retention.size: "3GB"
     storage.tsdb.wal-compression: ""
     query.max-concurrency: "4"
     query.max-samples: "50000000"

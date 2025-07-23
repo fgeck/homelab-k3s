@@ -214,13 +214,13 @@ data:
           "pluginVersion": "8.0.0",
           "targets": [
             {
-              "expr": "sum(node_filesystem_size_bytes{fstype!=\"tmpfs\"}) - sum(node_filesystem_avail_bytes{fstype!=\"tmpfs\"})",
+              "expr": "sum(node_filesystem_size_bytes{mountpoint=~\"/|/mnt/data\"}) - sum(node_filesystem_avail_bytes{mountpoint=~\"/|/mnt/data\"})",
               "interval": "",
               "legendFormat": "Disk Used",
               "refId": "A"
             },
             {
-              "expr": "sum(node_filesystem_size_bytes{fstype!=\"tmpfs\"})",
+              "expr": "sum(node_filesystem_size_bytes{mountpoint=~\"/|/mnt/data\"})",
               "interval": "",
               "legendFormat": "Disk Total",
               "refId": "B"
@@ -228,6 +228,93 @@ data:
           ],
           "title": "Cluster Disk: Used vs Total",
           "type": "gauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "vis": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})) * 100",
+              "interval": "",
+              "legendFormat": "/ (sdb1) - Root Disk Usage %",
+              "refId": "A"
+            },
+            {
+              "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/mnt/data\"} / node_filesystem_size_bytes{mountpoint=\"/mnt/data\"})) * 100",
+              "interval": "",
+              "legendFormat": "/mnt/data (sda1) - Data Disk Usage %",
+              "refId": "B"
+            }
+          ],
+          "title": "Individual Disk Usage: / (sdb1) vs /mnt/data (sda1)",
+          "type": "timeseries"
         },
         {
           "datasource": "Prometheus",

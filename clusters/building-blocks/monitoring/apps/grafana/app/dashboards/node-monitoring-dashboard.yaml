@@ -268,7 +268,7 @@ data:
               "refId": "A"
             }
           ],
-          "title": "Disk Usage by Node",
+          "title": "Disk Usage by Node (/dev/sda1 & /dev/sdb1)",
           "type": "timeseries"
         },
         {

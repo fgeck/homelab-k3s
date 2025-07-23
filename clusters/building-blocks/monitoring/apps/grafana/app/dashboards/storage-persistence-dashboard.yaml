@@ -238,19 +238,19 @@ data:
           },
           "targets": [
             {
-              "expr": "rate(node_disk_read_bytes_total[5m])",
+              "expr": "rate(node_disk_read_bytes_total{device=~\"sda|sdb\"}[5m])",
               "interval": "",
               "legendFormat": "{{device}} Read",
               "refId": "A"
             },
             {
-              "expr": "rate(node_disk_written_bytes_total[5m])",
+              "expr": "rate(node_disk_written_bytes_total{device=~\"sda|sdb\"}[5m])",
               "interval": "",
               "legendFormat": "{{device}} Write",
               "refId": "B"
             }
           ],
-          "title": "Disk I/O Rate",
+          "title": "Disk I/O Rate (sda1 & sdb1)",
           "type": "timeseries"
         },
         {
@@ -325,13 +325,19 @@ data:
           },
           "targets": [
             {
-              "expr": "(1 - (node_filesystem_avail_bytes{fstype!=\"tmpfs\"} / node_filesystem_size_bytes{fstype!=\"tmpfs\"})) * 100",
+              "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})) * 100",
               "interval": "",
-              "legendFormat": "{{mountpoint}} ({{instance}})",
+              "legendFormat": "/ (sdb1) - Root Disk",
               "refId": "A"
+            },
+            {
+              "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/mnt/data\"} / node_filesystem_size_bytes{mountpoint=\"/mnt/data\"})) * 100",
+              "interval": "",
+              "legendFormat": "/mnt/data (sda1) - Data Disk",
+              "refId": "B"
             }
           ],
-          "title": "Filesystem Usage %",
+          "title": "Disk Usage: / (sdb1) vs /mnt/data (sda1)",
           "type": "timeseries"
         },
         {
