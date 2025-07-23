@@ -1,0 +1,54 @@
+alloy:
+  controller:
+    replicas: 1
+    type: "daemonset"
+  configMap:
+    name: grafana-alloy-config
+    key: config.yaml
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+configReloader:
+  enabled: true
+
+# Enable service discovery and metrics collection
+serviceMonitor:
+  enabled: false
+
+# Mount host filesystem for node metrics
+mounts:
+  varlog: true
+  dockersock: false
+  
+rbac:
+  create: true
+  
+# Additional RBAC rules for kubelet metrics access
+extraObjects:
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: grafana-alloy-kubelet
+    rules:
+      - apiGroups: [""]
+        resources: ["nodes", "nodes/metrics", "nodes/proxy"]
+        verbs: ["get", "list", "watch"]
+      - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+        verbs: ["get"]
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: grafana-alloy-kubelet
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: grafana-alloy-kubelet
+    subjects:
+      - kind: ServiceAccount
+        name: grafana-alloy
+        namespace: monitoring

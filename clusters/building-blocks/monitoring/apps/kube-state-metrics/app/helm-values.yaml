@@ -1,0 +1,3 @@
+# We are using the default values for the kube-state-metrics chart,
+# but creating this file to make the configuration explicit.
+# Future customizations can be added here.
