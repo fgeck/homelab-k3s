@@ -3,11 +3,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./grafana/ks.yaml
-  - ./grafana-alloy/ks.yaml
+  # - ./grafana/ks.yaml
+  # - ./grafana-alloy/ks.yaml
   # - ./portainer/ks.yaml
-  - ./prometheus/ks.yaml
-  - ./node-exporter/ks.yaml
-  - ./kube-state-metrics/ks.yaml
+  # - ./prometheus/ks.yaml
+  # - ./node-exporter/ks.yaml
+  # - ./kube-state-metrics/ks.yaml
   # - ./telegraf/ks.yaml
   - ./uptime-kuma/ks.yaml
