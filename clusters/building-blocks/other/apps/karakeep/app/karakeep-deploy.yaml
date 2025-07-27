@@ -27,7 +27,7 @@ spec:
             - name: MEILI_ADDR
               value: http://meilisearch.default.svc.cluster.local
             - name: BROWSER_WEB_URL
-              value: http://chrome.default.svc.cluster.local
+              value: http://chrome.default.svc.cluster.local:9222
             - name: DATA_DIR
               value: /data
             - name: COREPACK_INTEGRITY_KEYS # workaround https://github.com/karakeep-app/karakeep/issues/1015
