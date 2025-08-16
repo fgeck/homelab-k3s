@@ -121,7 +121,7 @@ spec:
         #       - ALL
       initContainers:
         - name: init-postgres
-          image: bitnami/postgresql:17.5.0
+          image: bitnami/postgresql:17.6.0
           envFrom:
             - secretRef:
                 name: paperless-init-db
