@@ -14,7 +14,7 @@ spec:
         spec:
           containers:
           - name: debian
-            image: debian:bookworm
+            image: debian:trixie
             env:
             - name: PVC_HOST_PATH
               value: "/pvcs"

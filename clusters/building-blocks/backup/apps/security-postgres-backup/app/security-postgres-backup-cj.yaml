@@ -14,7 +14,7 @@ spec:
         spec:
           containers:
           - name: debian
-            image: debian:bookworm
+            image: debian:trixie
             env:
             - name: TZ
               value: "Europe/Berlin"
