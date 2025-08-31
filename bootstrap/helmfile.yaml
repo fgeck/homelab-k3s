@@ -28,7 +28,7 @@ releases:
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
-    version: 1.43.2
+    version: 1.43.3
     values:
       - ../clusters/building-blocks/base/apps/coredns/app/helm-values.yaml
     needs:
