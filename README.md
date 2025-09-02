@@ -47,17 +47,17 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob -- **Still untested**
 - [x] [Obsidian](https://github.com/vrtmrz/obsidian-livesync)
 - [x] Backups are done via CronJobs and can be found in a dedicated [building-block](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/backup/apps). All PVCs are backed up to Proxmox Backup Server using a single CronJob. Postgresql Databases are backed up to Proxmox Backup Server as well but the CronJob dumps the database first to a temp. directory and uploads this directory to PBS.
-
-Renovate is taking care of updating the deployed releases.
-
-## Todo
-
-- [ ] Switch to docker image + scripts for PVC and Postgres backups to PBS
-- [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
-- [ ] [Immich](https://github.com/immich-app/immich-charts)
+- [x] Switch to docker image + scripts for PVC and Postgres backups to PBS. [Repo](https://github.com/fgeck/pbs-k8s-backup)
 - [x] Monitoring - currently not deployed
   - [x] [InfluxDB2](https://github.com/influxdata/helm-charts/blob/master/charts/influxdb2/values.yaml) incl. user setup scripts
   - [x] [Telegraf](https://github.com/influxdata/helm-charts/blob/master/charts/telegraf/values.yaml)
   - [x] [Grafana](https://github.com/grafana/helm-charts) for visualization
   - [x] [Grafana-Alloy](https://github.com/grafana/alloy/blob/main/operations/helm/charts/alloy/values.yaml)
-  - [x][Prometheus](https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml)
+  - [x] [Prometheus](https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml)
+
+Renovate is taking care of updating the deployed releases.
+
+## Todo
+
+- [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
+- [ ] [Immich](https://github.com/immich-app/immich-charts)
