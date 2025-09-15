@@ -1,0 +1,22 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: better-bahn
+  namespace: default
+  labels:
+    app.kubernetes.io/name: better-bahn
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`bahn.home.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: better-bahn
+      namespace: default
+      passHostHeader: true
+      port: 3000
+      scheme: http
