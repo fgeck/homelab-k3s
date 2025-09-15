@@ -11,4 +11,5 @@ resources:
   - ./paperless-ngx/ks.yaml
   - ./samba/ks.yaml
   - ./spoolman/ks.yaml
+  - ./better-bahn/ks.yaml
   # - ./whoami/ks.yaml

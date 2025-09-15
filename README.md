@@ -44,6 +44,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
+- [x] [Better-Bahn](https://github.com/l2xu/betterbahn)
 - [x] [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob -- **Still untested**
 - [x] [Obsidian](https://github.com/vrtmrz/obsidian-livesync)
 - [x] Backups are done via CronJobs and can be found in a dedicated [building-block](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/backup/apps). All PVCs are backed up to Proxmox Backup Server using a single CronJob. Postgresql Databases are backed up to Proxmox Backup Server as well but the CronJob dumps the database first to a temp. directory and uploads this directory to PBS.
