@@ -40,7 +40,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: jellyfin/jellyfin:2025062305
+        image: jellyfin/jellyfin:2025102005
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
