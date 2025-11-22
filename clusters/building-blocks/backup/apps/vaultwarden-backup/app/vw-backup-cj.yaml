@@ -20,7 +20,7 @@ spec:
               type: RuntimeDefault
           containers:
             - name: vaultwarden-backup
-              image: ttionya/vaultwarden-backup:1.25.3
+              image: ttionya/vaultwarden-backup:1.25.4
               imagePullPolicy: Always
               args: [ "backup" ]
               env:
