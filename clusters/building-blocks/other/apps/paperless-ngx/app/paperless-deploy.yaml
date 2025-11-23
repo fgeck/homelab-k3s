@@ -59,7 +59,7 @@ spec:
         envFrom:
         - secretRef:
             name: paperless
-        image: ghcr.io/paperless-ngx/paperless-ngx:2.19.6
+        image: ghcr.io/paperless-ngx/paperless-ngx:2.20.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
