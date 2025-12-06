@@ -9,4 +9,4 @@ resources:
   # - ./influxdb/ks.yaml
   - ./redis/ks.yaml
   - ./security-postgres/ks.yaml
-  # - ./security-postgres-cnpg/ks.yaml
+  - ./security-postgres-cnpg/ks.yaml
