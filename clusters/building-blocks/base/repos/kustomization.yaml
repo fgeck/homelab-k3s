@@ -8,6 +8,7 @@ resources:
   - bitnami-redis.yaml
   - capacitor.yaml
   - cilium.yaml
+  - cloudnative-pg.yaml
   - coredns.yaml
   - crowdsec.yaml
   - flux.yaml

@@ -1,0 +1,25 @@
+---
+# CloudNativePG Operator Configuration
+
+# Operator configuration
+config:
+  clusterWide: true
+  data:
+    INHERITED_ANNOTATIONS: "kustomize.toolkit.fluxcd.io/substitute"
+
+# Monitoring integration
+monitoring:
+  podMonitorEnabled: false
+  grafanaDashboard:
+    create: false
+
+# Security context
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
