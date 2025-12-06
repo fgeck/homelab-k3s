@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./cloudnative-pg/ks.yaml
   - ./default-postgres/ks.yaml
-  # - ./default-postgres-cnpg/ks.yaml
+  - ./default-postgres-cnpg/ks.yaml
   # - ./influxdb/ks.yaml
   - ./redis/ks.yaml
   - ./security-postgres/ks.yaml
