@@ -1,0 +1,111 @@
+---
+# CloudNativePG Cluster Configuration for security-postgres
+type: postgresql
+mode: standalone
+
+version:
+  postgresql: "16"
+
+cluster:
+  # Single instance - homelab environment
+  instances: 1
+
+  imageName: ""  # Will use default PostgreSQL 16 image
+
+  storage:
+    size: 2Gi
+    storageClass: ""  # Uses default storage class
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  # PostgreSQL configuration
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "512MB"
+      effective_cache_size: "1536MB"
+      maintenance_work_mem: "128MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "2621kB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+
+  # Monitoring
+  monitoring:
+    enabled: false
+    podMonitor:
+      enabled: false
+
+  # Application database configuration
+  initdb:
+    database: app
+    owner: app
+    dataChecksums: true
+    encoding: UTF8
+    localeCollate: C
+    localeCType: C
+
+  # Enable superuser access for migration
+  enableSuperuserAccess: true
+
+  # Single instance - no topology constraints
+  affinity:
+    enablePodAntiAffinity: false
+
+  # Declarative role management
+  # CloudNativePG creates the roles without passwords
+  # Init containers will set passwords securely from secrets
+  roles:
+    - name: authentik
+      ensure: present
+      login: true
+      comment: "Authentik SSO application user"
+    - name: vaultwarden
+      ensure: present
+      login: true
+      comment: "Vaultwarden password manager user"
+    - name: crowdsec
+      ensure: present
+      login: true
+      comment: "CrowdSec security application user"
+
+# Declarative database management
+# CloudNativePG manages databases and ownership
+# This replaces manual CREATE DATABASE commands in init containers
+databases:
+  - name: authentik
+    ensure: present
+    owner: authentik
+    encoding: UTF8
+
+  - name: vaultwarden
+    ensure: present
+    owner: vaultwarden
+    encoding: UTF8
+
+  - name: crowdsec
+    ensure: present
+    owner: crowdsec
+    encoding: UTF8
+
+backups:
+  # Backups will be handled by existing PBS cronjobs during migration
+  # Enable after migration is complete
+  enabled: false
+  provider: s3
+  retentionPolicy: "30d"
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 10 0 * * *"  # 10 minutes after default-postgres
+      backupOwnerReference: self
