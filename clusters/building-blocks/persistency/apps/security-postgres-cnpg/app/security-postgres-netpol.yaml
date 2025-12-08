@@ -1,0 +1,47 @@
+---
+# Strict NetworkPolicy for security-postgres-cnpg
+# Only allow connections from security namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: security-postgres-access
+  namespace: security
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: security-postgres-cnpg
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow only from security namespace pods
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: security
+      ports:
+      - protocol: TCP
+        port: 5432
+    # Allow from cnpg-system for operator management
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: cnpg-system
+      ports:
+      - protocol: TCP
+        port: 5432
+  egress:
+    # Allow DNS
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+      ports:
+      - protocol: UDP
+        port: 53
+    # Allow backups (if needed)
+    - to:
+      - namespaceSelector: {}
+      ports:
+      - protocol: TCP
+        port: 443
