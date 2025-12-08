@@ -3,10 +3,10 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: media-postgres-cnpg
-  namespace: media
+  name: postgresql-vecto
+  namespace: default
 spec:
-  releaseName: media-postgres-cnpg
+  releaseName: postgresql-vecto
   interval: 30m
   chart:
     spec:
@@ -28,4 +28,4 @@ spec:
       namespace: cnpg-system
   valuesFrom:
     - kind: ConfigMap
-      name: media-postgres-cnpg-helm-values
+      name: postgresql-vecto-helm-values
