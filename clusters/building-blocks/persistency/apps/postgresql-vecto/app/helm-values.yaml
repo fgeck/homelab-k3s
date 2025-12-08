@@ -62,6 +62,13 @@ cluster:
       # Immich requires vector extensions
       - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
       - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
+      # Grant schema permissions for all app users
+      - GRANT USAGE, CREATE ON SCHEMA public TO paperless, radarr, sonarr, immich;
+      # Grant permissions on all existing and future objects in public schema
+      - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO paperless, radarr, sonarr, immich;
+      - GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO paperless, radarr, sonarr, immich;
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO paperless, radarr, sonarr, immich;
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO paperless, radarr, sonarr, immich;
 
   # Enable superuser access for migration
   enableSuperuserAccess: true
