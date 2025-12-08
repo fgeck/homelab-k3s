@@ -1,0 +1,94 @@
+---
+# CloudNativePG Cluster Configuration for media-postgres
+type: postgresql
+mode: standalone
+
+version:
+  postgresql: "16"
+
+cluster:
+  # Single instance for homelab
+  instances: 1
+
+  # Use vectorchord image for Immich vector support
+  imageName: "ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3"
+
+  storage:
+    size: 8Gi
+    storageClass: "local-path"
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  # PostgreSQL configuration with vectorchord extensions
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+    parameters:
+      max_connections: "200"
+      shared_buffers: "512MB"
+      effective_cache_size: "1536MB"
+      maintenance_work_mem: "128MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "2621kB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+
+  # Monitoring
+  monitoring:
+    enabled: false
+    podMonitor:
+      enabled: false
+
+  # Application database configuration
+  initdb:
+    database: app
+    owner: app
+    dataChecksums: true
+    encoding: UTF8
+    localeCollate: C
+    localeCType: C
+    postInitApplicationSQL:
+      - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+      - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
+
+  # Enable superuser access
+  enableSuperuserAccess: true
+
+  # Single instance - no topology constraints
+  affinity:
+    enablePodAntiAffinity: false
+
+  # Declarative role management
+  roles:
+    - name: immich
+      ensure: present
+      login: true
+      comment: "Immich photo management application user"
+
+# Declarative database management
+databases:
+  - name: immich
+    ensure: present
+    owner: immich
+    encoding: UTF8
+
+backups:
+  # Backups will be handled by existing PBS cronjobs
+  enabled: false
+  provider: s3
+  retentionPolicy: "30d"
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 20 0 * * *"  # 20 minutes after security-postgres
+      backupOwnerReference: self
