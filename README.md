@@ -24,8 +24,10 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Crowdsec traefik bouncer](https://www.crowdsec.net/blog/how-to-mitigate-security-threats-with-crowdsec-and-traefik)
 - [x] [Crowdsec IP Tables Bouncer](https://docs.crowdsec.net/u/bouncers/firewall/#iptables) as I prefer Firewall based blocking over blocking in Reverse Proxy
 - [x] [Redis](https://github.com/bitnami/charts/tree/main/bitnami/redis)
-- [x] [Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use
-- [x] [Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use
+- [x] ~~[Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use~~
+- [x] ~~[Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use~~
+- [x] Security and Default Postgres cluster managed by [cloudnative-pg](https://cloudnative-pg.io/docs/)
+  - [ ] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
 - [x] [Authentik](https://github.com/goauthentik/helm)
 - [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
