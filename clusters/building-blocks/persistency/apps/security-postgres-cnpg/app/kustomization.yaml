@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: security
 resources:
   - helmrelease.yaml
+  - security-postgres-netpol.yaml
 configMapGenerator:
   - name: security-postgres-cnpg-helm-values
     files:
