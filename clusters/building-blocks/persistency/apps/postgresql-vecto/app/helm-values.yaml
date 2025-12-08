@@ -1,5 +1,5 @@
 ---
-# CloudNativePG Cluster Configuration for media-postgres
+# CloudNativePG Cluster Configuration for consolidated PostgreSQL with vectorchord
 type: postgresql
 mode: standalone
 
@@ -10,7 +10,7 @@ cluster:
   # Single instance for homelab
   instances: 1
 
-  # Use vectorchord image for Immich vector support
+  # Use vectorchord image for Immich vector support (compatible with all apps)
   imageName: "ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3"
 
   storage:
@@ -21,7 +21,7 @@ cluster:
   resources:
     requests:
       cpu: "200m"
-      memory: "1Gi"
+      memory: "600Mi"
     limits:
       cpu: "1"
       memory: "2Gi"
@@ -59,25 +59,75 @@ cluster:
     localeCollate: C
     localeCType: C
     postInitApplicationSQL:
+      # Immich requires vector extensions
       - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
       - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
 
-  # Enable superuser access
+  # Enable superuser access for migration
   enableSuperuserAccess: true
 
   # Single instance - no topology constraints
   affinity:
     enablePodAntiAffinity: false
 
-  # Declarative role management
+  # Declarative role management with password secrets
+  # Consolidated users from both default-postgres and media-postgres
   roles:
+    # From default-postgres-cnpg
+    - name: paperless
+      ensure: present
+      login: true
+      comment: "Paperless-ngx application user"
+      passwordSecret:
+        name: postgresql-vecto-paperless-auth
+    - name: radarr
+      ensure: present
+      login: true
+      comment: "Radarr application user"
+      passwordSecret:
+        name: postgresql-vecto-radarr-auth
+    - name: sonarr
+      ensure: present
+      login: true
+      comment: "Sonarr application user"
+      passwordSecret:
+        name: postgresql-vecto-sonarr-auth
     - name: immich
       ensure: present
       login: true
       comment: "Immich photo management application user"
+      passwordSecret:
+        name: postgresql-vecto-immich-auth
 
 # Declarative database management
+# Consolidated databases from both clusters
 databases:
+  # From default-postgres-cnpg
+  - name: paperless
+    ensure: present
+    owner: paperless
+    encoding: UTF8
+
+  - name: radarr_main
+    ensure: present
+    owner: radarr
+    encoding: UTF8
+
+  - name: radarr_log
+    ensure: present
+    owner: radarr
+    encoding: UTF8
+
+  - name: sonarr_main
+    ensure: present
+    owner: sonarr
+    encoding: UTF8
+
+  - name: sonarr_log
+    ensure: present
+    owner: sonarr
+    encoding: UTF8
+
   - name: immich
     ensure: present
     owner: immich
@@ -90,5 +140,5 @@ backups:
   retentionPolicy: "30d"
   scheduledBackups:
     - name: daily-backup
-      schedule: "0 20 0 * * *"  # 20 minutes after security-postgres
+      schedule: "0 0 0 * * *"
       backupOwnerReference: self
