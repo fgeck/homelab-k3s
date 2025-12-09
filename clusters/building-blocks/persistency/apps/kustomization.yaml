@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./cloudnative-pg/ks.yaml
   # - ./default-postgres/ks.yaml
-  - ./default-postgres-cnpg/ks.yaml  # Will be replaced by postgresql-vecto
+  # - ./default-postgres-cnpg/ks.yaml  # Will be replaced by postgresql-vecto
   # - ./influxdb/ks.yaml
   - ./postgresql-vecto/ks.yaml
   - ./redis/ks.yaml

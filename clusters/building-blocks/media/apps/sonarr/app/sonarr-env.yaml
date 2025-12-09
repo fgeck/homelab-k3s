@@ -1,25 +1,3 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sonarr-init-secret-env
-  namespace: media
-type: Opaque
-stringData:
-  SONARR__POSTGRES__PASSWORD: ${quote}${DEFAULT_POSTGRES_SONARR_USER_PASSWORD}${quote}
-  PGHOST: ${DEFAULT_POSTGRES_HOST}
-  PGUSER: "postgres"
-  PGPASSWORD: ${quote}${DEFAULT_POSTGRES_SYSTEM_PASSWORD}${quote}
-  MAIN_DB: "sonarr_main"
-  LOG_DB: "sonarr_log"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sonarr-secret-env
-  namespace: media
-type: Opaque
-stringData:
-  SONARR__POSTGRES__PASSWORD: ${quote}${DEFAULT_POSTGRES_SONARR_USER_PASSWORD}${quote}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -29,7 +7,7 @@ metadata:
 data:
   SONARR__APP__THEME: "dark"
   # SONARR__SERVER__URLBASE: "/series"
-  SONARR__POSTGRES__HOST: ${DEFAULT_POSTGRES_HOST}
+  SONARR__POSTGRES__HOST: ${quote}${DEFAULT_POSTGRES_HOST}${quote}
   SONARR__POSTGRES__PORT: ${quote}${DEFAULT_POSTGRES_PORT}${quote}
   SONARR__POSTGRES__MAINDB: sonarr_main
   SONARR__POSTGRES__LOGDB: sonarr_log
