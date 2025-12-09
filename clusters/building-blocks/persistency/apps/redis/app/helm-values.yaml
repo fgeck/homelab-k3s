@@ -1,6 +1,12 @@
 ---
 auth:
+  enabled: true
   password: ${quote}${REDIS_PASSWORD}${quote}
+  # Enable ACL for multiple users
+  usePasswordFiles: false
+acl:
+  enabled: true
+  existingSecret: redis-acl-secret
 master:
   existingClaim: redis-pvc
   containerSecurityContext:
