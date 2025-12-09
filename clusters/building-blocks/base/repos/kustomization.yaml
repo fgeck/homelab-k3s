@@ -14,6 +14,7 @@ resources:
   - flux.yaml
   - grafana.yaml
   - homepage.yaml
+  - immich.yaml
   - influxdata.yaml
   - jetstack.yaml
   - meilisearch.yaml
