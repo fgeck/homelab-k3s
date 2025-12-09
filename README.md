@@ -27,7 +27,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] ~~[Security-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all security related deployments to use~~
 - [x] ~~[Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use~~
 - [x] Security and Default Postgres cluster managed by [cloudnative-pg](https://cloudnative-pg.io/docs/)
-  - [ ] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
+  - [x] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
 - [x] [Authentik](https://github.com/goauthentik/helm)
 - [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
@@ -48,6 +48,8 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
 - [x] [Better-Bahn](https://github.com/l2xu/betterbahn)
 - [x] [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob -- **Still untested**
+- [ ] Build a Pipeline from Icloud to Immich using [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) to extract the photos and [immich-go](https://github.com/simulot/immich-go) to upload them to immich
+- [x] [Immich](https://docs.immich.app/overview/quick-start)
 - [x] [Obsidian](https://github.com/vrtmrz/obsidian-livesync)
 - [x] Backups are done via CronJobs and can be found in a dedicated [building-block](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/backup/apps). All PVCs are backed up to Proxmox Backup Server using a single CronJob. Postgresql Databases are backed up to Proxmox Backup Server as well but the CronJob dumps the database first to a temp. directory and uploads this directory to PBS.
 - [x] Switch to docker image + scripts for PVC and Postgres backups to PBS. [Repo](https://github.com/fgeck/pbs-k8s-backup)
