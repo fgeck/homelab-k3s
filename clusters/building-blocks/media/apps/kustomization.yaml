@@ -6,6 +6,7 @@ resources:
   - ./calibre-web-automated/ks.yaml
   - ./configarr/ks.yaml
   # - ./icloud-photodump/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./radarr/ks.yaml

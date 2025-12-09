@@ -139,6 +139,11 @@ databases:
     ensure: present
     owner: immich
     encoding: UTF8
+    # Immich requires vector extensions
+    postInitSQL:
+      - CREATE EXTENSION IF NOT EXISTS vector CASCADE;
+      - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+      - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
 
 backups:
   # Backups will be handled by existing PBS cronjobs

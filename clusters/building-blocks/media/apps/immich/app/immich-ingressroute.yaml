@@ -1,0 +1,23 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: immich
+  namespace: media
+  labels:
+    app.kubernetes.io/name: immich
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`photos.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: immich
+      namespace: media
+      passHostHeader: true
+      port: 2283
+      scheme: http

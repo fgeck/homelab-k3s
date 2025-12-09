@@ -1,0 +1,88 @@
+---
+# Immich Helm Values
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          tag: v2.3.1
+        ports:
+          - name: http
+            containerPort: 2283
+            protocol: TCP
+        env:
+          # Database credentials from postgresql-vecto-immich-auth (single source of truth)
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-vecto-immich-auth
+                key: username
+                optional: false
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-vecto-immich-auth
+                key: password
+                optional: false
+        envFrom:
+          # Redis and PostgreSQL connection config
+          - secretRef:
+              name: immich-secret
+
+# Global persistence configuration
+# Using hostPath for library storage
+# Mount /mnt/data/photos to /usr/src/app/upload (contains all Immich subdirs)
+persistence:
+  library:
+    enabled: true
+    type: hostPath
+    hostPath: /mnt/data/photos
+    hostPathType: Directory
+    globalMounts:
+      - path: /usr/src/app/upload
+
+# Immich configuration - disable built-in library persistence check
+immich:
+  persistence:
+    library:
+      # Set a dummy existingClaim to pass validation
+      existingClaim: "-"
+
+# Disable Valkey - using existing Redis instead
+valkey:
+  enabled: false
+
+# Enable machine learning with persistent cache
+# Override ports to use 3003 (chart 0.10.3 defaults to 2283 incorrectly)
+machine-learning:
+  enabled: true
+  controllers:
+    main:
+      containers:
+        main:
+          ports:
+            - name: http
+              containerPort: 3003
+              protocol: TCP
+  service:
+    main:
+      ports:
+        http:
+          port: 3003
+  persistence:
+    cache:
+      enabled: true
+      type: persistentVolumeClaim
+      existingClaim: immich-ml-cache-pvc
+
+# Server/web interface configuration
+server:
+  enabled: true
+
+# Service configuration for main server
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: 2283
