@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./immich-db-auth-secret.yaml
+  - ./immich-ingressroute.yaml
+  - ./immich-ml-cache-pvc.yaml
+  - ./immich-secret.yaml
+  - ./helmrelease.yaml
+configMapGenerator:
+  - name: immich-helm-values
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml
