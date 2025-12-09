@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./paperless-deploy.yaml
   - ./paperless-ingressroute.yaml
-  - ./paperless-init-db-secret.yaml
   - ./paperless-pvcs.yaml
   - ./paperless-secret.yaml
   - ./paperless-svc.yaml

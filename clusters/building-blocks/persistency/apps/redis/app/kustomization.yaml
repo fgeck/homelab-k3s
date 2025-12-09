@@ -3,7 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./redis-acl-secret.yaml
+  - ./redis-acl-users-secret.yaml
   - ./helmrelease.yaml
   - ./redis-pvc.yaml
 configMapGenerator:
