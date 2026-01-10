@@ -3,7 +3,7 @@ fullnameOverride: uptime-kuma
 namespaceOverride: monitoring
 image:
   repository: ghcr.io/louislam/uptime-kuma
-  tag: 2.0.0-beta-rootless.1
+  tag: 2.1.0-beta-rootless.1
 volume:
   existingClaim: uptime-kuma-pvc
 podSecurityContext:
