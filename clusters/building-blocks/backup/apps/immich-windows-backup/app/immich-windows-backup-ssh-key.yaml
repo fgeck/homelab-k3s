@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: immich-windows-backup-ssh-key
+  namespace: media
+type: Opaque
+data:
+  # SSH private key (base64 encoded) - mounted to /root/.ssh/id_ed25519
+  id_ed25519: ${IMMICH_BACKUP_SSH_PRIVATE_KEY_BASE64}

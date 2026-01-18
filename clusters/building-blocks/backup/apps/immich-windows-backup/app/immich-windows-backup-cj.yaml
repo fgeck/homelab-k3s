@@ -1,0 +1,82 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: immich-windows-backup
+  namespace: media
+  labels:
+    app.kubernetes.io/name: immich-windows-backup
+    app.kubernetes.io/component: backup
+spec:
+  schedule: "0 3 */2 * *" # Every 2 days at 3 AM
+  timeZone: "Europe/Berlin"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 7200 # 2 hour timeout
+      ttlSecondsAfterFinished: 86400 # 24 hours
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: immich-windows-backup
+            app.kubernetes.io/component: backup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: gorestic
+              image: ghcr.io/fgeck/gorestic-homelab:latest
+              imagePullPolicy: IfNotPresent
+              args: ["run", "--config", "/config/config.yaml", "--verbose"]
+              envFrom:
+                - secretRef:
+                    name: immich-windows-backup-secret
+              env:
+                - name: POSTGRES_HOST
+                  value: "${DEFAULT_POSTGRES_HOST}"
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-vecto-immich-auth
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-vecto-immich-auth
+                      key: password
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                  readOnly: true
+                - name: photos
+                  mountPath: /data/photos
+                  readOnly: true
+                - name: ssh-key
+                  mountPath: /root/.ssh
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "100m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+          volumes:
+            - name: config
+              configMap:
+                name: immich-windows-backup-config
+            - name: photos
+              hostPath:
+                path: /mnt/data/photos
+                type: Directory
+            - name: ssh-key
+              secret:
+                secretName: immich-windows-backup-ssh-key
+                defaultMode: 0400
+            - name: tmp
+              emptyDir:
+                sizeLimit: 5Gi

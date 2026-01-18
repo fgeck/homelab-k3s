@@ -4,6 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./default-postgres-backup/ks.yaml
+  - ./immich-windows-backup/ks.yaml
   - ./pvc-backup/ks.yaml
   - ./security-postgres-backup/ks.yaml
   - ./vaultwarden-backup/ks.yaml
