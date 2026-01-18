@@ -24,11 +24,13 @@ spec:
             app.kubernetes.io/name: immich-windows-backup
             app.kubernetes.io/component: backup
         spec:
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
           restartPolicy: OnFailure
           containers:
             - name: gorestic
               image: ghcr.io/fgeck/gorestic-homelab:latest
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               args: ["run", "--config", "/config/config.yaml", "--verbose"]
               envFrom:
                 - secretRef:
