@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immich-windows-backup-config
+  namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+  labels:
+    app.kubernetes.io/name: immich-windows-backup
+data:
+  config.yaml: |
+    # gorestic-homelab configuration for Immich Windows Backup
+
+    # Restic repository configuration
+    restic:
+      repository: "rest:http://${WINDOWS_IP}:8000/immich/"
+      password: "${RESTIC_PASSWORD}"
+      rest_user: "${RESTIC_REST_USERNAME}"
+      rest_password: "${RESTIC_REST_PASSWORD}"
+
+    # Backup configuration
+    backup:
+      paths:
+        - /data/photos
+      tags:
+        - immich
+      host: "k3s"
+
+    # Retention policy
+    retention:
+      keep_daily: 3
+      keep_weekly: 2
+      keep_monthly: 1
+
+    # Repository integrity check
+    check:
+      enabled: true
+      subset: "1%"
+
+    # Wake-on-LAN configuration
+    wol:
+      mac_address: "${WINDOWS_MAC}"
+      broadcast_ip: "192.168.178.255"
+      poll_url: "http://${WINDOWS_IP}:8000"
+      timeout: 10m
+      poll_interval: 15s
+      stabilize_wait: 30s
+
+    # PostgreSQL database backup
+    postgres:
+      host: "${POSTGRES_HOST}"
+      port: 5432
+      database: "immich"
+      username: "${POSTGRES_USER}"
+      password: "${POSTGRES_PASSWORD}"
+      format: "custom"
+
+    # SSH shutdown configuration (Windows)
+    ssh_shutdown:
+      host: "${WINDOWS_IP}"
+      port: 22
+      username: "${WINDOWS_USER}"
+      key_path: "/root/.ssh/id_ed25519"
+      shutdown_delay: 1
+      os: "windows"

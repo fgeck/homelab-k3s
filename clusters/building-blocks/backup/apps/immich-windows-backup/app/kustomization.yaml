@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./immich-windows-backup-cj.yaml
+  - ./immich-windows-backup-cm.yaml
+  - ./immich-windows-backup-secret.yaml
+  - ./immich-windows-backup-ssh-key.yaml
