@@ -64,3 +64,8 @@ data:
       key_path: "/root/.ssh/id_ed25519"
       shutdown_delay: 1
       os: "windows"
+
+    # Telegram notifications
+    telegram:
+      bot_token: "${TELEGRAM_BOT_TOKEN}"
+      chat_id: "${TELEGRAM_CHAT_ID}"
