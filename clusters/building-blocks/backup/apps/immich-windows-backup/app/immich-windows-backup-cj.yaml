@@ -27,6 +27,10 @@ spec:
           hostNetwork: true
           dnsPolicy: ClusterFirstWithHostNet
           restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
           containers:
             - name: gorestic
               image: ghcr.io/fgeck/gorestic-homelab:latest
@@ -56,7 +60,7 @@ spec:
                   mountPath: /data/photos
                   readOnly: true
                 - name: ssh-key
-                  mountPath: /root/.ssh
+                  mountPath: /home/gorestic/.ssh
                   readOnly: true
                 - name: tmp
                   mountPath: /tmp

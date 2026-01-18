@@ -61,7 +61,7 @@ data:
       host: "${WINDOWS_IP}"
       port: 22
       username: "${WINDOWS_USER}"
-      key_path: "/root/.ssh/id_ed25519"
+      key_path: "/home/gorestic/.ssh/id_ed25519"
       shutdown_delay: 1
       os: "windows"
 
