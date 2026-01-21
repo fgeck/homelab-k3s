@@ -16,7 +16,7 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 2
-      activeDeadlineSeconds: 7200 # 2 hour timeout
+      activeDeadlineSeconds: 18000 # 5 hour timeout
       ttlSecondsAfterFinished: 86400 # 24 hours
       template:
         metadata:
