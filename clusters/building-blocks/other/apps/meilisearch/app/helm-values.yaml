@@ -5,3 +5,6 @@ persistence:
   existingClaim: meilisearch-data-pvc
 auth:
   existingMasterKeySecret: meilisearch-secrets
+podSecurityContext:
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
