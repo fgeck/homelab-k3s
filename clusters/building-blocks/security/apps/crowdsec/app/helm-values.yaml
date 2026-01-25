@@ -8,6 +8,8 @@ config:
         description: "Whitelist events from Home"
         whitelist:
           reason: dont ban my IP
+          ip:
+            - "91.67.27.243"
           expression:
             - evt.Meta.source_ip in LookupHost('home.geckeler.dev')
             - evt.Meta.source_ip in LookupHost('home.fgeck.de')
