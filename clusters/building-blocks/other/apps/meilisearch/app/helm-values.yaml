@@ -1,4 +1,6 @@
 ---
+environment:
+  MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: "true"
 persistence:
   enabled: true
   storageClassName: "local-path"

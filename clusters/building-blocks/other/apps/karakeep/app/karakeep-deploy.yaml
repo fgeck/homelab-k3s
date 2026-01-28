@@ -25,7 +25,7 @@ spec:
             - name: KARAKEEP_VERSION
               value: release
             - name: MEILI_ADDR
-              value: http://meilisearch.default.svc.cluster.local
+              value: http://meilisearch.default.svc.cluster.local:7700
             - name: BROWSER_WEB_URL
               value: http://chrome.default.svc.cluster.local:9222
             - name: DATA_DIR
@@ -41,11 +41,11 @@ spec:
                 name: karakeep-secrets
           resources:
             limits:
-              cpu: 200m
-              memory: 750Mi
+              cpu: 1000m
+              memory: 1Gi
             requests:
-              cpu: 10m
-              memory: 200Mi
+              cpu: 100m
+              memory: 256Mi
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

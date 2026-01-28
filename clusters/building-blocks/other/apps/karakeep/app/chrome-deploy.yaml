@@ -35,8 +35,8 @@ spec:
             - --hide-scrollbars
           resources:
             limits:
-              cpu: 200m
-              memory: 256Mi
+              cpu: 500m
+              memory: 512Mi
             requests:
-              cpu: 10m
-              memory: 100Mi
+              cpu: 50m
+              memory: 128Mi
