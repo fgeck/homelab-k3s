@@ -17,7 +17,7 @@ spec:
     spec:
       backoffLimit: 2
       activeDeadlineSeconds: 18000 # 5 hour timeout
-      ttlSecondsAfterFinished: 86400 # 24 hours
+      ttlSecondsAfterFinished: 172800 # 48 hours
       template:
         metadata:
           labels:

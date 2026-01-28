@@ -37,7 +37,7 @@ spec:
           value: "dl.${DOMAIN_NAME}, dl.home.${DOMAIN_NAME}, sabnzbd, sabnzbd.default, sabnzbd.default.svc, sabnzbd.default.svc.cluster, sabnzbd.default.svc.cluster.local"
         - name: SABNZBD__PORT
           value: "10097"
-        image: ghcr.io/onedr0p/sabnzbd:4.4.1
+        image: ghcr.io/home-operations/sabnzbd:4.5.5
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
