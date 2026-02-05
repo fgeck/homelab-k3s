@@ -28,69 +28,71 @@ spec:
       #     type: RuntimeDefault
       automountServiceAccountToken: false
       containers:
-      - name: main
-        env:
-        - name: TZ
-          value: Europe/Berlin
-        - name: SPOOLMAN_PORT
-          value: "8000"
-        - name: SPOOLMAN_HOST
-          value: "0.0.0.0"
-        image: ghcr.io/donkie/spoolman:0.23.0
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        ports:
-        - containerPort: 8000
-          name: main
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 2
-          timeoutSeconds: 5
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 10m
-            memory: 50Mi
-        startupProbe:
-          failureThreshold: 60
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 2
-        volumeMounts:
-        - mountPath: /config
-          name: spoolman-config
-        # securityContext:
-        #   allowPrivilegeEscalation: false
-        #   capabilities:
-        #     drop:
-        #       - ALL
+        - name: main
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: SPOOLMAN_LOGGING_LEVEL
+              value: "WARNING"
+            - name: SPOOLMAN_HOST
+              value: "0.0.0.0"
+            - name: SPOOLMAN_PORT
+              value: "8000"
+          image: ghcr.io/donkie/spoolman:0.23.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 8000
+              name: main
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          volumeMounts:
+            - mountPath: /home/app/.local/share/spoolman # Do NOT modify this line
+              name: spoolman-config
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   capabilities:
+          #     drop:
+          #       - ALL
       dnsConfig:
         options:
-        - name: ndots
-          value: "1"
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: spoolman-config
-        persistentVolumeClaim:
-          claimName: spoolman-pvc
+        - name: spoolman-config
+          persistentVolumeClaim:
+            claimName: spoolman-pvc
