@@ -10,9 +10,6 @@ config:
           reason: dont ban my IP
           ip:
             - "91.67.27.243"
-          expression:
-            - evt.Meta.source_ip in LookupHost('home.geckeler.dev')
-            - evt.Meta.source_ip in LookupHost('home.fgeck.de')
   profiles.yaml: |
     name: default_ip_remediation
     filters:
