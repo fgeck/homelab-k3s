@@ -26,7 +26,7 @@ spec:
     priority: 10
     middlewares:
     - name: local-ipallowlist
-      namespace: media
+      namespace: edge
     services:
     - kind: Service
       name: immich
