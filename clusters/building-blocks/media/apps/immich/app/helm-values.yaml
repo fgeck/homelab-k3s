@@ -5,11 +5,17 @@ controllers:
     containers:
       main:
         image:
-          tag: v2.3.1
+          tag: v2.5.6
         ports:
           - name: http
             containerPort: 2283
             protocol: TCP
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            memory: 2Gi
         env:
           # Database credentials from postgresql-vecto-immich-auth (single source of truth)
           - name: DB_USERNAME
@@ -64,6 +70,12 @@ machine-learning:
             - name: http
               containerPort: 3003
               protocol: TCP
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
   service:
     main:
       ports:
