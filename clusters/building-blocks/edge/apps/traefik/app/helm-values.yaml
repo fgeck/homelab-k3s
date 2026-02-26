@@ -79,11 +79,12 @@ ports:
     port: 9999
     expose:
       enabled: true
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
 ingressRoute:
   dashboard:
     enabled: true
