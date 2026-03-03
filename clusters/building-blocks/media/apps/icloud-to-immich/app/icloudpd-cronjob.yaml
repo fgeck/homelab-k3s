@@ -32,33 +32,23 @@ spec:
           containers:
             - name: icloudpd
               image: icloudpd/icloudpd:latest
+              command: ["/bin/sh", "-c"]
               args:
-                - icloudpd
-                - --username
-                - $(APPLE_ID)
-                - --password
-                - $(ICLOUD_PASSWORD)
-                - --directory
-                - /data
-                - --cookie-directory
-                - /config
-                - --folder-structure
-                - "{:%Y/%m/%d}"
-                - --until-found
-                - "10"
-                - --set-exif-datetime
-                - --no-progress-bar
-                # Email notification when 2FA expires (Resend SMTP)
-                - --smtp-username
-                - $(SMTP_USERNAME)
-                - --smtp-password
-                - $(SMTP_PASSWORD)
-                - --smtp-host
-                - $(SMTP_HOST)
-                - --smtp-port
-                - $(SMTP_PORT)
-                - --notification-email
-                - $(NOTIFICATION_EMAIL)
+                - |
+                  icloudpd \
+                    --username "$APPLE_ID" \
+                    --password "$ICLOUD_PASSWORD" \
+                    --directory /data \
+                    --cookie-directory /config \
+                    --folder-structure "{:%Y/%m/%d}" \
+                    --until-found 10 \
+                    --set-exif-datetime \
+                    --no-progress-bar \
+                    --smtp-username "$SMTP_USERNAME" \
+                    --smtp-password "$SMTP_PASSWORD" \
+                    --smtp-host "$SMTP_HOST" \
+                    --smtp-port "$SMTP_PORT" \
+                    --notification-email "$NOTIFICATION_EMAIL"
               env:
                 - name: TZ
                   value: "Europe/Berlin"
