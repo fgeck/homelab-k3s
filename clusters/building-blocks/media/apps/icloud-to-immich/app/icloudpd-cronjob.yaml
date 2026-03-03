@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: icloud-to-immich
     app.kubernetes.io/component: downloader
 spec:
-  schedule: "0 22 * * *" # Every day at 10 PM
+  schedule: "0 5 * * *" # Every day at 5 AM
   timeZone: "Europe/Berlin"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
