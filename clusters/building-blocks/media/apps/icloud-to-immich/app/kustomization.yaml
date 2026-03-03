@@ -4,5 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./icloudpd-cronjob.yaml
-  - ./icloudpd-pvc.yaml
+  - ./immich-go-cronjob.yaml
   - ./icloudpd-secret.yaml
+  - ./immich-go-secret.yaml
+  - ./icloudpd-config-pvc.yaml

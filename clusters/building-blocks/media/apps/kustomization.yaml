@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./calibre-web-automated/ks.yaml
   - ./configarr/ks.yaml
-  # - ./icloud-photodump/ks.yaml
+  - ./icloud-to-immich/ks.yaml
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
