@@ -53,13 +53,18 @@ spec:
                     --manage-burst=Stack \
                     --session-tag \
                     --tag=Source/iCloud \
-                    --delete \
                     --concurrent-tasks=4 \
                     --pause-immich-jobs=true \
                     --on-errors=continue \
                     --client-timeout=60m \
                     --no-ui \
                     /data
+                  
+                  # Cleanup files older than 48h (keep recent for icloudpd --until-found)
+                  echo "Cleaning up files older than 48 hours..."
+                  find /data -type f -mtime +2 -delete
+                  find /data -type d -empty -delete 2>/dev/null || true
+                  echo "Cleanup complete"
               env:
                 - name: TZ
                   value: "Europe/Berlin"
