@@ -4,10 +4,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: icloudpd-config-pvc
   namespace: media
+  labels:
+    app.kubernetes.io/name: icloud-to-immich
+    app.kubernetes.io/component: downloader
 spec:
   storageClassName: "local-path"
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi
+      storage: 100Mi

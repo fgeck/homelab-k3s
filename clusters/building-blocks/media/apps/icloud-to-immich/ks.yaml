@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app icloud-photo-download
+  name: &app icloud-to-immich
   namespace: flux-system
 spec:
   targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./clusters/building-blocks/media/apps/icloud-photo-download/app
+  path: ./clusters/building-blocks/media/apps/icloud-to-immich/app
   prune: true
   sourceRef:
     kind: GitRepository

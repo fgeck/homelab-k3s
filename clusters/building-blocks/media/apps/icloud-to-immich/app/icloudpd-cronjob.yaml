@@ -1,0 +1,86 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: icloudpd-download
+  namespace: media
+  labels:
+    app.kubernetes.io/name: icloud-to-immich
+    app.kubernetes.io/component: downloader
+spec:
+  schedule: "0 22 * * *" # Every day at 10 PM
+  timeZone: "Europe/Berlin"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 7200 # 2 hour timeout
+      ttlSecondsAfterFinished: 86400 # 24 hours
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: icloud-to-immich
+            app.kubernetes.io/component: downloader
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+          containers:
+            - name: icloudpd
+              image: icloudpd/icloudpd:latest
+              args:
+                - icloudpd
+                - --username
+                - $(APPLE_ID)
+                - --password
+                - $(ICLOUD_PASSWORD)
+                - --directory
+                - /data
+                - --cookie-directory
+                - /config
+                - --folder-structure
+                - "{:%Y/%m/%d}"
+                - --until-found
+                - "10"
+                - --set-exif-datetime
+                - --no-progress-bar
+                # Email notification when 2FA expires (Resend SMTP)
+                - --smtp-username
+                - $(SMTP_USERNAME)
+                - --smtp-password
+                - $(SMTP_PASSWORD)
+                - --smtp-host
+                - $(SMTP_HOST)
+                - --smtp-port
+                - $(SMTP_PORT)
+                - --notification-email
+                - $(NOTIFICATION_EMAIL)
+              env:
+                - name: TZ
+                  value: "Europe/Berlin"
+              envFrom:
+                - secretRef:
+                    name: icloudpd-secret
+              volumeMounts:
+                - name: icloudpd-config
+                  mountPath: /config
+                - name: icloud-staging
+                  mountPath: /data
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  memory: 512Mi
+          volumes:
+            - name: icloudpd-config
+              persistentVolumeClaim:
+                claimName: icloudpd-config-pvc
+            - name: icloud-staging
+              hostPath:
+                path: /mnt/data/icloud-staging
+                type: DirectoryOrCreate
