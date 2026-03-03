@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: immich-windows-backup
     app.kubernetes.io/component: backup
 spec:
-  schedule: "0 3 */2 * *" # Every 2 days at 3 AM
+  schedule: "0 2 */2 * *" # Every 2 days at 2 AM
   timeZone: "Europe/Berlin"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
