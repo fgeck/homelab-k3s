@@ -75,7 +75,36 @@ machine-learning:
               cpu: 200m
               memory: 512Mi
             limits:
-              memory: 1Gi
+              memory: 2Gi
+          probes:
+            startup:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /ping
+                  port: http
+                failureThreshold: 90
+                periodSeconds: 10
+                timeoutSeconds: 5
+            liveness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /ping
+                  port: http
+                periodSeconds: 30
+                timeoutSeconds: 10
+            readiness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /ping
+                  port: http
+                periodSeconds: 10
+                timeoutSeconds: 5
   service:
     main:
       ports:
