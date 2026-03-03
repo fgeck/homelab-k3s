@@ -12,10 +12,10 @@ controllers:
             protocol: TCP
         resources:
           requests:
-            cpu: 500m
-            memory: 1Gi
+            cpu: 200m
+            memory: 512Mi
           limits:
-            memory: 2Gi
+            memory: 1536Mi
         env:
           # Database credentials from postgresql-vecto-immich-auth (single source of truth)
           - name: DB_USERNAME
@@ -72,10 +72,10 @@ machine-learning:
               protocol: TCP
           resources:
             requests:
-              cpu: 200m
-              memory: 1Gi
+              cpu: 100m
+              memory: 512Mi
             limits:
-              memory: 4Gi
+              memory: 2Gi
           probes:
             startup:
               enabled: true
