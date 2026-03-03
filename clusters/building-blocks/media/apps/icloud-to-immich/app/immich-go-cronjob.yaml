@@ -32,30 +32,25 @@ spec:
           containers:
             - name: immich-go
               image: ghcr.io/simulot/immich-go:latest
+              command: ["/bin/sh", "-c"]
               args:
-                - upload
-                - from-icloud
-                - --server=$(IMMICH_SERVER_URL)
-                - --api-key=$(IMMICH_API_KEY)
-                # iCloud-specific options
-                - --folder-as-album=PATH
-                - --manage-heic-jpeg=StackCoverJPG
-                - --manage-raw-jpeg=StackCoverRaw
-                - --manage-burst=Stack
-                # Tagging
-                - --session-tag
-                - --tag=Source/iCloud
-                # Delete after successful upload
-                - --delete
-                # Performance
-                - --concurrent-tasks=4
-                - --pause-immich-jobs=true
-                - --on-errors=continue
-                - --client-timeout=60m
-                # No progress bar for logs
-                - --no-ui
-                # Source directory
-                - /data
+                - |
+                  immich-go upload from-icloud \
+                    --server="$IMMICH_SERVER_URL" \
+                    --api-key="$IMMICH_API_KEY" \
+                    --folder-as-album=PATH \
+                    --manage-heic-jpeg=StackCoverJPG \
+                    --manage-raw-jpeg=StackCoverRaw \
+                    --manage-burst=Stack \
+                    --session-tag \
+                    --tag=Source/iCloud \
+                    --delete \
+                    --concurrent-tasks=4 \
+                    --pause-immich-jobs=true \
+                    --on-errors=continue \
+                    --client-timeout=60m \
+                    --no-ui \
+                    /data
               env:
                 - name: TZ
                   value: "Europe/Berlin"
