@@ -47,7 +47,6 @@ spec:
                   immich-go upload from-icloud \
                     --server="$IMMICH_SERVER_URL" \
                     --api-key="$IMMICH_API_KEY" \
-                    --folder-as-album=PATH \
                     --manage-heic-jpeg=StackCoverJPG \
                     --manage-raw-jpeg=StackCoverRaw \
                     --manage-burst=Stack \
