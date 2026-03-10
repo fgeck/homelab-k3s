@@ -7,6 +7,8 @@ metadata:
   labels:
     app.kubernetes.io/name: icloud-to-immich
     app.kubernetes.io/component: uploader
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   schedule: "0 7 * * *" # Every day at 7 AM
   timeZone: "Europe/Berlin"
@@ -26,9 +28,27 @@ spec:
         spec:
           restartPolicy: OnFailure
           securityContext:
-            runAsUser: 0  # Need root to install binary
-            runAsGroup: 0
+            runAsUser: 1000
+            runAsGroup: 1000
             fsGroup: 1000
+          initContainers:
+            - name: download-immich-go
+              image: alpine:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  apk add --no-cache curl tar
+                  LATEST=$(curl -s https://api.github.com/repos/simulot/immich-go/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+                  echo "Downloading immich-go $LATEST..."
+                  curl -sL "https://github.com/simulot/immich-go/releases/download/${LATEST}/immich-go_Linux_x86_64.tar.gz" | tar xz -C /opt/bin/
+                  chmod +x /opt/bin/immich-go
+                  echo "Download complete"
+              securityContext:
+                runAsUser: 0
+              volumeMounts:
+                - name: bin
+                  mountPath: /opt/bin
           containers:
             - name: immich-go
               image: alpine:latest
@@ -36,15 +56,8 @@ spec:
               args:
                 - |
                   set -e
-                  # Download immich-go binary
-                  apk add --no-cache curl tar
-                  LATEST=$(curl -s https://api.github.com/repos/simulot/immich-go/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
-                  echo "Downloading immich-go $LATEST..."
-                  curl -sL "https://github.com/simulot/immich-go/releases/download/${LATEST}/immich-go_Linux_x86_64.tar.gz" | tar xz -C /usr/local/bin/
-                  chmod +x /usr/local/bin/immich-go
-                  
                   # Run immich-go upload
-                  immich-go upload from-icloud \
+                  /opt/bin/immich-go upload from-icloud \
                     --server="$IMMICH_SERVER_URL" \
                     --api-key="$IMMICH_API_KEY" \
                     --manage-heic-jpeg=StackCoverJPG \
@@ -67,12 +80,16 @@ spec:
               env:
                 - name: TZ
                   value: "Europe/Berlin"
+                - name: HOME
+                  value: "/tmp"
               envFrom:
                 - secretRef:
                     name: immich-go-secret
               volumeMounts:
                 - name: icloud-staging
                   mountPath: /data
+                - name: bin
+                  mountPath: /opt/bin
               resources:
                 requests:
                   cpu: 200m
@@ -84,3 +101,5 @@ spec:
               hostPath:
                 path: /mnt/data/icloud-staging
                 type: DirectoryOrCreate
+            - name: bin
+              emptyDir: {}
