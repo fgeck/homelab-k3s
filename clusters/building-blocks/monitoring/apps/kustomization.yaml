@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   # - ./grafana/ks.yaml
   # - ./grafana-alloy/ks.yaml
-  - ./portainer/ks.yaml
+  # - ./portainer/ks.yaml
   # - ./prometheus/ks.yaml
   # - ./node-exporter/ks.yaml
   # - ./kube-state-metrics/ks.yaml
