@@ -47,9 +47,9 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
 - [x] [Better-Bahn](https://github.com/l2xu/betterbahn)
-- [x] [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) as a CronJob -- **Still untested**
-- [ ] Build a Pipeline from Icloud to Immich using [ICloud Photo Downloader](https://github.com/boredazfcuk/docker-icloudpd) to extract the photos and [immich-go](https://github.com/simulot/immich-go) to upload them to immich
-- [x] [Immich](https://docs.immich.app/overview/quick-start)
+- [x] [ICloud Photo Downloader](https://github.com/icloud-photos-downloader/icloud_photos_downloader) as a CronJob
+- [x] Pipeline from Icloud to Immich using [ICloud Photo Downloader](https://github.com/icloud-photos-downloader/icloud_photos_downloader) to extract the photos and [immich-go](https://github.com/simulot/immich-go) to upload them to immich
+- [x] [Immich](https://github.com/immich-app/immich-charts)
 - [x] [Obsidian](https://github.com/vrtmrz/obsidian-livesync)
 - [x] Backups are done via CronJobs and can be found in a dedicated [building-block](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/backup/apps). All PVCs are backed up to Proxmox Backup Server using a single CronJob. Postgresql Databases are backed up to Proxmox Backup Server as well but the CronJob dumps the database first to a temp. directory and uploads this directory to PBS.
 - [x] Switch to docker image + scripts for PVC and Postgres backups to PBS. [Repo](https://github.com/fgeck/pbs-k8s-backup)
@@ -61,8 +61,3 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
   - [x] [Prometheus](https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml)
 
 Renovate is taking care of updating the deployed releases.
-
-## Todo
-
-- [ ] Test and activate [ICloud Photo Downloader](https://github.com/fgeck/homelab-k3s/blob/main/clusters/building-blocks/media/apps/kustomization.yaml)
-- [ ] [Immich](https://github.com/immich-app/immich-charts)
