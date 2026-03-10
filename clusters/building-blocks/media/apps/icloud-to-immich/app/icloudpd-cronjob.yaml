@@ -32,33 +32,37 @@ spec:
           containers:
             - name: icloudpd
               image: icloudpd/icloudpd:latest
-              command:
-                - /app/icloudpd
+              command: ["/bin/sh", "-c"]
               args:
-                - --username
-                - $(APPLE_ID)
-                - --password
-                - $(ICLOUD_PASSWORD)
-                - --directory
-                - /data
-                - --cookie-directory
-                - /config
-                - --folder-structure
-                - "{:%Y/%m/%d}"
-                - --until-found
-                - "10"
-                - --set-exif-datetime
-                - --no-progress-bar
-                - --smtp-username
-                - $(SMTP_USERNAME)
-                - --smtp-password
-                - $(SMTP_PASSWORD)
-                - --smtp-host
-                - $(SMTP_HOST)
-                - --smtp-port
-                - $(SMTP_PORT)
-                - --notification-email
-                - $(NOTIFICATION_EMAIL)
+                - |
+                  send_telegram() {
+                    if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+                      MESSAGE="❌ *icloudpd-download failed*%0A%0AHost: $(hostname)%0ATime: $(date)%0AError: $1"
+                      wget -q -O /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=Markdown&text=${MESSAGE}"
+                    fi
+                  }
+                  
+                  /app/icloudpd \
+                    --username "$APPLE_ID" \
+                    --password "$ICLOUD_PASSWORD" \
+                    --directory /data \
+                    --cookie-directory /config \
+                    --folder-structure "{:%Y/%m/%d}" \
+                    --until-found 10 \
+                    --set-exif-datetime \
+                    --no-progress-bar \
+                    --smtp-username "$SMTP_USERNAME" \
+                    --smtp-password "$SMTP_PASSWORD" \
+                    --smtp-host "$SMTP_HOST" \
+                    --smtp-port "$SMTP_PORT" \
+                    --notification-email "$NOTIFICATION_EMAIL" \
+                    --notification-email-from "$NOTIFICATION_EMAIL_FROM"
+                  
+                  EXIT_CODE=$?
+                  if [ $EXIT_CODE -ne 0 ]; then
+                    send_telegram "Exit code $EXIT_CODE"
+                    exit $EXIT_CODE
+                  fi
               env:
                 - name: TZ
                   value: "Europe/Berlin"

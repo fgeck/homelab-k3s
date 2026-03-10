@@ -55,7 +55,13 @@ spec:
               command: ["/bin/sh", "-c"]
               args:
                 - |
-                  set -e
+                  send_telegram() {
+                    if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+                      MESSAGE="❌ *immich-go-upload failed*%0A%0AHost: $(hostname)%0ATime: $(date)%0AError: $1"
+                      wget -q -O /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=Markdown&text=${MESSAGE}"
+                    fi
+                  }
+                  
                   # Run immich-go upload
                   /opt/bin/immich-go upload from-icloud \
                     --server="$IMMICH_SERVER_URL" \
@@ -71,6 +77,12 @@ spec:
                     --client-timeout=60m \
                     --no-ui \
                     /data
+                  
+                  EXIT_CODE=$?
+                  if [ $EXIT_CODE -ne 0 ]; then
+                    send_telegram "Exit code $EXIT_CODE"
+                    exit $EXIT_CODE
+                  fi
                   
                   # Cleanup files older than 48h (keep recent for icloudpd --until-found)
                   echo "Cleaning up files older than 48 hours..."
