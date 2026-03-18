@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   # - ./authentik/ks.yaml
   - ./crowdsec/ks.yaml
+  - ./pocket-id/ks.yaml
   - ./vaultwarden/ks.yaml

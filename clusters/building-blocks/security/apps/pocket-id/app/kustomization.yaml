@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+  - ./pocket-id-ingressroute.yaml
+  - ./pocket-id-pvc.yaml
+  - ./pocket-id-secret.yaml
+
+configMapGenerator:
+  - name: pocket-id-helm-values
+    files:
+      - values.yaml=helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml
