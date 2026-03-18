@@ -1,0 +1,23 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pocket-id
+  namespace: security
+  labels:
+    app: pocket-id
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`id.${DOMAIN_NAME}`)
+    priority: 10
+    services:
+    - kind: Service
+      name: pocket-id
+      namespace: security
+      passHostHeader: true
+      port: 1411
+      scheme: http

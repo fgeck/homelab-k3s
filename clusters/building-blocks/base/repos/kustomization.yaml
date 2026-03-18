@@ -19,6 +19,7 @@ resources:
   - jetstack.yaml
   - meilisearch.yaml
   - metrics-server.yaml
+  - pocket-id.yaml
   - portainer.yaml
   - stakater.yaml
   - traefik.yaml
