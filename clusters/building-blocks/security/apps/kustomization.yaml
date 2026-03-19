@@ -6,4 +6,5 @@ resources:
   # - ./authentik/ks.yaml
   - ./crowdsec/ks.yaml
   - ./pocket-id/ks.yaml
+  - ./tinyauth/ks.yaml
   - ./vaultwarden/ks.yaml

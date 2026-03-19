@@ -21,6 +21,7 @@ resources:
   - metrics-server.yaml
   - pocket-id.yaml
   - portainer.yaml
+  - tinyauth.yaml
   - stakater.yaml
   - traefik.yaml
   - uptime-kuma.yaml

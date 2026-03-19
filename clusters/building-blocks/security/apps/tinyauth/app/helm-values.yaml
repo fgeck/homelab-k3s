@@ -1,0 +1,41 @@
+---
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
+image:
+  repository: ghcr.io/steveiliop56/tinyauth
+  tag: v5.0.4
+
+tinyauth:
+  appUrl: "https://auth.${DOMAIN_NAME}"
+  auth:
+    secureCookie: true
+  oauth:
+    autoRedirect: "pocketid"
+    providers:
+      - id: "pocketid"
+        name: "Pocket ID"
+        clientId: "${TINYAUTH_POCKETID_CLIENT_ID}"
+        clientSecretSecretRef:
+          name: tinyauth-secret
+          key: pocketid-client-secret
+        scopes: "openid email profile groups"
+        redirectUrl: "https://auth.${DOMAIN_NAME}/api/oauth/callback/pocketid"
+        authUrl: "https://id.${DOMAIN_NAME}/authorize"
+        tokenUrl: "https://id.${DOMAIN_NAME}/api/oidc/token"
+        userInfoUrl: "https://id.${DOMAIN_NAME}/api/oidc/userinfo"
+
+persistence:
+  enabled: true
+  size: 1Gi
+
+ingress:
+  enabled: false
+
+resources:
+  requests:
+    memory: 32Mi
+    cpu: 10m
+  limits:
+    memory: 128Mi
+    cpu: 200m
