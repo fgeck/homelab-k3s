@@ -25,6 +25,3 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: tinyauth-helm-values
-    - kind: Secret
-      name: tinyauth-secret
-      valuesKey: values.yaml
