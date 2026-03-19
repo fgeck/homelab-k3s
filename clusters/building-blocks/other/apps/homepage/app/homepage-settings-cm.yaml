@@ -31,10 +31,10 @@ data:
         columns: 2
       Home:
         style: row
-        columns: 1
+        columns: 2
       Media:
         style: row
-        columns: 3
+        columns: 4
       Downloads:
         style: row
         columns: 3
@@ -125,22 +125,22 @@ data:
               url: http://192.168.178.111
               key: '{{HOMEPAGE_VAR_PIHOLE_KEY}}'
         - Traefik:
-            href:  https://traefik-dashboard.home.geckeler.dev
+            href:  https://traefik.home.geckeler.dev/dashboard/
             icon: traefik.svg
-            siteMonitor: http://traefik.edge.svc.cluster.local/ping
+            siteMonitor: http://traefik.edge.svc.cluster.local:8080/ping
             widget:
               type: traefik
-              url: https://traefik.home.geckeler.dev
-              username: traefik
-              password: '{{HOMEPAGE_VAR_TRAEFIK_DASHBOARD_PASSWORD}}'
-        # - CrowdSec:
-        #     icon: crowdsec.png
-        #     siteMonitor: http://192.168.178.100:8888
-        #     widget:
-        #       type: crowdsec
-        #       url: http://192.168.178.100:8888
-        #       username: localhost
-        #       password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
+              url: http://traefik.edge.svc.cluster.local:8080
+        - CrowdSec:
+            icon: crowdsec.png
+            href: http://crowdsec-lapi.security.svc.cluster.local:8080
+            siteMonitor: http://crowdsec-lapi.security.svc.cluster.local:8080/health
+            widget:
+              type: crowdsec
+              url: http://crowdsec-lapi.security.svc.cluster.local:8080
+              username: '{{HOMEPAGE_VAR_CROWDSEC_USERNAME}}'
+              password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
+              limit24h: true
     - Infrastructure:
         - Proxmox:
             href: https://192.168.178.10:8006
@@ -160,14 +160,13 @@ data:
         #       url: https://192.168.178.100:9443
         #       env: 2
         #       key: '{{HOMEPAGE_VAR_PORTAINER_KEY}}'
-        - UptimeKuma:
-            href: https://uptime.home.geckeler.dev
-            icon: uptime-kuma.png
-            siteMonitor: https://uptime.home.geckeler.dev
+        - Gatus:
+            href: https://status.home.geckeler.dev
+            icon: gatus.png
+            siteMonitor: http://gatus.monitoring.svc.cluster.local:8080/health
             widget:
-              type: uptimekuma
-              url: https://uptime.home.geckeler.dev
-              slug: all
+              type: gatus
+              url: http://gatus.monitoring.svc.cluster.local:8080
     - Home:
         - HomeAssistant:
             href: https://ha.geckeler.dev
@@ -197,6 +196,13 @@ data:
                 - printer_state
                 - print_status
                 - print_progress
+        - Spoolman:
+            href: https://spools.home.geckeler.dev
+            icon: spoolman.png
+            siteMonitor: http://spoolman.default.svc.cluster.local:7912
+            widget:
+              type: spoolman
+              url: http://spoolman.default.svc.cluster.local:7912
         - Paperless:
             href: https://docs.geckeler.dev
             icon: paperless.png
@@ -206,19 +212,27 @@ data:
               url: https://docs.geckeler.dev
               key: '{{HOMEPAGE_VAR_PAPERLESS_KEY}}'
     - Media:
-        # - Immich:
-        #     href: https://photos.geckeler.dev/
-        #     icon: immich.png
-        #     siteMonitor: http://192.168.178.100:2283/
-        #     widget:
-        #       type: immich
-        #       url: https://photos.geckeler.dev
-        #       key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
-        #       version: 2
+        - Immich:
+            href: https://photos.geckeler.dev/
+            icon: immich.png
+            siteMonitor: http://immich.media.svc.cluster.local:2283/api/server/ping
+            widget:
+              type: immich
+              url: http://immich.media.svc.cluster.local:2283
+              key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
+              version: 2
+        - Karakeep:
+            href: https://bookmarks.geckeler.dev
+            icon: karakeep.png
+            siteMonitor: http://karakeep.default.svc.cluster.local:3000
+            widget:
+              type: karakeep
+              url: http://karakeep.default.svc.cluster.local:3000
+              key: '{{HOMEPAGE_VAR_KARAKEEP_KEY}}'
         - Jellyfin:
             href: https://watch.home.geckeler.dev
             icon: jellyfin.png
-            siteMonitor: http://jellyfin.media.svc.cluster.local:8080/web/index.html
+            siteMonitor: http://jellyfin.media.svc.cluster.local:8096/health
             widget:
               type: jellyfin
               url: https://watch.home.geckeler.dev
