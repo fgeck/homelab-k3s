@@ -23,7 +23,7 @@ data:
 
     defaults:
       endpoints:
-        interval: 60s
+        interval: 15s
         alerts:
           - type: telegram
             enabled: true
