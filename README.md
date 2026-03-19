@@ -28,11 +28,12 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] ~~[Default-Postgres](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for all other deployments to use~~
 - [x] Security and Default Postgres cluster managed by [cloudnative-pg](https://cloudnative-pg.io/docs/)
   - [x] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
-- [x] [Authentik](https://github.com/goauthentik/helm)
+- [x] ~~[Authentik](https://github.com/goauthentik/helm)~~
 - [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
-- [x] [Portainer](https://portainer.github.io/k8s/charts/portainer/)
-- [x] [Uptime-Kuma](https://github.com/dirsigler/uptime-kuma-helm)
+- [x] ~~[Portainer](https://portainer.github.io/k8s/charts/portainer/)~~
+- [x] ~~[Uptime-Kuma](https://github.com/dirsigler/uptime-kuma-helm)~~
+- [x] [Gatus](https://github.com/TwiN/gatus)
 - [x] [Calibre-Web-Automated](https://github.com/crocodilestick/Calibre-Web-Automated)
 - [x] [Jellyfin](https://jellyfin.org/)
 - [x] [Jellyseerr](https://docs.jellyseerr.dev/)
@@ -41,7 +42,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Sonarr](https://sonarr.tv/)
 - [x] [Configarr](https://github.com/raydak-labs/configarr)
 - [x] [Sabnzbd](https://sabnzbd.org/)
-- [x] [karakeep](https://docs.karakeep.app/)
+- [x] [Karakeep](https://docs.karakeep.app/)
 - [x] [Homepage](https://gethomepage.dev/)
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
 - [x] [Samba](https://github.com/ServerContainers/samba)
