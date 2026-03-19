@@ -102,8 +102,6 @@ agent:
       value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios Dominic-Wagner/vaultwarden crowdsecurity/iptables crowdsecurity/linux crowdsecurity/http-dos"
     - name: PARSERS
       value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/traefik-logs"
-    - name: USERNAME
-      value: "crowdsec-agent"
 lapi:
   env:
     # To enroll the Security Engine to the console
