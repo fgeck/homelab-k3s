@@ -1,0 +1,317 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatus-config
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: gatus
+data:
+  config.yaml: |
+    storage:
+      type: sqlite
+      path: /data/gatus.db
+
+    ui:
+      title: Homelab Status
+      description: Service Health Dashboard
+
+    alerting:
+      telegram:
+        token: ${TELEGRAM_TOKEN}
+        id: ${TELEGRAM_CHAT_ID}
+
+    defaults:
+      endpoints:
+        interval: 60s
+        alerts:
+          - type: telegram
+            enabled: true
+            failure-threshold: 3
+            success-threshold: 2
+            send-on-resolved: true
+
+    endpoints:
+      # ============================================
+      # External Services (*.DOMAIN_NAME via Cloudflare)
+      # ============================================
+      - name: Domain Reachability
+        group: 1-External
+        url: https://id.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Immich (photos)
+        group: 1-External
+        url: https://photos.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Paperless-NGX (docs)
+        group: 1-External
+        url: https://docs.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Karakeep (bookmarks)
+        group: 1-External
+        url: https://bookmarks.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Vaultwarden (vw)
+        group: 1-External
+        url: https://vw.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Pocket ID (id)
+        group: 1-External
+        url: https://id.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Calibre-Web (books)
+        group: 1-External
+        url: https://books.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      - name: Obsidian Sync (obsidian)
+        group: 1-External
+        url: https://obsidian.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] < 500"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+
+      # ============================================
+      # Home Services (*.home.DOMAIN_NAME - internal only)
+      # ============================================
+      - name: Homepage (my.home)
+        group: 2-Home
+        url: https://my.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Immich (photos.home)
+        group: 2-Home
+        url: https://photos.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Jellyfin (watch.home)
+        group: 2-Home
+        url: https://watch.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Jellyseerr (browse.home)
+        group: 2-Home
+        url: https://browse.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Radarr (radarr.home)
+        group: 2-Home
+        url: https://radarr.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Sonarr (sonarr.home)
+        group: 2-Home
+        url: https://sonarr.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Sabnzbd (dl.home)
+        group: 2-Home
+        url: https://dl.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Vaultwarden (vw.home)
+        group: 2-Home
+        url: https://vw.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Spoolman (spools.home)
+        group: 2-Home
+        url: https://spools.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Better Bahn (bahn.home)
+        group: 2-Home
+        url: https://bahn.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Gatus (status.home)
+        group: 2-Home
+        url: https://status.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Flux UI (flux.home)
+        group: 2-Home
+        url: https://flux.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 200"
+
+      # ============================================
+      # In-Cluster Services (direct cluster access)
+      # ============================================
+      - name: Immich Server
+        group: 3-Cluster
+        url: http://immich.media.svc.cluster.local:2283/api/server/ping
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Jellyfin
+        group: 3-Cluster
+        url: http://jellyfin.media.svc.cluster.local:8096/health
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Jellyseerr
+        group: 3-Cluster
+        url: http://jellyseerr.media.svc.cluster.local:5055
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Radarr
+        group: 3-Cluster
+        url: http://radarr.media.svc.cluster.local:80/ping
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Sonarr
+        group: 3-Cluster
+        url: http://sonarr.media.svc.cluster.local:80/ping
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Sabnzbd
+        group: 3-Cluster
+        url: http://sabnzbd.media.svc.cluster.local:80
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Paperless-NGX
+        group: 3-Cluster
+        url: http://paperless.default.svc.cluster.local:80
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Karakeep
+        group: 3-Cluster
+        url: http://karakeep.default.svc.cluster.local:80
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Vaultwarden
+        group: 3-Cluster
+        url: http://vaultwarden.security.svc.cluster.local:80
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Pocket ID
+        group: 3-Cluster
+        url: http://pocket-id.security.svc.cluster.local:1411
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Homepage
+        group: 3-Cluster
+        url: http://homepage.default.svc.cluster.local:3000
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Meilisearch
+        group: 3-Cluster
+        url: http://meilisearch.default.svc.cluster.local:7700/health
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Redis
+        group: 3-Cluster
+        url: tcp://redis-master.default.svc.cluster.local:6379
+        conditions:
+          - "[CONNECTED] == true"
+
+      - name: PostgreSQL (Default)
+        group: 3-Cluster
+        url: tcp://postgresql-vecto-cluster-rw.default.svc.cluster.local:5432
+        conditions:
+          - "[CONNECTED] == true"
+
+      - name: PostgreSQL (Security)
+        group: 3-Cluster
+        url: tcp://security-postgres-cnpg-cluster-rw.security.svc.cluster.local:5432
+        conditions:
+          - "[CONNECTED] == true"
+
+      - name: Traefik
+        group: 3-Cluster
+        url: tcp://traefik.edge.svc.cluster.local:80
+        conditions:
+          - "[CONNECTED] == true"
+
+      - name: CouchDB (Obsidian)
+        group: 3-Cluster
+        url: http://couchdb.default.svc.cluster.local:80/_up
+        conditions:
+          - "[STATUS] < 500"
+
+      - name: Calibre-Web
+        group: 3-Cluster
+        url: http://calibre-wa.media.svc.cluster.local:80
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: Crowdsec LAPI
+        group: 3-Cluster
+        url: http://crowdsec-lapi.security.svc.cluster.local:8080/health
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].status == up"
+
+      - name: Crowdsec Agent
+        group: 3-Cluster
+        url: http://crowdsec-agent-service.security.svc.cluster.local:6060/metrics
+        conditions:
+          - "[STATUS] == 200"
+
+      - name: CoreDNS Health
+        group: 3-Cluster
+        url: tcp://kube-dns.kube-system.svc.cluster.local:53
+        conditions:
+          - "[CONNECTED] == true"
+
+      - name: DNS Resolution (internal)
+        group: 3-Cluster
+        url: "kube-dns.kube-system.svc.cluster.local"
+        interval: 120s
+        dns:
+          query-name: "kubernetes.default.svc.cluster.local"
+          query-type: "A"
+        conditions:
+          - "[DNS_RCODE] == NOERROR"
+
+      - name: DNS Resolution (external)
+        group: 3-Cluster
+        url: "kube-dns.kube-system.svc.cluster.local"
+        interval: 120s
+        dns:
+          query-name: "google.com"
+          query-type: "A"
+        conditions:
+          - "[DNS_RCODE] == NOERROR"

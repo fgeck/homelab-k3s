@@ -10,4 +10,5 @@ resources:
   # - ./node-exporter/ks.yaml
   # - ./kube-state-metrics/ks.yaml
   # - ./telegraf/ks.yaml
-  - ./uptime-kuma/ks.yaml
+  # - ./uptime-kuma/ks.yaml
+  - ./gatus/ks.yaml

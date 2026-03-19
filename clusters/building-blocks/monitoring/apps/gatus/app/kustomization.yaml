@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./gatus-deploy.yaml
+  - ./gatus-svc.yaml
+  - ./gatus-pvc.yaml
+  - ./gatus-config.yaml
+  - ./gatus-secret.yaml
+  - ./gatus-ingressroute.yaml
