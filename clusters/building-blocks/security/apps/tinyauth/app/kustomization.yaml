@@ -6,6 +6,7 @@ resources:
   - ./helmrelease.yaml
   - ./tinyauth-secret.yaml
   - ./tinyauth-ingressroute.yaml
+  - ./tinyauth-middleware.yaml
 configMapGenerator:
   - name: tinyauth-helm-values
     files:

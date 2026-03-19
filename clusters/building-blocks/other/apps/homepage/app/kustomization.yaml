@@ -7,6 +7,7 @@ resources:
   - ./homepage-ingressroute.yaml
   - ./homepage-secret.yaml
   - ./homepage-settings-cm.yaml
+  # - ./homepage-ingressroute-tinyauth.yaml
 configMapGenerator:
   - name: homepage-helm-values
     namespace: default
