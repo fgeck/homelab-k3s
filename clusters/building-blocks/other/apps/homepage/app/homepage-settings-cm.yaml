@@ -127,10 +127,12 @@ data:
         - Traefik:
             href:  https://traefik.home.geckeler.dev/dashboard/
             icon: traefik.svg
-            siteMonitor: http://traefik.edge.svc.cluster.local:8080/ping
+            siteMonitor: https://traefik.home.geckeler.dev/dashboard/
             widget:
               type: traefik
-              url: http://traefik.edge.svc.cluster.local:8080
+              url: https://traefik.home.geckeler.dev
+              username: traefik
+              password: '{{HOMEPAGE_VAR_TRAEFIK_DASHBOARD_PASSWORD}}'
         - CrowdSec:
             icon: crowdsec.png
             href: http://crowdsec-lapi.security.svc.cluster.local:8080
@@ -183,8 +185,8 @@ data:
                   label: Switches On
                 - template: "{{ ['light.schlafzimmer_ecke', 'light.kuche', 'light.esszimmer', ] | select('is_state', 'on') | map('state_attr', 'friendly_name') | join(', ') }}"
                   label: Lights On
-                - state: sensor.house_total_energy
-                  label: Energy consumed this year
+                - state: sensor.electricity_consumption_this_month
+                  label: Energy consumed this month
         - Creality K1C:
             href: https://print.home.geckeler.dev/
             siteMonitor: http://192.168.178.190:4409/
@@ -199,10 +201,10 @@ data:
         - Spoolman:
             href: https://spools.home.geckeler.dev
             icon: spoolman.png
-            siteMonitor: http://spoolman.default.svc.cluster.local:7912
+            siteMonitor: http://spoolman.default.svc.cluster.local:80
             widget:
               type: spoolman
-              url: http://spoolman.default.svc.cluster.local:7912
+              url: http://spoolman.default.svc.cluster.local:80
         - Paperless:
             href: https://docs.geckeler.dev
             icon: paperless.png
@@ -224,10 +226,10 @@ data:
         - Karakeep:
             href: https://bookmarks.geckeler.dev
             icon: karakeep.png
-            siteMonitor: http://karakeep.default.svc.cluster.local:3000
+            siteMonitor: http://karakeep.default.svc.cluster.local:80
             widget:
               type: karakeep
-              url: http://karakeep.default.svc.cluster.local:3000
+              url: http://karakeep.default.svc.cluster.local:80
               key: '{{HOMEPAGE_VAR_KARAKEEP_KEY}}'
         - Jellyfin:
             href: https://watch.home.geckeler.dev
