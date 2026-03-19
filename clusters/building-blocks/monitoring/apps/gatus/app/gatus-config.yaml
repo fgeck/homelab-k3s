@@ -18,8 +18,8 @@ data:
 
     alerting:
       telegram:
-        token: ${TELEGRAM_TOKEN}
-        id: ${TELEGRAM_CHAT_ID}
+        token: $${TELEGRAM_TOKEN}
+        id: $${TELEGRAM_CHAT_ID}
 
     defaults:
       endpoints:
