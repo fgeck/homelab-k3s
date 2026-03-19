@@ -5,7 +5,7 @@ controllers:
     containers:
       main:
         image:
-          tag: v2.5.6
+          tag: v2.6.1
         ports:
           - name: http
             containerPort: 2283
@@ -66,6 +66,8 @@ machine-learning:
     main:
       containers:
         main:
+          image:
+            tag: v2.5.6
           ports:
             - name: http
               containerPort: 3003
