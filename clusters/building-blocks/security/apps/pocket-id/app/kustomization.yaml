@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./pocket-id-ingressroute.yaml
-  - ./pocket-id-pvc.yaml
   - ./pocket-id-secret.yaml
 
 configMapGenerator:
