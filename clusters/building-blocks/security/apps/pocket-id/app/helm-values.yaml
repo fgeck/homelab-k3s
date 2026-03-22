@@ -15,7 +15,8 @@ existingSecret: "pocket-id-secret"
 
 persistence:
   enabled: true
-  size: 5Gi
+  size: 1Gi
+  storageClass: "local-path"
 
 service:
   type: ClusterIP
