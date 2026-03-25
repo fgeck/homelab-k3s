@@ -1,0 +1,43 @@
+---
+image:
+  tag: "1.45.0"
+
+controller:
+  annotations:
+    reloader.stakater.com/auto: "true"
+
+env:
+  - name: LD_SERVER_PORT
+    value: "9090"
+
+envFrom:
+  - secretRef:
+      name: linkding-secret
+
+persistentVolumeClaim:
+  create: true
+  mountPath: /etc/linkding/data
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  storageClassName: local-path
+
+ingressRoute:
+  create: false
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsNonRoot: true
+  runAsGroup: 1000
+  runAsUser: 1000
+
+securityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
