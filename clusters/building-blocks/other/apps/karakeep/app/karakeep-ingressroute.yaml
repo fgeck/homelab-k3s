@@ -2,22 +2,22 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: linkding
+  name: karakeep
   namespace: default
   labels:
-    app.kubernetes.io/name: linkding
+    app.kubernetes.io/name: karakeep
 spec:
   entryPoints:
     - websecure
     - web
   routes:
   - kind: Rule
-    match: Host(`links.${DOMAIN_NAME}`)
+    match: Host(`bookmarks.${DOMAIN_NAME}`)
     priority: 10
     services:
     - kind: Service
-      name: linkding
+      name: karakeep
       namespace: default
       passHostHeader: true
-      port: 9090
+      port: 80
       scheme: http
