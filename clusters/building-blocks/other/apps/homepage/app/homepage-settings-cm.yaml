@@ -119,6 +119,9 @@ data:
         - PiHole:
             href:  http://192.168.178.111/admin
             icon: pi-hole.png
+            proxmoxNode: pve
+            proxmoxVMID: 111
+            proxmoxType: lxc
             siteMonitor: http://192.168.178.111
             widget:
               type: pihole
@@ -173,6 +176,8 @@ data:
         - HomeAssistant:
             href: https://ha.geckeler.dev
             icon: home-assistant.png
+            proxmoxNode: pve
+            proxmoxVMID: 200
             siteMonitor: http://192.168.178.150:8123/
             widget:
               type: homeassistant
