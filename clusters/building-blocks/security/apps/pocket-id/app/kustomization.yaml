@@ -3,13 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./helmrelease.yaml
-  - ./pocket-id-ingressroute.yaml
+  - ./pocket-id-pvc.yaml
   - ./pocket-id-secret.yaml
-
-configMapGenerator:
-  - name: pocket-id-helm-values
-    files:
-      - values.yaml=helm-values.yaml
-configurations:
-  - kustomizeconfig.yaml
+  - ./pocket-id-deploy.yaml
+  - ./pocket-id-svc.yaml
+  - ./pocket-id-ingressroute.yaml
