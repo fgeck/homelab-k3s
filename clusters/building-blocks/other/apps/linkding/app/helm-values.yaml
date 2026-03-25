@@ -9,10 +9,16 @@ controller:
 env:
   - name: LD_SERVER_PORT
     value: "9090"
-
-envFrom:
-  - secretRef:
-      name: linkding-secret
+  - name: LD_SUPERUSER_NAME
+    valueFrom:
+      secretKeyRef:
+        name: linkding-secret
+        key: LD_SUPERUSER_NAME
+  - name: LD_SUPERUSER_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: linkding-secret
+        key: LD_SUPERUSER_PASSWORD
 
 persistentVolumeClaim:
   create: true
