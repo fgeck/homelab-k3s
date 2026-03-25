@@ -20,7 +20,6 @@ resources:
   - meilisearch.yaml
   - metrics-server.yaml
   - pascaliske.yaml
-  - pocket-id.yaml
   - portainer.yaml
   - tinyauth.yaml
   - stakater.yaml
