@@ -19,7 +19,8 @@ auth:
         keys: "~*"
         channels: "&*"
 master:
-  existingClaim: redis-pvc
+  persistence:
+    size: 1Gi
   containerSecurityContext:
     runAsGroup: 1000
     runAsUser: 1000

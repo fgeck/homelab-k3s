@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./redis-acl-users-secret.yaml
   - ./helmrelease.yaml
-  - ./redis-pvc.yaml
 configMapGenerator:
   - name: redis-helm-values
     files:
