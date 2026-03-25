@@ -64,22 +64,22 @@ data:
             success-threshold: 2
             send-on-resolved: true
 
-      # - name: Karakeep (bookmarks)
-      #   group: 1-External
-      #   url: https://bookmarks.${DOMAIN_NAME}
-      #   interval: 15s
-      #   conditions:
-      #     - "[STATUS] == 200"
-      #     - "[CERTIFICATE_EXPIRATION] > 14d"
-      #   alerts:
-      #     - type: telegram
-      #       failure-threshold: 3
-      #       success-threshold: 2
-      #       send-on-resolved: true
+      - name: Karakeep (bookmarks)
+        group: 1-External
+        url: https://bookmarks.${DOMAIN_NAME}
+        interval: 15s
+        conditions:
+          - "[STATUS] == 200"
+          - "[CERTIFICATE_EXPIRATION] > 14d"
+        alerts:
+          - type: telegram
+            failure-threshold: 3
+            success-threshold: 2
+            send-on-resolved: true
 
       - name: Linkding (bookmarks)
         group: 1-External
-        url: https://bookmarks.${DOMAIN_NAME}
+        url: https://links.${DOMAIN_NAME}
         interval: 15s
         conditions:
           - "[STATUS] == 200"
@@ -376,21 +376,21 @@ data:
             success-threshold: 2
             send-on-resolved: true
 
-      # - name: Karakeep
-      #   group: 3-Cluster
-      #   url: http://karakeep.default.svc.cluster.local:80
-      #   interval: 15s
-      #   conditions:
-      #     - "[STATUS] == 200"
-      #   alerts:
-      #     - type: telegram
-      #       failure-threshold: 3
-      #       success-threshold: 2
-      #       send-on-resolved: true
+      - name: Karakeep
+        group: 3-Cluster
+        url: http://karakeep.default.svc.cluster.local:80
+        interval: 15s
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+            failure-threshold: 3
+            success-threshold: 2
+            send-on-resolved: true
 
       - name: Linkding
         group: 3-Cluster
-        url: http://linkding.default.svc.cluster.local:80/health
+        url: http://linkding.default.svc.cluster.local:9090/health
         interval: 15s
         conditions:
           - "[STATUS] == 200"
