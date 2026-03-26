@@ -51,9 +51,6 @@ spec:
             - name: media
               mountPath: /extra-filesystems/sdb__media
               readOnly: true
-            - name: containerd-socket
-              mountPath: /run/containerd/containerd.sock
-              readOnly: true
           resources:
             requests:
               cpu: 10m
@@ -82,10 +79,6 @@ spec:
           hostPath:
             path: /mnt/data/
             type: DirectoryOrCreate
-        - name: containerd-socket
-          hostPath: null
-          path: /var/run/containerd/containerd.sock
-          type: Socket
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
