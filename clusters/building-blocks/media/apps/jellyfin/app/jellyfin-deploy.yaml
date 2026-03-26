@@ -26,6 +26,8 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+        supplementalGroups:
+          - 104 # render group GID inside the k3s VM — required for /dev/dri/renderD128 access
       automountServiceAccountToken: false
       containers:
       - name: main
@@ -87,8 +89,10 @@ spec:
           name: jellyfin-cache
         - mountPath: /media
           name: media
+        - mountPath: /dev/dri/renderD128
+          name: render-device
         securityContext:
-          allowPrivilegeEscalation: false
+          privileged: true
           capabilities:
             drop:
               - ALL
@@ -109,3 +113,7 @@ spec:
         hostPath:
          path: /mnt/data/media
          type: Directory
+      - name: render-device
+        hostPath:
+          path: /dev/dri/renderD128
+          type: CharDevice
