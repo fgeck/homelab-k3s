@@ -29,11 +29,13 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] Security and Default Postgres cluster managed by [cloudnative-pg](https://cloudnative-pg.io/docs/)
   - [x] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
 - [x] ~~[Authentik](https://github.com/goauthentik/helm)~~
+- [x] [PocketID](https://pocket-id.org/docs) 
 - [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
 - [x] ~~[Portainer](https://portainer.github.io/k8s/charts/portainer/)~~
 - [x] ~~[Uptime-Kuma](https://github.com/dirsigler/uptime-kuma-helm)~~
 - [x] [Gatus](https://github.com/TwiN/gatus)
+- [x] [Beszel](https://www.beszel.dev/)
 - [x] [Calibre-Web-Automated](https://github.com/crocodilestick/Calibre-Web-Automated)
 - [x] [Jellyfin](https://jellyfin.org/)
 - [x] [Jellyseerr](https://docs.jellyseerr.dev/)
@@ -45,6 +47,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Karakeep](https://docs.karakeep.app/)
 - [x] [Homepage](https://gethomepage.dev/)
 - [x] [Paperless-NGX](https://docs.paperless-ngx.com/)
+- [x] [DoneTick](https://docs.donetick.com/getting-started/)
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
 - [x] [Better-Bahn](https://github.com/l2xu/betterbahn)
