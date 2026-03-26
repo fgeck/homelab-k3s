@@ -48,6 +48,9 @@ spec:
             - name: sys
               mountPath: /sys
               readOnly: true
+            - name: media
+              mountPath: /extra-filesystems/sdb__media
+              readOnly: true
           resources:
             requests:
               cpu: 10m
@@ -72,6 +75,10 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        - name: media
+          hostPath:
+            path: /mnt/data/
+            type: DirectoryOrCreate
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
