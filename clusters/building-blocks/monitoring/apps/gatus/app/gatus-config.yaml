@@ -74,6 +74,9 @@ data:
       - name: Calibre-Web (books)
         <<: *defaults-external
         url: https://books.${DOMAIN_NAME}
+      - name: Donetick (todo)
+        <<: *defaults-external
+        url: https://todo.${DOMAIN_NAME}
       - name: Obsidian Sync (obsidian)
         group: 1-External
         url: https://obsidian.${DOMAIN_NAME}
@@ -123,3 +126,6 @@ data:
       - name: Flux UI (flux.home)
         <<: *defaults-home
         url: https://flux.home.${DOMAIN_NAME}
+      - name: Beszel (infra.home)
+        <<: *defaults-home
+        url: https://infra.home.${DOMAIN_NAME}
