@@ -38,6 +38,15 @@ config:
       db_name:  ${SECURITY_POSTGRES_CROWDSEC_DATABASE}
       host:     ${SECURITY_POSTGRES_HOST}
       port:     ${SECURITY_POSTGRES_PORT}
+      # Auto-delete stale agent registrations so pods can re-register after restarts.
+      # Workaround for https://github.com/crowdsecurity/helm-charts/issues/252 —
+      # the wait-for-lapi-and-register init container unconditionally calls
+      # `cscli lapi register` and crashes with 403 if the machine is already registered.
+      # With flush enabled, the LAPI purges agents not seen for 60m, so the next
+      # registration attempt succeeds cleanly.
+      flush:
+        agents_autodelete:
+          login_password: 60m
 
   notifications:
     http.yaml: |
