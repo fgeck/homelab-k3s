@@ -13,4 +13,5 @@ resources:
   - ./samba/ks.yaml
   - ./spoolman/ks.yaml
   - ./better-bahn/ks.yaml
+  - ./donetick/ks.yaml
   # - ./whoami/ks.yaml
