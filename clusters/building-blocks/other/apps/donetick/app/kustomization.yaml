@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./donetick-config.yaml
+  - ./donetick-secret.yaml
+  - ./donetick-pvc.yaml
+  - ./donetick-deploy.yaml
+  - ./donetick-svc.yaml
+  - ./donetick-ingressroute.yaml

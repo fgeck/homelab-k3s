@@ -1,0 +1,23 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: donetick
+  namespace: default
+  labels:
+    app.kubernetes.io/name: donetick
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`todo.${DOMAIN_NAME}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: donetick
+          namespace: default
+          passHostHeader: true
+          port: 2021
+          scheme: http
