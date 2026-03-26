@@ -14,10 +14,15 @@ data:
 
     ui:
       title: Homelab Status
+      default-sort-by: group
       description: Service Health Dashboard
 
     alerting:
       telegram:
+        default-alert:
+          failure-threshold: 3
+          success-threshold: 2
+          send-on-resolved: true
         token: $${TELEGRAM_TOKEN}
         id: $${TELEGRAM_CHAT_ID}
 
