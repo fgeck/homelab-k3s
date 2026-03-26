@@ -54,6 +54,40 @@ mount /dev/nvme1n1p1 /mnt/data-ssd
 ```
 Then re-run rsync — it will skip already-transferred files and only retry failed ones.
 
+### iGPU passthrough: cloud kernel has no i915
+The k3s VM is provisioned with `linux-image-cloud-amd64` — a stripped cloud kernel with no GPU drivers. After passing through the iGPU, it appears in `lspci` inside the VM but `/dev/dri` does not exist. `modinfo i915` returns "Module not found". Fix: install `linux-image-amd64` and pin grub to it (see Phase 10.1).
+
+### iGPU passthrough: PCIe requires q35 machine type
+Adding `hostpci0` with `pcie=1` to a VM that uses the default `i440fx` machine type causes:
+```
+TASK ERROR: q35 machine model is not enabled at /usr/share/perl5/PVE/QemuServer/PCI.pm line 514
+```
+Set q35 before adding the hostpci entry and before starting the VM:
+```bash
+qm set 140 -machine q35
+qm config 140 | grep machine
+# machine: q35
+```
+
+### iGPU passthrough: supplementalGroups GID is the VM's, not the host's
+The render group GID differs between the Proxmox host (`993`) and the k3s VM (`104`). The k8s `supplementalGroups` must use the GID from inside the VM — check with `getent group render` on the VM, not the host. Using the host GID grants no permissions to `/dev/dri/renderD128`.
+```bash
+# Run this on the k3s VM, not on the Proxmox host
+ssh k3s "getent group render && stat -c '%g %G' /dev/dri/renderD128"
+# render:x:104:
+# 104 render    ← use 104 in supplementalGroups
+```
+
+### Pinning grub by menu entry ID doesn't work reliably in this VM
+Setting `GRUB_DEFAULT` to a full menu entry ID string (e.g. `gnulinux-6.1.0-44-amd64-advanced-...`) does not reliably boot the correct kernel — the VM sometimes ignores it and falls back to the cloud kernel. Use the positional format `"1>2"` instead:
+```bash
+sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT="1>2"/' /etc/default/grub
+sudo update-grub
+# Verify:
+sudo grep 'set default' /boot/grub/grub.cfg
+# set default="1>2"
+```
+
 ---
 
 ## Overview
@@ -821,6 +855,507 @@ pvesm status | grep local-lvm
 ```
 
 No reboot required. No downtime. Proxmox picks up the freed space in `local-lvm` immediately — the thin pool just gets ~1.3TB larger.
+
+---
+
+## Phase 10 — Intel iGPU Passthrough for Jellyfin Hardware Encoding
+
+**Sources used for this phase:**
+- [Jellyfin Intel GPU hardware acceleration guide](https://jellyfin.org/docs/general/post-install/transcoding/hardware-acceleration/intel/)
+- [Jellyfin hardware acceleration overview](https://jellyfin.org/docs/general/post-install/transcoding/hardware-acceleration/)
+- [Jellyfin Kubernetes deployment docs (supplementalGroups, privileged)](https://jellyfin.org/docs/general/post-install/transcoding/hardware-acceleration/intel/#kubernetes)
+- [Intel media-driver supported platforms (QSV/VA-API codec matrix)](https://github.com/intel/media-driver#decodingencoding-features)
+- [Intel OneVPL GPU runtime (QSV for Gen 12+)](https://github.com/intel/vpl-gpu-rt)
+- [Intel compute-runtime legacy platforms](https://github.com/intel/compute-runtime/blob/master/LEGACY_PLATFORMS.md)
+- [Linux i915 GuC/HuC firmware (kernel firmware git)](https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/i915)
+
+The i5-11400T has an **Intel UHD Graphics 730** (Rocket Lake, Gen 12). On the Proxmox host `/dev/dri/renderD128` already exists and is managed by the `i915` driver. By default the iGPU is not exposed to the k3s VM at all — this phase enables full QSV hardware transcoding in Jellyfin.
+
+### Hardware capabilities (UHD 730 / Gen 12 Rocket Lake)
+
+| Codec | Decode | Encode |
+|---|---|---|
+| H.264 8-bit | ✅ QSV | ✅ QSV |
+| HEVC 10-bit | ✅ QSV | ✅ QSV |
+| AV1 8/10-bit | ✅ decode only | ❌ (encode needs ARC) |
+
+### 10.1 — Install the standard kernel in the k3s VM
+
+The k3s VM was provisioned with `linux-image-cloud-amd64` — a stripped cloud kernel that omits all GPU drivers including `i915`. After the iGPU is passed through, it appears in `lspci` inside the VM but `/dev/dri` does not exist and `modinfo i915` returns "Module not found". The full standard kernel must be installed first.
+
+```bash
+ssh k3s
+
+# Confirm you are on the cloud kernel (will show linux-*-cloud-amd64)
+uname -r
+
+# Install the standard amd64 kernel (includes i915 and all GPU drivers)
+sudo apt-get install -y linux-image-amd64
+# This installs the metapackage which pulls in the latest linux-image-X.X.X-amd64
+# and regenerates the initramfs automatically. grub-update runs as a postinst step.
+```
+
+After installation, verify the new kernel image and initramfs are present:
+
+```bash
+ls /boot/vmlinuz-*amd64* /boot/initrd.img-*amd64*
+# Should show both vmlinuz and initrd for the non-cloud amd64 kernel
+```
+
+#### Pinning grub to the standard kernel
+
+The grub menu has this structure after both kernels are installed (recovery entries omitted for clarity):
+
+```
+Index 0:   "Debian GNU/Linux"                              ← generic, follows metapackage
+Submenu 1: "Advanced options for Debian GNU/Linux"
+  Index 1>0: 6.1.0-XX-cloud-amd64                         ← newest cloud, listed first
+  Index 1>1: 6.1.0-XX-cloud-amd64 (recovery mode)
+  Index 1>2: 6.1.0-XX-amd64                               ← standard kernel ← WANT THIS
+  Index 1>3: 6.1.0-XX-amd64 (recovery mode)
+  Index 1>4: 6.1.0-XX-1-cloud-amd64                       ← older kernels follow
+  ...
+```
+
+Check the actual order on this system — count the entries including recovery to get the right index:
+
+```bash
+sudo grep 'menuentry ' /boot/grub/grub.cfg
+# Output (includes recovery entries — count them to confirm 1>2 is the standard kernel):
+# menuentry 'Debian GNU/Linux' ...                                         ← index 0
+#   menuentry 'Debian GNU/Linux, with Linux 6.1.0-44-cloud-amd64' ...     ← 1>0
+#   menuentry 'Debian GNU/Linux, with Linux 6.1.0-44-cloud-amd64 (recovery mode)' ... ← 1>1
+#   menuentry 'Debian GNU/Linux, with Linux 6.1.0-44-amd64' ...           ← 1>2 ✓
+#   menuentry 'Debian GNU/Linux, with Linux 6.1.0-44-amd64 (recovery mode)' ...      ← 1>3
+#   menuentry 'Debian GNU/Linux, with Linux 6.1.0-43-cloud-amd64' ...     ← 1>4
+```
+
+> ⚠️ **Do not use a full menu entry ID string for `GRUB_DEFAULT`** (e.g. `gnulinux-6.1.0-44-amd64-advanced-...`). In this VM that approach is unreliable — the boot falls back to the cloud kernel. Use the positional `"1>2"` format instead.
+
+```bash
+# Pin grub to the standard kernel at position 1>2
+sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT="1>2"/' /etc/default/grub
+sudo update-grub
+
+# Verify the change took effect in the generated grub.cfg
+sudo grep 'set default' /boot/grub/grub.cfg
+# Must show: set default="1>2"
+
+# Also verify /etc/default/grub was written correctly
+grep GRUB_DEFAULT /etc/default/grub
+# GRUB_DEFAULT="1>2"
+```
+
+Reboot the VM:
+
+```bash
+sudo reboot
+```
+
+After reboot, verify:
+
+```bash
+uname -r
+# Must show 6.1.0-XX-amd64 (NOT cloud-amd64)
+
+sudo modinfo i915 | grep ^filename
+# Must return a .ko path — confirms i915 is present in the running kernel
+# e.g.: filename: /lib/modules/6.1.0-44-amd64/kernel/drivers/gpu/drm/i915/i915.ko
+
+# Confirm /dev/dri does not exist yet (iGPU not passed through yet — expected at this stage)
+ls /dev/dri/ 2>/dev/null || echo "no /dev/dri — expected, iGPU passthrough not done yet"
+```
+
+> ⚠️ After any future kernel update (`apt upgrade` pulls in a new `linux-image-cloud-amd64`), re-check the grub menu position — the indices shift when a new cloud kernel is prepended:
+> ```bash
+> sudo grep 'menuentry ' /boot/grub/grub.cfg
+> # Re-count and update GRUB_DEFAULT if the standard amd64 kernel moved
+> sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT="1>X"/' /etc/default/grub  # update X
+> sudo update-grub
+> ```
+
+### 10.2 — Enable GuC/HuC firmware on the Proxmox host
+
+GuC/HuC is disabled by default on Rocket Lake. Enabling it unlocks low-power encoding (VDEnc) which offloads the encode workload from the EU cores, freeing them for OpenCL-based HDR tone-mapping.
+
+Verify current state first:
+
+```bash
+ssh -i ~/.ssh/elitemox_ed25519 root@192.168.178.10
+
+cat /sys/kernel/debug/dri/0/gt0/uc/guc_info
+# If disabled, output is just: "GuC disabled"
+# If already enabled, output shows firmware version and status: "fully operational"
+
+cat /sys/kernel/debug/dri/0/gt0/uc/huc_info
+# If disabled, output is just: "HuC disabled"
+# If already enabled, output shows: "authenticated"
+
+# Only proceed with the steps below if output shows "disabled"
+```
+
+Enable GuC/HuC:
+
+```bash
+# Create i915 module parameter to load GuC and HuC firmware
+echo 'options i915 enable_guc=2' > /etc/modprobe.d/i915.conf
+
+# Rebuild initramfs so the parameter is included at boot
+update-initramfs -u
+
+# Rebuild grub (needed on some Proxmox/Debian versions)
+update-grub
+
+# Reboot the Proxmox host — this takes down all VMs briefly
+reboot
+```
+
+After reboot, verify:
+
+```bash
+cat /sys/kernel/debug/dri/0/gt0/uc/guc_info
+# Should show: "status: fully operational" and a firmware version, not "GuC disabled"
+
+cat /sys/kernel/debug/dri/0/gt0/uc/huc_info
+# Should show: "status: authenticated" and a firmware version, not "HuC disabled"
+```
+
+### 10.3 — Set q35 machine type and pass the iGPU to the k3s VM
+
+#### Why q35 is required
+
+PCIe passthrough (`pcie=1`) requires the **q35 machine type**. The default Proxmox machine type is `i440fx` (an old PIIX chipset emulation) which has no PCIe bus. Adding `hostpci0` with `pcie=1` to an i440fx VM causes this error on start:
+
+```
+TASK ERROR: q35 machine model is not enabled at /usr/share/perl5/PVE/QemuServer/PCI.pm line 514
+```
+
+Set q35 **before** adding the hostpci entry:
+
+```bash
+# On the Proxmox host
+qm set 140 -machine q35
+
+# Verify it was applied
+qm config 140 | grep machine
+# machine: q35
+```
+
+#### Find the iGPU PCI address
+
+```bash
+lspci | grep -iE 'VGA|Display|Intel.*UHD|Intel.*Iris|Intel.*Graphic'
+# Output on this machine:
+# 00:02.0 VGA compatible controller: Intel Corporation RocketLake-S GT1 [UHD Graphics 730] (rev 04)
+#  ^^^^^^^ PCI address — Proxmox prefixes it with 0000: → 0000:00:02.0
+```
+
+Intel iGPUs are almost always at `00:02.0` on Intel platforms, but always confirm.
+
+#### Add the iGPU as PCIe passthrough
+
+```bash
+# In Proxmox UI: Hardware → Add → PCI Device → select 0000:00:02.0
+#   Primary GPU: NO   (Proxmox keeps its virtual VGA for console/noVNC — unaffected)
+#   ROM-Bar:     NO
+#   PCI-Express: YES
+# Or via CLI:
+qm set 140 -hostpci0 "0000:00:02.0,pcie=1,rombar=0"
+
+# Verify the config looks correct
+qm config 140 | grep -E 'machine|hostpci'
+# machine: q35
+# hostpci0: 0000:00:02.0,pcie=1,rombar=0
+```
+
+> ⚠️ Do **not** use `x-vga=1` — that attempts full VGA passthrough, breaks the Proxmox noVNC console, and is not needed for VA-API/QSV transcoding.
+
+> ℹ️ Rocket Lake does **not** support GVT-g (Intel mediated/shared GPU). Full PCIe passthrough is the only option. The Proxmox host loses use of the iGPU for rendering — but since the machine is headless this has no practical impact. Web UI, SSH and noVNC console are all unaffected.
+
+Restart VM 140 and wait for k3s to be ready before proceeding:
+
+```bash
+qm shutdown 140 && sleep 10 && qm start 140
+
+# Wait ~60s for the VM to boot, then confirm SSH works and k3s is up
+sleep 60 && ssh k3s "kubectl get nodes"
+# NAME               STATUS   ROLES                  AGE   VERSION
+# k3s-controlplane   Ready    control-plane,master   ...   v1.x.x
+# STATUS must be Ready before continuing
+```
+
+#### Verify the device inside the VM
+
+After the VM boots, the iGPU should appear at a different PCI address (QEMU remaps it, typically `01:00.0`):
+
+```bash
+# iGPU appears in lspci inside the VM at a remapped address
+ssh k3s "lspci | grep -i Intel"
+# 01:00.0 VGA compatible controller: Intel Corporation RocketLake-S GT1 [UHD Graphics 730] (rev 04)
+
+# /dev/dri must contain renderD128 as a char device
+ssh k3s "ls -la /dev/dri/"
+# crw-rw---- 1 root video  226,   0 ... card0
+# crw-rw---- 1 root video  226,   1 ... card1
+# crw-rw---- 1 root render 226, 128 ... renderD128
+
+# Confirm i915 driver is bound to the device
+ssh k3s "lspci -k | grep -A2 'UHD Graphics'"
+# Kernel driver in use: i915
+```
+
+If `/dev/dri/renderD128` shows as a **directory** (`drwx`) instead of a char device (`crw`), k8s created a stale directory at that path during a previous boot without the GPU (because hostPath had no `type` guard). Remove it:
+
+```bash
+ssh k3s "sudo rmdir /dev/dri/renderD128"
+# Then restart the Jellyfin pod so the hostPath mounts correctly
+kubectl rollout restart deployment/jellyfin -n media
+```
+
+#### Find the render group GID inside the VM
+
+> ⚠️ **The render group GID inside the VM differs from the Proxmox host.** On the host the render GID is `993`. Inside the VM it is `104`. The k8s `supplementalGroups` must use the **VM's** GID — using the host's GID grants no permissions to `/dev/dri/renderD128`.
+
+```bash
+ssh k3s "getent group render"
+# render:x:104:
+#          ^^^ this is the GID to use in supplementalGroups
+
+ssh k3s "stat -c '%g %G' /dev/dri/renderD128"
+# 104 render   ← confirms renderD128 is owned by GID 104
+```
+
+### 10.4 — Kubernetes manifest (already updated in repo)
+
+The Jellyfin deployment at `clusters/building-blocks/media/apps/jellyfin/app/jellyfin-deploy.yaml` has been updated with the following changes. Verify they are present before proceeding:
+
+```bash
+# From your local machine
+grep -A2 'supplementalGroups' clusters/building-blocks/media/apps/jellyfin/app/jellyfin-deploy.yaml
+# supplementalGroups:
+#   - 104
+
+grep 'privileged' clusters/building-blocks/media/apps/jellyfin/app/jellyfin-deploy.yaml
+# privileged: true
+
+grep -A3 'render-device' clusters/building-blocks/media/apps/jellyfin/app/jellyfin-deploy.yaml
+# mountPath: /dev/dri/renderD128
+#   name: render-device
+# ...
+# path: /dev/dri/renderD128
+# type: CharDevice
+```
+
+The key changes are:
+- `supplementalGroups: [104]` — grants the Jellyfin container membership of the `render` group (GID 104 inside the VM), which owns `/dev/dri/renderD128`
+- `privileged: true` — required per the Jellyfin Kubernetes docs for DRI device access
+- `volumeMounts` + `volumes` for `/dev/dri/renderD128` as a `hostPath` with `type: CharDevice` — the `CharDevice` type prevents k8s from creating a stale directory at that path if the device is missing
+
+Once Flux reconciles after VM 140 restarts with the iGPU passed through, Jellyfin picks up the device automatically. To apply immediately without waiting for the 30m reconcile interval:
+
+```bash
+export KUBECONFIG=secrets/k3s-kubeconfig
+kubectl rollout restart deployment/jellyfin -n media
+
+# Watch the rollout complete
+kubectl rollout status deployment/jellyfin -n media
+# Waiting for deployment "jellyfin" rollout to finish: 0 of 1 updated replicas are available...
+# deployment "jellyfin" successfully rolled out
+
+# Confirm the new pod is Running (not Completed/CrashLoopBackOff)
+kubectl get pods -n media -l app.kubernetes.io/name=jellyfin
+# NAME                        READY   STATUS    RESTARTS   AGE
+# jellyfin-xxxxxxxxxx-xxxxx   1/1     Running   0          30s
+```
+
+Verify the pod has the correct groups and can open the device:
+
+```bash
+kubectl exec -n media deploy/jellyfin -- sh -c "id && /usr/lib/jellyfin-ffmpeg/vainfo --display drm --device /dev/dri/renderD128"
+# id must show: groups=1000,104  (104 = render)
+# vainfo must show: Intel iHD driver for Intel(R) Gen Graphics
+#                   VAProfileH264*, VAProfileHEVC*, VAProfileAV1* entries
+```
+
+Expected vainfo output:
+
+```
+libva info: VA-API version 1.22.0
+libva info: Trying to open /usr/lib/jellyfin-ffmpeg/lib/dri/iHD_drv_video.so
+libva info: Found init function __vaDriverInit_1_22
+libva info: va_openDriver() returns 0
+vainfo: VA-API version: 1.22 (libva 2.22.0)
+vainfo: Driver version: Intel iHD driver for Intel(R) Gen Graphics - 25.2.x
+vainfo: Supported profile and entrypoints
+      VAProfileH264Main               : VAEntrypointVLD / VAEntrypointEncSlice / VAEntrypointEncSliceLP
+      VAProfileH264High               : VAEntrypointVLD / VAEntrypointEncSlice / VAEntrypointEncSliceLP
+      VAProfileHEVCMain               : VAEntrypointVLD / VAEntrypointEncSlice
+      VAProfileHEVCMain10             : VAEntrypointVLD / VAEntrypointEncSlice
+      VAProfileAV1Profile0            : VAEntrypointVLD
+      ...
+```
+
+If `vainfo` returns "Failed to open the given device!", diagnose with:
+
+```bash
+# 1. Check the process has GID 104 in its groups
+kubectl exec -n media deploy/jellyfin -- id
+# Must show: groups=1000,104
+# If 104 is missing → supplementalGroups is wrong or pod hasn't restarted with the new manifest
+
+# 2. Confirm the device is a char device, not a stale directory
+kubectl exec -n media deploy/jellyfin -- ls -la /dev/dri/renderD128
+# Must show: crw-rw---- (starts with 'c')
+# If it shows drwx (directory) → stale dir from a boot without GPU passthrough, fix on VM:
+ssh k3s "sudo rmdir /dev/dri/renderD128"
+kubectl rollout restart deployment/jellyfin -n media
+
+# 3. Confirm i915 is loaded in the VM kernel
+ssh k3s "sudo modinfo i915 | grep ^filename"
+# Must return a .ko path — if not, the VM booted the cloud kernel, not the standard one
+ssh k3s "uname -r"
+# Must show 6.1.0-XX-amd64, not cloud-amd64
+```
+
+### 10.5 — Configure Jellyfin in the UI
+
+Hardware acceleration is not configurable via manifest — codec selection is persisted in Jellyfin's `config/encoding.xml`. Navigate to:
+
+**Admin Dashboard → Playback → Transcoding**
+
+#### Step 1: Select hardware acceleration method
+
+**Hardware acceleration** → `Intel QuickSync (QSV)`
+
+Save and reload the page — the codec options below only appear after QSV is selected.
+
+#### Step 2: Hardware decoding
+
+Enable each codec the UHD 730 can handle in hardware. Leave **HEVC RExt 12bit** unchecked — UHD 730 does not support 12-bit decode.
+
+| Codec | Enable | Note |
+|---|---|---|
+| H264 | ✅ | |
+| HEVC | ✅ | |
+| MPEG2 | ✅ | |
+| VC1 | ✅ | |
+| VP8 | ✅ | |
+| VP9 | ✅ | |
+| AV1 | ✅ | Gen 12 Rocket Lake supports AV1 decode |
+| HEVC 10bit | ✅ | |
+| VP9 10bit | ✅ | |
+| HEVC RExt 8/10bit | ✅ | |
+| HEVC RExt 12bit | ❌ | Not supported on UHD 730 |
+
+**Prefer OS native DXVA or VA-API hardware decoders** → ✅ **Enable**
+
+This makes Jellyfin use the native Linux VA-API decoders instead of the QSV wrapper. Required for Dolby Vision support. On Linux with QSV this should always be on.
+
+#### Step 3: Hardware encoding options
+
+| Setting | Value | Note |
+|---|---|---|
+| Enable hardware encoding | ✅ | |
+| Enable Intel Low-Power H.264 hardware encoder | ✅ | Safe — HuC firmware was configured in Phase 10.2 |
+| Enable Intel Low-Power HEVC hardware encoder | ✅ | Safe — HuC firmware was configured in Phase 10.2 |
+
+> If you skipped Phase 10.2 (GuC/HuC not configured), leave both Low-Power encoder options **unchecked** — enabling them without HuC causes encoder errors. Run `cat /sys/kernel/debug/dri/0/gt0/uc/huc_info` on the Proxmox host to confirm HuC is "authenticated" before enabling.
+
+#### Step 4: Encoding format options
+
+| Setting | Value | Note |
+|---|---|---|
+| Allow encoding in HEVC format | ✅ | Fully supported on UHD 730 |
+| Allow encoding in AV1 format | ❌ | AV1 **encode** requires Intel ARC/DG2 (Gen 12.5+). UHD 730 only decodes AV1 |
+
+#### Step 5: VPP Tone mapping
+
+| Setting | Value | Note |
+|---|---|---|
+| Enable VPP Tone mapping | ❌ | UHD 730 has unreliable VPP tone-mapping support. Use OpenCL instead (Step 6) |
+| Brightness gain | 16 | Leave at default — irrelevant while disabled |
+| Contrast gain | 1 | Leave at default — irrelevant while disabled |
+
+#### Step 6: OpenCL Tone mapping
+
+| Setting | Value | Note |
+|---|---|---|
+| Enable Tone mapping | ✅ | OpenCL is fully supported on UHD 730 — correct method for HDR→SDR on this GPU |
+| Tone mapping algorithm | `BT.2390` | Recommended for Gen 12, best perceptual result |
+| Tone mapping mode | `Auto` | Switch to `RGB` only if you observe blown-out highlights during playback |
+| Output color range | `Auto` | |
+| Desaturation | `0` | Disable — avoids desaturating already-clipped highlights |
+| Peak override | `100` | Default = 1000 nit. Only change if you have display-specific calibration data |
+| Tone mapping param | *(blank)* | Leave empty — for manual algorithm tuning only |
+
+#### Step 7: Save
+
+Click **Save** at the bottom of the page. Jellyfin applies the changes immediately — no restart needed.
+
+### 10.6 — Verify hardware encoding is active
+
+Install `intel-gpu-tools` in the VM and verify it installed:
+
+```bash
+ssh k3s "sudo apt install -y intel-gpu-tools"
+
+# Verify the tool is available
+ssh k3s "which intel_gpu_top && intel_gpu_top --help 2>&1 | head -2"
+# /usr/bin/intel_gpu_top
+# intel-gpu-top: Display a top-like summary of Intel GPU usage
+```
+
+Play a video in the Jellyfin web client and force a transcode by selecting a lower resolution or bitrate. Then sample GPU usage (JSON output, 3 second sample):
+
+```bash
+ssh k3s "sudo intel_gpu_top -s 3000 -J"
+```
+
+Expected output during active QSV transcode of HDR HEVC content:
+
+```json
+"engines": {
+    "Render/3D/0": { "busy": 90-95 },   // OpenCL HDR→SDR tone-mapping
+    "Video/0":     { "busy": 30-80 },   // QSV decode/encode — MUST be non-zero
+    "VideoEnhance/0": { "busy": 5-20 }  // QSV VPP post-processing
+}
+```
+
+- **`Video/0` non-zero** → hardware QSV encode/decode is active ✅
+- **`Render/3D/0` high** → OpenCL HDR tone-mapping is running (expected for HDR source content) ✅
+- **`Video/0` at 0%** while transcoding → Jellyfin fell back to software — recheck `supplementalGroups` and `/dev/dri/renderD128` mount
+
+You can also verify in the Jellyfin UI without SSH. During an active transcode, go to **Admin Dashboard → Dashboard → Active Streams**, click the session:
+
+- The stream info shows `(hw)` next to the codec when hardware is used: `HEVC 10bit → H.264 (hw)`
+- **Transcoding reason** shows why a transcode was triggered (e.g. "The video's bitrate exceeds the limit")
+- **Framerate** during hardware transcode is typically 100–300+ fps — software transcode is usually 10–30fps on this CPU
+
+For the most detailed view, tail the Jellyfin log during playback:
+
+```bash
+export KUBECONFIG=secrets/k3s-kubeconfig
+kubectl exec -n media deploy/jellyfin -- tail -f /config/log/log_$(date +%Y%m%d).log | grep -i "ffmpeg\|qsv\|transcode"
+```
+
+A hardware transcode shows `h264_qsv` or `hevc_qsv` as the encoder in the FFmpeg invocation:
+```
+-init_hw_device vaapi=va:/dev/dri/renderD128 ... -c:v h264_qsv ...
+```
+`libx264` or `libx265` as the encoder = software fallback.
+
+### Checklist
+
+- [ ] `linux-image-amd64` installed in VM, grub pinned to `"1>2"`, VM rebooted into `6.1.0-XX-amd64`
+- [ ] `modinfo i915` returns a `.ko` path (not "Module not found") inside the VM
+- [ ] GuC/HuC enabled on Proxmox host — `guc_info` shows "fully operational", `huc_info` shows "authenticated"
+- [ ] VM 140 machine type set to `q35`
+- [ ] `hostpci0: 0000:00:02.0,pcie=1,rombar=0` in VM 140 config
+- [ ] `/dev/dri/renderD128` is a char device (`crw`) inside the VM, owned by GID 104
+- [ ] Jellyfin pod has `groups=1000,104` (confirmed via `kubectl exec -- id`)
+- [ ] `vainfo` inside the Jellyfin pod returns Intel iHD driver with H264/HEVC/AV1 profiles
+- [ ] Jellyfin UI configured for QSV with HEVC 10-bit and HDR tone mapping enabled
+- [ ] `intel_gpu_top` shows Video engine activity during active transcode
 
 ---
 
