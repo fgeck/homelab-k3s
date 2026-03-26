@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./beszel-hub-deploy.yaml
+  - ./beszel-hub-svc.yaml
+  - ./beszel-hub-pvc.yaml
+  - ./beszel-hub-ingressroute.yaml
+  - ./beszel-agent-secret.yaml
+  - ./beszel-agent-daemonset.yaml

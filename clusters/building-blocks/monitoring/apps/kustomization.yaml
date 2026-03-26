@@ -12,3 +12,4 @@ resources:
   # - ./telegraf/ks.yaml
   # - ./uptime-kuma/ks.yaml
   - ./gatus/ks.yaml
+  - ./beszel/ks.yaml
