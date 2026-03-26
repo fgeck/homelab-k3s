@@ -33,11 +33,9 @@ spec:
               value: "/donetick-data/donetick.db"
             - name: TZ
               value: "Europe/Berlin"
-            - name: DT_JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: donetick-secret
-                  key: jwt_secret
+          envFrom:
+            - secretRef:
+                name: donetick-secret
           volumeMounts:
             - name: data
               mountPath: /donetick-data
@@ -79,5 +77,8 @@ spec:
           persistentVolumeClaim:
             claimName: donetick-pvc
         - name: config
-          configMap:
-            name: donetick-config
+          secret:
+            secretName: donetick-config-secret
+            items:
+              - key: selfhosted.yaml
+                path: selfhosted.yaml
