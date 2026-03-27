@@ -25,16 +25,19 @@ data:
         columns: 1
       Network:
         style: row
-        columns: 3
+        columns: 2
       Infrastructure:
         style: row
         columns: 2
       Home:
         style: row
+        columns: 3
+      Apps:
+        style: row
         columns: 2
       Media:
         style: row
-        columns: 4
+        columns: 2
       Downloads:
         style: row
         columns: 3
@@ -210,6 +213,19 @@ data:
             widget:
               type: spoolman
               url: http://spoolman.default.svc.cluster.local:80
+    - Apps:
+        - Karakeep:
+            href: https://bookmarks.geckeler.dev
+            icon: karakeep.png
+            siteMonitor: http://karakeep.default.svc.cluster.local:80
+            widget:
+              type: karakeep
+              url: http://karakeep.default.svc.cluster.local:80
+              key: '{{HOMEPAGE_VAR_KARAKEEP_KEY}}'
+              fields:
+                - bookmarks
+                - lists
+                - tags
         - Paperless:
             href: https://docs.geckeler.dev
             icon: paperless.png
@@ -228,14 +244,6 @@ data:
               url: http://immich.media.svc.cluster.local:2283
               key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
               version: 2
-        - Karakeep:
-            href: https://bookmarks.geckeler.dev
-            icon: karakeep.png
-            siteMonitor: http://karakeep.default.svc.cluster.local:80
-            widget:
-              type: karakeep
-              url: http://karakeep.default.svc.cluster.local:80
-              key: '{{HOMEPAGE_VAR_KARAKEEP_KEY}}'
         - Jellyfin:
             href: https://watch.home.geckeler.dev
             icon: jellyfin.png
@@ -245,6 +253,10 @@ data:
               url: https://watch.home.geckeler.dev
               key: '{{HOMEPAGE_VAR_JELLYFIN_KEY}}'
               enableBlocks: true # optional, defaults to false
+              fields:
+                - movies
+                - series
+                - episodes
         - Jellyseer:
             href: https://browse.home.geckeler.dev
             icon: jellyseerr.png
