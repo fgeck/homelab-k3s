@@ -15,7 +15,7 @@ controllers:
             cpu: 200m
             memory: 512Mi
           limits:
-            memory: 1536Mi
+            memory: 2Gi
         env:
           # Database credentials from postgresql-vecto-immich-auth (single source of truth)
           - name: DB_USERNAME
