@@ -18,6 +18,7 @@ data:
       password: "${RESTIC_PASSWORD}"
       rest_user: "${RESTIC_REST_USERNAME}"
       rest_password: "${RESTIC_REST_PASSWORD}"
+      fail_on_locked: "false"
 
     # Backup configuration
     backup:
