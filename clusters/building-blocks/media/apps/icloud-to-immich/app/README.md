@@ -18,3 +18,5 @@ kubectl run icloudpd-auth -it --rm -n media \
     }
   }'
 ```
+
+https://github.com/icloud-photos-downloader/icloud_photos_downloader/issues/1322
