@@ -5,7 +5,7 @@ controllers:
     containers:
       main:
         image:
-          tag: v2.6.1
+          tag: v2.7.2
         ports:
           - name: http
             containerPort: 2283
