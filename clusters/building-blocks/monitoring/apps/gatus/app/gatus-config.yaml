@@ -59,9 +59,6 @@ data:
       - name: Karakeep (bookmarks)
         <<: *defaults-external
         url: https://bookmarks.${DOMAIN_NAME}
-      - name: Linkding (bookmarks)
-        <<: *defaults-external
-        url: https://links.${DOMAIN_NAME}
       - name: Vaultwarden (vw)
         <<: *defaults-external
         url: https://vw.${DOMAIN_NAME}
