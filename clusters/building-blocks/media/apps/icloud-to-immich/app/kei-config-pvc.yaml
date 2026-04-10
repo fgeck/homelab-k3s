@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kei-config-pvc
+  namespace: media
+  labels:
+    app.kubernetes.io/name: icloud-to-immich
+    app.kubernetes.io/component: kei-downloader
+spec:
+  storageClassName: "local-path"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
