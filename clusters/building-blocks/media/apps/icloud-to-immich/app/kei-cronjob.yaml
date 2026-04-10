@@ -1,0 +1,92 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kei-download
+  namespace: media
+  labels:
+    app.kubernetes.io/name: icloud-to-immich
+    app.kubernetes.io/component: kei-downloader
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  schedule: "0 5 * * *" # Every day at 5 AM
+  timeZone: "Europe/Berlin"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 7200 # 2 hour timeout
+      ttlSecondsAfterFinished: 86400 # 24 hours
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: icloud-to-immich
+            app.kubernetes.io/component: kei-downloader
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+          containers:
+            - name: kei
+              image: ghcr.io/rhoopr/kei:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  cat > /tmp/notify.sh << 'NOTIFY_SCRIPT'
+                  #!/bin/sh
+                  case "$KEI_EVENT" in
+                    2fa_required|sync_failed|session_expired)
+                      if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+                        curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+                          -F "chat_id=${TELEGRAM_CHAT_ID}" \
+                          -F "parse_mode=Markdown" \
+                          -F "text=⚠️ *kei: ${KEI_EVENT}*
+                  ${KEI_MESSAGE}" > /dev/null || true
+                      fi
+                      ;;
+                  esac
+                  NOTIFY_SCRIPT
+                  chmod +x /tmp/notify.sh
+                  exec kei sync
+              env:
+                - name: TZ
+                  value: "Europe/Berlin"
+                - name: KEI_DATA_DIR
+                  value: "/config"
+                - name: KEI_DIRECTORY
+                  value: "/data"
+                - name: KEI_FOLDER_STRUCTURE
+                  value: "%Y/%m/%d"
+                - name: KEI_SET_EXIF_DATETIME
+                  value: "true"
+                - name: KEI_NO_PROGRESS_BAR
+                  value: "true"
+                - name: KEI_NOTIFICATION_SCRIPT
+                  value: "/tmp/notify.sh"
+              envFrom:
+                - secretRef:
+                    name: kei-secret
+              volumeMounts:
+                - name: kei-config
+                  mountPath: /config
+                - name: icloud-staging
+                  mountPath: /data
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  memory: 768Mi
+          volumes:
+            - name: kei-config
+              persistentVolumeClaim:
+                claimName: kei-config-pvc
+            - name: icloud-staging
+              hostPath:
+                path: /mnt/data/icloud-staging
+                type: DirectoryOrCreate
