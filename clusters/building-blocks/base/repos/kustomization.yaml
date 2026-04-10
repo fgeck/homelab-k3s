@@ -19,7 +19,6 @@ resources:
   - jetstack.yaml
   - meilisearch.yaml
   - metrics-server.yaml
-  - pascaliske.yaml
   - portainer.yaml
   - tinyauth.yaml
   - stakater.yaml
