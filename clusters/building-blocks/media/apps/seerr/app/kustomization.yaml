@@ -3,7 +3,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./seerr-deploy.yaml
+  - ./helmrelease.yaml
   - ./seerr-ingressroute.yaml
-  - ./seerr-pvc.yaml
-  - ./seerr-svc.yaml
+configMapGenerator:
+  - name: seerr-helm-values
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml

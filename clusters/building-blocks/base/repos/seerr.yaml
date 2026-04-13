@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/ocirepository-source-v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: seerr
+  namespace: flux-system
+spec:
+  interval: 12h
+  url: oci://ghcr.io/seerr-team/seerr/seerr-chart
+  ref:
+    semver: "^3.4.1"

@@ -25,3 +25,4 @@ resources:
   - traefik.yaml
   - uptime-kuma.yaml
   - prometheus-community.yaml
+  - seerr.yaml
