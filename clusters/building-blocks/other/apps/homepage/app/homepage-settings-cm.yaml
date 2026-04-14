@@ -264,7 +264,7 @@ data:
             widget:
               type: jellyseerr
               url: https://browse.home.geckeler.dev
-              key: '{{HOMEPAGE_VAR_JELLYSEERR_KEY}}'
+              key: '{{HOMEPAGE_VAR_SEERR_KEY}}'
         - Calibre-Web-Automated:
             href: https://books.geckeler.dev
             icon: calibre-web.png
