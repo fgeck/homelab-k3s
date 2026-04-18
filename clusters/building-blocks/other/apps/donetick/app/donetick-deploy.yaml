@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: donetick
-          image: donetick/donetick:v0.1.74
+          image: donetick/donetick:v0.1.75
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2021
