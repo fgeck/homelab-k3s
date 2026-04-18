@@ -4,7 +4,7 @@ podAnnotations:
 
 image:
   repository: ghcr.io/steveiliop56/tinyauth
-  tag: v5.0.6
+  tag: v5.0.7
 
 tinyauth:
   appUrl: "https://auth.${DOMAIN_NAME}"
