@@ -12,12 +12,29 @@ spec:
     - websecure
     - web
   routes:
+    # External endpoint API — no tinyauth (h-cloud pushes heartbeats here)
+    - kind: Rule
+      match: Host(`status.home.${DOMAIN_NAME}`) && PathPrefix(`/api/v1/endpoints/`)
+      priority: 20
+      middlewares:
+        - name: local-ipallowlist
+          namespace: edge
+      services:
+        - kind: Service
+          name: gatus
+          namespace: monitoring
+          passHostHeader: true
+          port: 8080
+          scheme: http
+    # Everything else — behind tinyauth
     - kind: Rule
       match: Host(`status.home.${DOMAIN_NAME}`)
       priority: 10
       middlewares:
         - name: local-ipallowlist
           namespace: edge
+        - name: tinyauth
+          namespace: security
       services:
         - kind: Service
           name: gatus
