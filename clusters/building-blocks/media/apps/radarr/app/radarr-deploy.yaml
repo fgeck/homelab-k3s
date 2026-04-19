@@ -47,7 +47,7 @@ spec:
         envFrom:
         - configMapRef:
             name: radarr-env
-        image: ghcr.io/home-operations/radarr:6.1.2.10359
+        image: ghcr.io/home-operations/radarr:6.2.0.10390
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5
