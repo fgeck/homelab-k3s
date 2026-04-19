@@ -8,3 +8,5 @@ resources:
   - ./pocket-id-deploy.yaml
   - ./pocket-id-svc.yaml
   - ./pocket-id-ingressroute.yaml
+  - ./pocket-id-oidc-secret.yaml
+  - ./pocket-id-oidc-middleware.yaml

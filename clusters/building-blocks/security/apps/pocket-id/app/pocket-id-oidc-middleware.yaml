@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: pocket-id-oidc
+  namespace: security
+spec:
+  plugin:
+    traefik-oidc-auth:
+      Secret: "urn:k8s:secret:security:pocket-id-oidc-secret:pluginSecret"
+      Provider:
+        Url: "https://id.${DOMAIN_NAME}"
+        ClientId: "${POCKET_ID_OIDC_CLIENT_ID}"
+        ClientSecret: "urn:k8s:secret:security:pocket-id-oidc-secret:providerClientSecret"
+        UsePkce: false
+      Scopes:
+        - openid
+        - profile
+        - email
