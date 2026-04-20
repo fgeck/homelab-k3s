@@ -1,0 +1,34 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: oidc-home
+  namespace: default
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: whoami
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: oidc-callback-home
+  oidc:
+    provider:
+      issuer: "https://id.${DOMAIN_NAME}"
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: pocket-id-oidc
+          port: 1411
+    clientID: "${CLUSTER_HOME_OIDC_POCKETID_CLIENT_ID}"
+    clientSecret:
+      name: whoami-oidc-secret
+    redirectURL: "https://auth.home.${DOMAIN_NAME}/oauth2/callback"
+    cookieDomain: "home.${DOMAIN_NAME}"
+    cookieNames:
+      accessToken: oidc-at-home
+      idToken: oidc-it-home
+    scopes:
+      - openid
+      - profile
+      - email

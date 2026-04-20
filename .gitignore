@@ -10,3 +10,4 @@ secrets/*
 
 **.log
 
+.omc/

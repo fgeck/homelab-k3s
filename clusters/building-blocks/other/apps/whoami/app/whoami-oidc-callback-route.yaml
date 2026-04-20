@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: oidc-callback-home
+  namespace: default
+spec:
+  parentRefs:
+    - name: envoy-home
+      namespace: network
+  hostnames:
+    - "auth.home.${DOMAIN_NAME}"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /oauth2
+      backendRefs:
+        - name: whoami
+          port: 80
