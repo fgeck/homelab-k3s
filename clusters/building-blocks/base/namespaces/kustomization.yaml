@@ -7,6 +7,5 @@ resources:
   - edge.yaml
   - media.yaml
   - monitoring.yaml
-  - network.yaml
   - observability.yaml
   - security.yaml

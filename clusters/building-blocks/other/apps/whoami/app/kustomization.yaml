@@ -4,9 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - whoami-deploy.yaml
+  - whoami-ingressroute.yaml
   - whoami-svc.yaml
-  - whoami-httproute.yaml
-  - whoami-oidc-backend.yaml
-  - whoami-oidc-callback-route.yaml
-  - whoami-oidc-secret.yaml
-  - whoami-security-policy.yaml
