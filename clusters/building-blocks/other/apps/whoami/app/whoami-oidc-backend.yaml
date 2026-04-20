@@ -1,0 +1,11 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: pocket-id-oidc
+  namespace: default
+spec:
+  endpoints:
+    - fqdn:
+        hostname: pocket-id.security.svc.cluster.local
+        port: 1411
