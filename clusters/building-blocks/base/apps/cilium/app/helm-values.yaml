@@ -31,8 +31,9 @@ rollOutCiliumPods: true
 # # devices: eno+ eth+
 # endpointRoutes:
 #   enabled: true
-# envoy:
-#   enabled: false
+envoy:
+  enabled: false
+l7Proxy: false
 # dashboards:
 #   enabled: true
 # hubble:
