@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: pocket-id-oidc
+  namespace: edge
+spec:
+  plugin:
+    traefik-oidc-auth:
+      Provider:
+        Url: "https://id.${DOMAIN_NAME}"
+        ClientId: "urn:k8s:secret:pocket-id-oidc-secret:clientId"
+        ClientSecret: "urn:k8s:secret:pocket-id-oidc-secret:clientSecret"
+      Scopes: ["openid", "profile", "email"]
+      CallbackUri: "/oidc/callback"
+      SessionCookie:
+        Domain: ".home.${DOMAIN_NAME}"
