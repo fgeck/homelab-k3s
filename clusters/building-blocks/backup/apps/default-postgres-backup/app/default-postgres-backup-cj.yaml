@@ -5,7 +5,7 @@ metadata:
   name: default-postgres-backup
   namespace: default
   annotations:
-     kustomize.toolkit.fluxcd.io/substitute: disabled
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   schedule: "0 23 * * *"
   jobTemplate:
@@ -13,31 +13,33 @@ spec:
       template:
         spec:
           containers:
-          - name: pbs-k8s-backup
-            image: ghcr.io/fgeck/pbs-k8s-backup:latest 
-            command: ["/entrypoint.sh", "postgres"]
-            env:
-            - name: TZ
-              value: "Europe/Berlin"
-            - name: BACKUP_NAME
-              value: "default-postgres"
-            - name: PROXMOX_BACKUP_SERVER_NAMESPACE
-              value: "k3s/databases"
-            resources:
-              requests:
-                cpu: 50m
-                memory: 64Mi
-              limits:
-                cpu: 500m
-                memory: 512Mi
-            envFrom:
-            - secretRef:
-                name: default-postgres-backup-secret
-            volumeMounts:
-            - name: temp-backup
-              mountPath: /backup
+            - name: pbs-k8s-backup
+              image: ghcr.io/fgeck/pbs-k8s-backup:latest
+              command:
+                - "/entrypoint.sh"
+                - "postgres"
+              env:
+                - name: TZ
+                  value: "Europe/Berlin"
+                - name: BACKUP_NAME
+                  value: "default-postgres"
+                - name: PROXMOX_BACKUP_SERVER_NAMESPACE
+                  value: "k3s/databases"
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              envFrom:
+                - secretRef:
+                    name: default-postgres-backup-secret
+              volumeMounts:
+                - name: temp-backup
+                  mountPath: /backup
           restartPolicy: Never
           volumes:
-          - name: temp-backup
-            emptyDir:
-              sizeLimit: 2Gi
+            - name: temp-backup
+              emptyDir:
+                sizeLimit: 2Gi

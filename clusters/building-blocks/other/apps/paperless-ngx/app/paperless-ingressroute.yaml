@@ -11,13 +11,13 @@ spec:
     - websecure
     - web
   routes:
-  - kind: Rule
-    match: Host(`docs.${DOMAIN_NAME}`)
-    priority: 10
-    services:
-    - kind: Service
-      name: paperless
-      namespace: default
-      passHostHeader: true
-      port: 80
-      scheme: http
+    - kind: Rule
+      match: Host(`docs.${DOMAIN_NAME}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: paperless
+          namespace: default
+          passHostHeader: true
+          port: 80
+          scheme: http

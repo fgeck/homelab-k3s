@@ -32,7 +32,9 @@ spec:
           containers:
             - name: icloudpd
               image: icloudpd/icloudpd:latest
-              command: ["/bin/sh", "-c"]
+              command:
+                - "/bin/sh"
+                - "-c"
               args:
                 - |
                   send_telegram() {
@@ -41,7 +43,7 @@ spec:
                       wget -q -O /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=Markdown&text=${MESSAGE}"
                     fi
                   }
-                  
+
                   /app/icloudpd \
                     --username "$APPLE_ID" \
                     --password "$ICLOUD_PASSWORD" \
@@ -57,7 +59,7 @@ spec:
                     --smtp-port "$SMTP_PORT" \
                     --notification-email "$NOTIFICATION_EMAIL" \
                     --notification-email-from "$NOTIFICATION_EMAIL_FROM"
-                  
+
                   EXIT_CODE=$?
                   if [ $EXIT_CODE -ne 0 ]; then
                     send_telegram "Exit code $EXIT_CODE"

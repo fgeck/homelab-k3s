@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -81,11 +82,11 @@ spec:
           volumeMounts:
             - mountPath: /home/app/.local/share/spoolman # Do NOT modify this line
               name: spoolman-config
-          # securityContext:
-          #   allowPrivilegeEscalation: false
-          #   capabilities:
-          #     drop:
-          #       - ALL
+              # securityContext:
+              #   allowPrivilegeEscalation: false
+              #   capabilities:
+              #     drop:
+              #       - ALL
       dnsConfig:
         options:
           - name: ndots

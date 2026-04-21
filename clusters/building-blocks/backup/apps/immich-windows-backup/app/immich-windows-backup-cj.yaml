@@ -35,7 +35,11 @@ spec:
             - name: gorestic
               image: ghcr.io/fgeck/gorestic-homelab:latest
               imagePullPolicy: Always
-              args: ["run", "--config", "/config/config.yaml", "--verbose"]
+              args:
+                - "run"
+                - "--config"
+                - "/config/config.yaml"
+                - "--verbose"
               envFrom:
                 - secretRef:
                     name: immich-windows-backup-secret

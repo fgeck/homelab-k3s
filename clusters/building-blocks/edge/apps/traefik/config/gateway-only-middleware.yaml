@@ -7,5 +7,5 @@ metadata:
 spec:
   ipAllowList:
     sourceRange:
-        - 127.0.0.1/32
-        - ${quote}${TRAEFIK_GATEWAY_CIDR}${quote}
+      - 127.0.0.1/32
+      - ${quote}${TRAEFIK_GATEWAY_CIDR}${quote}

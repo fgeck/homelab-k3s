@@ -10,11 +10,11 @@ cluster:
   # Single instance for now - will scale to 3 after migration
   instances: 1
 
-  imageName: ""  # Will use default PostgreSQL 16 image
+  imageName: "" # Will use default PostgreSQL 16 image
 
   storage:
     size: 2Gi
-    storageClass: "local-path"  # Uses default storage class
+    storageClass: "local-path" # Uses default storage class
 
   # Resource limits
   resources:

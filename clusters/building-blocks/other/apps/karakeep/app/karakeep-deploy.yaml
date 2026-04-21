@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,7 +33,7 @@ spec:
               value: /data
             - name: COREPACK_INTEGRITY_KEYS # workaround https://github.com/karakeep-app/karakeep/issues/1015
               value: "0"
-            # Add OPENAI_API_KEY to the ConfigMap if necessary
+              # Add OPENAI_API_KEY to the ConfigMap if necessary
           volumeMounts:
             - mountPath: /data
               name: data

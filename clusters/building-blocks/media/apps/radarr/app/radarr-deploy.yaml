@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,90 +28,90 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-      - name: main
-        env:
-        - name: TZ
-          value: Europe/Berlin
-        # Database password from postgresql-vecto-radarr-auth (single source of truth)
-        - name: RADARR__POSTGRES__USER
-          valueFrom:
-            secretKeyRef:
-              name: postgresql-vecto-radarr-auth
-              key: username
-              optional: false
-        - name: RADARR__POSTGRES__PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgresql-vecto-radarr-auth
-              key: password
-              optional: false
-        envFrom:
-        - configMapRef:
-            name: radarr-env
-        image: ghcr.io/home-operations/radarr:6.2.0.10390
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /ping
-            port: 7878
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        ports:
-        - containerPort: 7878
-          name: main
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /ping
-            port: 7878
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 2
-          timeoutSeconds: 5
-        resources:
-          limits:
-            cpu: "2"
-            memory: 1Gi
-          requests:
-            cpu: 10m
-            memory: 50Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
-        startupProbe:
-          failureThreshold: 60
-          httpGet:
-            path: /ping
-            port: 7878
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 2
-        volumeMounts:
-        - mountPath: /config
-          name: radarr-config
-        - mountPath: /data
-          name: data
+        - name: main
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            # Database password from postgresql-vecto-radarr-auth (single source of truth)
+            - name: RADARR__POSTGRES__USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-vecto-radarr-auth
+                  key: username
+                  optional: false
+            - name: RADARR__POSTGRES__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-vecto-radarr-auth
+                  key: password
+                  optional: false
+          envFrom:
+            - configMapRef:
+                name: radarr-env
+          image: ghcr.io/home-operations/radarr:6.2.0.10390
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /ping
+              port: 7878
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 7878
+              name: main
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /ping
+              port: 7878
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1Gi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /ping
+              port: 7878
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          volumeMounts:
+            - mountPath: /config
+              name: radarr-config
+            - mountPath: /data
+              name: data
       dnsConfig:
         options:
-        - name: ndots
-          value: "1"
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: radarr-config
-        persistentVolumeClaim:
-          claimName: radarr-pvc
-      - name: data
-        hostPath:
-         path: /mnt/data/
-         type: Directory
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: radarr-pvc
+        - name: data
+          hostPath:
+            path: /mnt/data/
+            type: Directory

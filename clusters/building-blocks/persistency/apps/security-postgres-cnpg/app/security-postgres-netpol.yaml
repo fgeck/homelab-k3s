@@ -16,32 +16,32 @@ spec:
   ingress:
     # Allow only from security namespace pods
     - from:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: security
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: security
       ports:
-      - protocol: TCP
-        port: 5432
+        - protocol: TCP
+          port: 5432
     # Allow from cnpg-system for operator management
     - from:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: cnpg-system
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cnpg-system
       ports:
-      - protocol: TCP
-        port: 5432
+        - protocol: TCP
+          port: 5432
   egress:
     # Allow DNS
     - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: kube-system
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
       ports:
-      - protocol: UDP
-        port: 53
+        - protocol: UDP
+          port: 53
     # Allow backups (if needed)
     - to:
-      - namespaceSelector: {}
+        - namespaceSelector: {}
       ports:
-      - protocol: TCP
-        port: 443
+        - protocol: TCP
+          port: 443

@@ -9,7 +9,7 @@ metadata:
   labels:
     app.kubernetes.io/name: immich-windows-backup
 data:
-  config.yaml: |
+  config.yaml: |-
     # gorestic-homelab configuration for Immich Windows Backup
 
     # Restic repository configuration

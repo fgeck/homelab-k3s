@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: configarr
 data:
-  config.yml: |
+  config.yml: |-
     trashGuideUrl: https://github.com/TRaSH-Guides/Guides
     recyclarrConfigUrl: https://github.com/recyclarr/config-templates
 

@@ -1,3 +1,4 @@
+---
 nameOverride: uptime-kuma
 fullnameOverride: uptime-kuma
 namespaceOverride: monitoring

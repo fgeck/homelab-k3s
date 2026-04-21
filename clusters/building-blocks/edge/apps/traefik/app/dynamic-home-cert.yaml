@@ -5,7 +5,7 @@ metadata:
   name: dynamic-home-cert
   namespace: edge
 data:
-  dynamic-home-cert.yaml: |
+  dynamic-home-cert.yaml: |-
     tls:
       certificates:
         - certFile: "/certs/tls.crt"
