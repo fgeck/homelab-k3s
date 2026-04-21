@@ -112,8 +112,13 @@ data:
         <<: *defaults-home
         url: https://spools.home.${DOMAIN_NAME}
       - name: Better Bahn (bahn.home)
-        <<: *defaults-home
+        group: 2-Home
+        interval: 15s
         url: https://bahn.home.${DOMAIN_NAME}
+        conditions:
+          - "[STATUS] == 302"
+        alerts:
+          - type: telegram
       - name: Gatus (status.home)
         <<: *defaults-home
         url: https://status.home.${DOMAIN_NAME}
