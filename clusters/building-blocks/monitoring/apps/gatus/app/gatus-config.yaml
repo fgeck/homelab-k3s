@@ -26,6 +26,9 @@ data:
           send-on-resolved: true
         token: $${TELEGRAM_TOKEN}
         id: $${TELEGRAM_CHAT_ID}
+      pushover:
+        application-token: $${H_CLOUD_PUSHOVER_APP_TOKEN}
+        user-key: $${H_CLOUD_PUSHOVER_USER_KEY}
 
     default-external-endpoint: &defaults-external
       group: 1-External
@@ -129,3 +132,18 @@ data:
       - name: Beszel (infra.home)
         <<: *defaults-home
         url: https://infra.home.${DOMAIN_NAME}
+
+    # ============================================
+    # H-Cloud (heartbeat/external endpoints)
+    # ============================================
+    external-endpoints:
+      - name: h-cloud-cluster
+        group: 3-H-Cloud
+        token: $${H_CLOUD_PUSHOVER_CLUSTER_ENDPOINT_TOKEN}
+        heartbeat:
+          interval: 15m
+        alerts:
+          - type: pushover
+            send-on-resolved: true
+            failure-threshold: 10
+            success-threshold: 1

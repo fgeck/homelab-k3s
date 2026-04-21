@@ -40,6 +40,21 @@ spec:
                 secretKeyRef:
                   name: gatus-secret
                   key: TELEGRAM_CHAT_ID
+            - name: H_CLOUD_PUSHOVER_APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-secret
+                  key: H_CLOUD_PUSHOVER_APP_TOKEN
+            - name: H_CLOUD_PUSHOVER_USER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-secret
+                  key: H_CLOUD_PUSHOVER_USER_KEY
+            - name: H_CLOUD_PUSHOVER_CLUSTER_ENDPOINT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-secret
+                  key: H_CLOUD_PUSHOVER_CLUSTER_ENDPOINT_TOKEN
           volumeMounts:
             - name: config
               mountPath: /config

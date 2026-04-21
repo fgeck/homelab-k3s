@@ -12,11 +12,25 @@ spec:
     - websecure
     - web
   routes:
+    # Public heartbeat push endpoint — no auth, accessible from internet
+    - kind: Rule
+      match: Host(`status.${DOMAIN_NAME}`) && PathPrefix(`/api/v1/endpoints/`)
+      priority: 10
+      services:
+        - kind: Service
+          name: gatus
+          namespace: monitoring
+          passHostHeader: true
+          port: 8080
+          scheme: http
+    # Dashboard UI — LAN-only, behind Pocket-ID OIDC
     - kind: Rule
       match: Host(`status.home.${DOMAIN_NAME}`)
       priority: 10
       middlewares:
         - name: local-ipallowlist
+          namespace: edge
+        - name: pocket-id-oidc
           namespace: edge
       services:
         - kind: Service
