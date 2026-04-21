@@ -9,3 +9,5 @@ resources:
   - ./gateway-only-middleware.yaml
   - ./ssl-header-middleware.yaml
   - ./websocket-middleware.yaml
+  - ./pocket-id-oidc-secret.yaml
+  - ./pocket-id-oidc-middleware.yaml
