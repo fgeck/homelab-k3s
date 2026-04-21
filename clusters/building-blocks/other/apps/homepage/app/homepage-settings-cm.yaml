@@ -36,7 +36,7 @@ data:
         columns: 3
       Apps:
         style: row
-        columns: 2
+        columns: 3
       Media:
         style: row
         columns: 2
@@ -161,15 +161,14 @@ data:
               url: https://192.168.178.10:8006
               username: '{{HOMEPAGE_VAR_PROXMOX_USERNAME}}'
               password: '{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}'
-        # - Portainer:
-        #     href: https://portainer.home.geckeler.dev/
-        #     icon: portainer.png
-        #     siteMonitor: https://192.168.178.100:9443/ #https://portainer.home.geckeler.dev/
-        #     widget:
-        #       type: portainer
-        #       url: https://192.168.178.100:9443
-        #       env: 2
-        #       key: '{{HOMEPAGE_VAR_PORTAINER_KEY}}'
+        - Flux:
+            href: https://flux.home.geckeler.dev
+            icon: flux-cd.png
+            siteMonitor: https://flux.home.geckeler.dev
+        - Pocket ID:
+            href: https://id.geckeler.dev
+            icon: pocket-id.png
+            siteMonitor: http://pocket-id.security.svc.cluster.local:1411
         - Gatus:
             href: https://status.home.geckeler.dev
             icon: gatus.png
@@ -236,6 +235,22 @@ data:
               type: paperlessngx
               url: https://docs.geckeler.dev
               key: '{{HOMEPAGE_VAR_PAPERLESS_KEY}}'
+        - Vaultwarden:
+            href: https://vw.geckeler.dev
+            icon: vaultwarden.png
+            siteMonitor: http://vaultwarden.security.svc.cluster.local:80
+        - Donetick:
+            href: https://todo.geckeler.dev
+            icon: donetick.png
+            siteMonitor: http://donetick.default.svc.cluster.local:2021
+        - Better Bahn:
+            href: https://bahn.home.geckeler.dev
+            icon: mdi-Train
+            siteMonitor: http://better-bahn.default.svc.cluster.local:3000
+        - Obsidian Sync:
+            href: https://obsidian.geckeler.dev
+            icon: obsidian.png
+            siteMonitor: https://obsidian.geckeler.dev
     - Media:
         - Immich:
             href: https://photos.geckeler.dev/
