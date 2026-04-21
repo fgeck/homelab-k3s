@@ -43,14 +43,6 @@ data:
       alerts:
         - type: telegram
 
-    default-home-oidc-endpoint: &defaults-home-oidc
-      group: 2-Home
-      interval: 15s
-      conditions:
-        - "[STATUS] == 302"
-      alerts:
-        - type: telegram
-
     endpoints:
       # ============================================
       # External Services (*.DOMAIN_NAME via Cloudflare)
@@ -95,7 +87,7 @@ data:
       # Home Services (*.home.DOMAIN_NAME - internal only)
       # ============================================
       - name: Homepage (my.home)
-        <<: *defaults-home-oidc
+        <<: *defaults-home
         url: https://my.home.${DOMAIN_NAME}
       - name: Immich (photos.home)
         <<: *defaults-home
