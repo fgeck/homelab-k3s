@@ -23,6 +23,13 @@ spec:
               value: "default-postgres"
             - name: PROXMOX_BACKUP_SERVER_NAMESPACE
               value: "k3s/databases"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
             envFrom:
             - secretRef:
                 name: default-postgres-backup-secret

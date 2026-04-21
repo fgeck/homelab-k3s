@@ -16,6 +16,13 @@ spec:
               image: ghcr.io/raydak-labs/configarr:1.27.0
               imagePullPolicy: Always
               tty: true # for color support
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
               volumeMounts:
                 - mountPath: /app/repos # Cache repositories
                   name: app-data

@@ -21,6 +21,13 @@ spec:
               value: "/pvcs"
             - name: PROXMOX_BACKUP_SERVER_NAMESPACE
               value: "k3s/pvcs"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
             envFrom:
             - secretRef:
                 name: pvc-backup-secret
