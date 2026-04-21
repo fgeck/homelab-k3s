@@ -33,6 +33,13 @@ spec:
               envFrom:
               - secretRef:
                   name: vaultwarden-backup-secret
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
               volumeMounts:
                 - name: vaultwarden
                   mountPath: /bitwarden/data

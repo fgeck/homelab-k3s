@@ -30,6 +30,13 @@ spec:
         env:
         - name: TUNNEL_TRANSPORT_PROTOCOL
           value: "quic" # alternatice is http2
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
         livenessProbe:
           httpGet:
             # Cloudflared has a /ready endpoint which returns 200 if and only if

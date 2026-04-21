@@ -27,6 +27,13 @@ spec:
           env:
             - name: TZ
               value: "Europe/Berlin"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
           readinessProbe:
             httpGet:
               path: /
