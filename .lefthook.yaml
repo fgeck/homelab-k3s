@@ -1,0 +1,6 @@
+pre-commit:
+  parallel: true
+  commands:
+    yamlfmt:
+      glob: "*.yaml"
+      run: yamlfmt {staged_files}

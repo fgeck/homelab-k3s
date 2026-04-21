@@ -1,3 +1,4 @@
+---
 alloy:
   controller:
     replicas: 1
@@ -24,10 +25,10 @@ serviceMonitor:
 mounts:
   varlog: true
   dockersock: false
-  
+
 rbac:
   create: true
-  
+
 # Additional RBAC rules for kubelet metrics access
 extraObjects:
   - apiVersion: rbac.authorization.k8s.io/v1
@@ -35,11 +36,21 @@ extraObjects:
     metadata:
       name: grafana-alloy-kubelet
     rules:
-      - apiGroups: [""]
-        resources: ["nodes", "nodes/metrics", "nodes/proxy"]
-        verbs: ["get", "list", "watch"]
-      - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
-        verbs: ["get"]
+      - apiGroups:
+          - ""
+        resources:
+          - "nodes"
+          - "nodes/metrics"
+          - "nodes/proxy"
+        verbs:
+          - "get"
+          - "list"
+          - "watch"
+      - nonResourceURLs:
+          - "/metrics"
+          - "/metrics/cadvisor"
+        verbs:
+          - "get"
   - apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRoleBinding
     metadata:

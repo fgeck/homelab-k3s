@@ -1,3 +1,4 @@
+---
 env:
   - name: INFLUX_TOKEN
     valueFrom:

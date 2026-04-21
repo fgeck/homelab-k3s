@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,90 +31,90 @@ spec:
           - 104 # render group GID inside the k3s VM — required for /dev/dri/renderD128 access
       automountServiceAccountToken: false
       containers:
-      - name: main
-        env:
-        - name: TZ
-          value: Europe/Berlin
-        - name: HOSTNAME
-          value: "jellyfin"
-        - name: JELLYFIN_PublishedServerUrl
-          value: https://watch.home.${DOMAIN_NAME}
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        image: jellyfin/jellyfin:2025062305
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /health
-            port: 8096
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        ports:
-        - containerPort: 8096
-          name: main
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 5
-          httpGet:
-            path: /health
-            port: 8096
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 2
-          timeoutSeconds: 5
-        resources:
-          limits:
-            cpu: "4"
-            memory: 10Gi
-          requests:
-            cpu: 100m
-            memory: 1Gi
-        startupProbe:
-          failureThreshold: 60
-          httpGet:
-            path: /health
-            port: 8096
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 2
-        volumeMounts:
-        - mountPath: /config
-          name: jellyfin-config
-        - mountPath: /cache
-          name: jellyfin-cache
-        - mountPath: /media
-          name: media
-        - mountPath: /dev/dri/renderD128
-          name: render-device
-        securityContext:
-          privileged: true
-          capabilities:
-            drop:
-              - ALL
+        - name: main
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: HOSTNAME
+              value: "jellyfin"
+            - name: JELLYFIN_PublishedServerUrl
+              value: https://watch.home.${DOMAIN_NAME}
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          image: jellyfin/jellyfin:2025062305
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 8096
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 8096
+              name: main
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 8096
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "4"
+              memory: 10Gi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: 8096
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          volumeMounts:
+            - mountPath: /config
+              name: jellyfin-config
+            - mountPath: /cache
+              name: jellyfin-cache
+            - mountPath: /media
+              name: media
+            - mountPath: /dev/dri/renderD128
+              name: render-device
+          securityContext:
+            privileged: true
+            capabilities:
+              drop:
+                - ALL
       dnsConfig:
         options:
-        - name: ndots
-          value: "1"
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: jellyfin-config
-        persistentVolumeClaim:
-          claimName: jellyfin-config-pvc
-      - name: jellyfin-cache
-        persistentVolumeClaim:
-          claimName: jellyfin-cache-pvc
-      - name: media
-        hostPath:
-         path: /mnt/data/media
-         type: Directory
-      - name: render-device
-        hostPath:
-          path: /dev/dri/renderD128
-          type: CharDevice
+        - name: jellyfin-config
+          persistentVolumeClaim:
+            claimName: jellyfin-config-pvc
+        - name: jellyfin-cache
+          persistentVolumeClaim:
+            claimName: jellyfin-cache-pvc
+        - name: media
+          hostPath:
+            path: /mnt/data/media
+            type: Directory
+        - name: render-device
+          hostPath:
+            path: /dev/dri/renderD128
+            type: CharDevice

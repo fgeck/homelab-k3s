@@ -34,7 +34,9 @@ spec:
           initContainers:
             - name: download-immich-go
               image: alpine:latest
-              command: ["/bin/sh", "-c"]
+              command:
+                - "/bin/sh"
+                - "-c"
               args:
                 - |
                   set -e
@@ -52,7 +54,9 @@ spec:
           containers:
             - name: immich-go
               image: alpine:latest
-              command: ["/bin/sh", "-c"]
+              command:
+                - "/bin/sh"
+                - "-c"
               args:
                 - |
                   send_telegram() {
@@ -61,7 +65,7 @@ spec:
                       wget -q -O /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=Markdown&text=${MESSAGE}"
                     fi
                   }
-                  
+
                   # Run immich-go upload
                   /opt/bin/immich-go upload from-icloud \
                     --server="$IMMICH_SERVER_URL" \
@@ -77,13 +81,13 @@ spec:
                     --client-timeout=60m \
                     --no-ui \
                     /data
-                  
+
                   EXIT_CODE=$?
                   if [ $EXIT_CODE -ne 0 ]; then
                     send_telegram "Exit code $EXIT_CODE"
                     exit $EXIT_CODE
                   fi
-                  
+
                   # Cleanup files older than 48h (keep recent for icloudpd --until-found)
                   echo "Cleaning up files older than 48 hours..."
                   find /data -type f -mtime +2 -delete

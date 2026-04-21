@@ -1,3 +1,4 @@
+---
 # for raw logs format: json or cri (docker|containerd)
 container_runtime: containerd
 config:
@@ -137,9 +138,11 @@ lapi:
       envFrom:
         - secretRef:
             name: crowdsec-init-secret-env
-      command: ["/bin/sh", "-c"]
+      command:
+        - "/bin/sh"
+        - "-c"
       args:
-        - |
+        - |-
           #!/bin/bash
 
           # Use environment variables provided

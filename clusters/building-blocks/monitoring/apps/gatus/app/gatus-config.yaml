@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/name: gatus
 data:
-  config.yaml: |
+  config.yaml: |-
     storage:
       type: sqlite
       path: /data/gatus.db

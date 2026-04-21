@@ -7,7 +7,7 @@ metadata:
   labels:
     grafana_dashboard: "1"
 data:
-  node-monitoring.json: |
+  node-monitoring.json: |-
     {
       "annotations": {
         "list": [

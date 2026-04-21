@@ -1,3 +1,4 @@
+---
 nameOverride: traefik
 fullnameOverride: traefik
 namespaceOverride: edge
@@ -34,8 +35,8 @@ logs:
     fields:
       headers:
         defaultMode: keep
-    #     names:
-    #         User-Agent: keep # log user agent strings
+        #     names:
+        #         User-Agent: keep # log user agent strings
 experimental:
   plugins:
     bouncer:
@@ -64,11 +65,11 @@ ports:
     port: 80
     expose:
       enabled: true
-    # redirections:
-    #   entryPoint:
-    #     to: websecure
-    #     scheme: https
-    #     permanent: true
+      # redirections:
+      #   entryPoint:
+      #     to: websecure
+      #     scheme: https
+      #     permanent: true
   websecure:
     port: 443
     expose:
@@ -92,8 +93,11 @@ ingressRoute:
   dashboard:
     enabled: true
     matchRule: Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/dashboard`) || Host(`traefik.home.${DOMAIN_NAME}`) && PathPrefix(`/api`)
-    middlewares: [{ name: local-ipallowlist, namespace: edge }]
-    entryPoints: [websecure, web]
+    middlewares:
+      - {name: local-ipallowlist, namespace: edge}
+    entryPoints:
+      - websecure
+      - web
     services:
       - name: api@internal
         kind: TraefikService

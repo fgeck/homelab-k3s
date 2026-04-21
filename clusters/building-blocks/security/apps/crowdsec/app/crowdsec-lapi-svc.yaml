@@ -13,4 +13,4 @@ spec:
     - name: lapi
       port: 8080
       targetPort: 8080
-      nodePort: 30080  # Pick a high port
+      nodePort: 30080 # Pick a high port

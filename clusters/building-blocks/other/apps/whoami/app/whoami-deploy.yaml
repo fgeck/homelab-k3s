@@ -31,7 +31,8 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false # Prevent privilege escalation
             capabilities:
-              drop: ["ALL"] # Drop all capabilities
+              drop:
+                - "ALL"
             # runAsNonRoot: true # Ensure the container runs as non-root
-            seccompProfile:
+            seccompProfile: # Drop all capabilities
               type: RuntimeDefault # Use the default seccomp profile

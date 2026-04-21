@@ -1,3 +1,4 @@
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -11,16 +12,16 @@ spec:
     - web
     - websocket
   routes:
-  - kind: Rule
-    match: Host(`print.home.${DOMAIN_NAME}`)
-    middlewares:
-    - name: websocket
-      namespace: edge
-    priority: 10
-    services:
-    - kind: Service
-      name: printer-k1c
-      namespace: default
-      passHostHeader: true
-      port: 4409
-      scheme: http
+    - kind: Rule
+      match: Host(`print.home.${DOMAIN_NAME}`)
+      middlewares:
+        - name: websocket
+          namespace: edge
+      priority: 10
+      services:
+        - kind: Service
+          name: printer-k1c
+          namespace: default
+          passHostHeader: true
+          port: 4409
+          scheme: http

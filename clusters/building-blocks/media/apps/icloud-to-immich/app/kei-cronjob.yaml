@@ -34,7 +34,9 @@ spec:
           containers:
             - name: kei
               image: ghcr.io/rhoopr/kei:latest
-              command: ["/bin/sh", "-c"]
+              command:
+                - "/bin/sh"
+                - "-c"
               args:
                 - |
                   cat > /tmp/notify.sh << 'NOTIFY_SCRIPT'

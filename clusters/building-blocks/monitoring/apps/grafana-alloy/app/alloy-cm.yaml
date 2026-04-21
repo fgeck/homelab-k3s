@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: grafana-alloy-config
 data:
-  config.yaml: |
+  config.yaml: |-
     // This block discovers Kubernetes services. We'll use this to find node-exporter and kube-state-metrics.
     discovery.kubernetes "services" {
       role = "service"

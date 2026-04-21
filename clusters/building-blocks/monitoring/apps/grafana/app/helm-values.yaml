@@ -1,3 +1,4 @@
+---
 podAnnotations:
   reloader.stakater.com/auto: "true"
 annotations:

@@ -1,3 +1,4 @@
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -22,17 +23,18 @@ spec:
             - name: vaultwarden-backup
               image: ttionya/vaultwarden-backup:1.26.6
               imagePullPolicy: Always
-              args: [ "backup" ]
+              args:
+                - "backup"
               env:
-              - name: TIMEZONE
-                value: Europe/Berlin
-              - name: BACKUP_KEEP_DAYS
-                value: "14"
-              - name: RCLONE_REMOTE_DIR
-                value: "Backups/vaultwarden"
+                - name: TIMEZONE
+                  value: Europe/Berlin
+                - name: BACKUP_KEEP_DAYS
+                  value: "14"
+                - name: RCLONE_REMOTE_DIR
+                  value: "Backups/vaultwarden"
               envFrom:
-              - secretRef:
-                  name: vaultwarden-backup-secret
+                - secretRef:
+                    name: vaultwarden-backup-secret
               resources:
                 requests:
                   cpu: 10m

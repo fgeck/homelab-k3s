@@ -5,7 +5,7 @@ metadata:
   name: pvc-backup
   namespace: default
   annotations:
-     kustomize.toolkit.fluxcd.io/substitute: disabled
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   schedule: "20 23 * * *"
   jobTemplate:
@@ -13,30 +13,32 @@ spec:
       template:
         spec:
           containers:
-          - name: pbs-k8s-backup
-            image: ghcr.io/fgeck/pbs-k8s-backup:latest 
-            command: ["/entrypoint.sh", "pvcs"]
-            env:
-            - name: PVC_HOST_PATH
-              value: "/pvcs"
-            - name: PROXMOX_BACKUP_SERVER_NAMESPACE
-              value: "k3s/pvcs"
-            resources:
-              requests:
-                cpu: 50m
-                memory: 64Mi
-              limits:
-                cpu: 500m
-                memory: 512Mi
-            envFrom:
-            - secretRef:
-                name: pvc-backup-secret
-            volumeMounts:
-            - name: pvc-path
-              mountPath: /pvcs
+            - name: pbs-k8s-backup
+              image: ghcr.io/fgeck/pbs-k8s-backup:latest
+              command:
+                - "/entrypoint.sh"
+                - "pvcs"
+              env:
+                - name: PVC_HOST_PATH
+                  value: "/pvcs"
+                - name: PROXMOX_BACKUP_SERVER_NAMESPACE
+                  value: "k3s/pvcs"
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              envFrom:
+                - secretRef:
+                    name: pvc-backup-secret
+              volumeMounts:
+                - name: pvc-path
+                  mountPath: /pvcs
           restartPolicy: Never
           volumes:
-          - name: pvc-path
-            hostPath: 
-              path: /opt/k3s/data
-              type: Directory
+            - name: pvc-path
+              hostPath:
+                path: /opt/k3s/data
+                type: Directory

@@ -1,3 +1,4 @@
+---
 adminUser:
   organization: "homelab-k3s"
   bucket: "default"
@@ -5,11 +6,11 @@ adminUser:
   retention_policy: "0s"
   password: ${INFLUXDB2_ADMIN_PASSWORD}
   token: ${INFLUXDB2_ADMIN_TOKEN}
-  
+
 initScripts:
   enabled: true
   scripts:
-    init.sh: |+
+    init.sh: |
       #!/bin/bash
       export ORG=homelab-k3s
       export TELEGRAF_BUCKET=telegraf
@@ -20,7 +21,7 @@ initScripts:
 
       influx bucket create -n telegraf -o $ORG -r 48h
       TELEGRAF_BUCKET_ID=$(influx bucket list --org "$ORG" | grep $TELEGRAF_BUCKET | awk '{print $1}')
-      
+
       influx user create -n $TELEGRAF_USER -p $TELEGRAF_PASSWORD -o $ORG --token ${INFLUXDB2_ADMIN_TOKEN}
       influx user create -n $GRAFANA_USER -p $GRAFANA_PASSWORD -o $ORG --token ${INFLUXDB2_ADMIN_TOKEN}
 
@@ -34,7 +35,7 @@ initScripts:
         --write-telegrafs \
         --token ${INFLUXDB2_ADMIN_TOKEN} \
         --description "access token for user: $TELEGRAF_USER"
-        
+
       influx auth create \
         --org "$ORG" \
         --user "$GRAFANA_USER" \

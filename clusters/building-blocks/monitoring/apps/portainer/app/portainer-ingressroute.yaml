@@ -1,3 +1,4 @@
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -10,13 +11,13 @@ spec:
     - websecure
     - web
   routes:
-  - kind: Rule
-    match: Host(`portainer.home.${DOMAIN_NAME}`)
-    priority: 10
-    services:
-    - kind: Service
-      name: portainer
-      namespace: monitoring
-      passHostHeader: true
-      port: 9000
-      scheme: http
+    - kind: Rule
+      match: Host(`portainer.home.${DOMAIN_NAME}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: portainer
+          namespace: monitoring
+          passHostHeader: true
+          port: 9000
+          scheme: http

@@ -10,11 +10,11 @@ cluster:
   # Single instance - homelab environment
   instances: 1
 
-  imageName: ""  # Will use default PostgreSQL 16 image
+  imageName: "" # Will use default PostgreSQL 16 image
 
   storage:
     size: 2Gi
-    storageClass: ""  # Uses default storage class
+    storageClass: "" # Uses default storage class
 
   # Resource limits
   resources:
@@ -107,5 +107,5 @@ backups:
   retentionPolicy: "30d"
   scheduledBackups:
     - name: daily-backup
-      schedule: "0 10 0 * * *"  # 10 minutes after default-postgres
+      schedule: "0 10 0 * * *" # 10 minutes after default-postgres
       backupOwnerReference: self

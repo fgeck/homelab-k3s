@@ -1,3 +1,4 @@
+---
 # Disable bundled exporters, as they will be deployed separately
 alertmanager:
   enabled: false
@@ -41,7 +42,7 @@ server:
     scrape_timeout: 10s
 
   # Reduce cardinality and optimize storage
-  extraScrapeConfigs: |
+  extraScrapeConfigs: |-
     - job_name: 'prometheus'
       static_configs:
         - targets: ['localhost:9090']

@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -97,7 +98,7 @@ data:
           cpu: true
           memory: true
           showLabel: true
-  services.yaml: |
+  services.yaml: |-
     - Calendar:
         - Calendar:
             widget:

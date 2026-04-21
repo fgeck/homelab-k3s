@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,15 +12,15 @@ spec:
   selector:
     app.kubernetes.io/name: samba
   ports:
-  - name: netbios-ns
-    port: 137
-    protocol: UDP
-  - name: netbios-dgm
-    port: 138
-    protocol: UDP
-  - name: netbios-ssn
-    port: 139
-    protocol: TCP
-  - name: smb
-    port: 445
-    protocol: TCP
+    - name: netbios-ns
+      port: 137
+      protocol: UDP
+    - name: netbios-dgm
+      port: 138
+      protocol: UDP
+    - name: netbios-ssn
+      port: 139
+      protocol: TCP
+    - name: smb
+      port: 445
+      protocol: TCP
