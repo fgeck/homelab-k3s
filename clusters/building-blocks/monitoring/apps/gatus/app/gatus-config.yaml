@@ -65,9 +65,6 @@ data:
       - name: Pocket ID (id)
         <<: *defaults-external
         url: https://id.${DOMAIN_NAME}
-      - name: TinyAuth (auth)
-        <<: *defaults-external
-        url: https://auth.${DOMAIN_NAME}
       - name: Calibre-Web (books)
         <<: *defaults-external
         url: https://books.${DOMAIN_NAME}

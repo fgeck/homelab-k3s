@@ -20,7 +20,6 @@ resources:
   - meilisearch.yaml
   - metrics-server.yaml
   - portainer.yaml
-  - tinyauth.yaml
   - stakater.yaml
   - traefik.yaml
   - uptime-kuma.yaml
