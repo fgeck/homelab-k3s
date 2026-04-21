@@ -116,7 +116,7 @@ data:
         interval: 15s
         url: https://bahn.home.${DOMAIN_NAME}
         conditions:
-          - "[STATUS] == 302"
+          - "[STATUS] == 401"
         alerts:
           - type: telegram
       - name: Gatus (status.home)
