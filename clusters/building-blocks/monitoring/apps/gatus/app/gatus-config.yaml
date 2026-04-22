@@ -19,16 +19,9 @@ data:
       description: Service Health Dashboard
 
     alerting:
-      telegram:
-        default-alert:
-          failure-threshold: 3
-          success-threshold: 2
-          send-on-resolved: true
-        token: $${TELEGRAM_TOKEN}
-        id: $${TELEGRAM_CHAT_ID}
       pushover:
-        application-token: $${H_CLOUD_PUSHOVER_APP_TOKEN}
-        user-key: $${H_CLOUD_PUSHOVER_USER_KEY}
+        application-token: $${PUSHOVER_STATUS_TOKEN}
+        user-key: $${PUSHOVER_USER_KEY}
 
     default-external-endpoint: &defaults-external
       group: 1-External
@@ -37,7 +30,7 @@ data:
         - "[STATUS] == 200"
         - "[CERTIFICATE_EXPIRATION] > 14d"
       alerts:
-        - type: telegram
+        - type: pushover
 
     default-home-endpoint: &defaults-home
       group: 2-Home
@@ -45,7 +38,7 @@ data:
       conditions:
         - "[STATUS] == 200"
       alerts:
-        - type: telegram
+        - type: pushover
 
     endpoints:
       # ============================================
@@ -82,7 +75,7 @@ data:
         conditions:
           - "[STATUS] < 500"
         alerts:
-          - type: telegram
+          - type: pushover
 
       # ============================================
       # Home Services (*.home.DOMAIN_NAME - internal only)
@@ -122,7 +115,7 @@ data:
         conditions:
           - "[STATUS] == 401"
         alerts:
-          - type: telegram
+          - type: pushover
       - name: Gatus (status.home)
         <<: *defaults-home
         url: https://status.home.${DOMAIN_NAME}

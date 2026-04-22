@@ -44,12 +44,13 @@ spec:
                   #!/bin/sh
                   case "$KEI_EVENT" in
                     2fa_required|sync_failed|session_expired)
-                      if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
-                        curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-                          -F "chat_id=${TELEGRAM_CHAT_ID}" \
-                          -F "parse_mode=Markdown" \
-                          -F "text=⚠️ *kei: ${KEI_EVENT}*
-                  ${KEI_MESSAGE}" > /dev/null || true
+                      if [ -n "$PUSHOVER_ALERTS_TOKEN" ] && [ -n "$PUSHOVER_USER_KEY" ]; then
+                        curl -s -X POST "https://api.pushover.net/1/messages.json" \
+                          -F "token=${PUSHOVER_ALERTS_TOKEN}" \
+                          -F "user=${PUSHOVER_USER_KEY}" \
+                          -F "priority=1" \
+                          -F "title=kei: ${KEI_EVENT}" \
+                          -F "message=${KEI_MESSAGE}" > /dev/null || true
                       fi
                       ;;
                   esac

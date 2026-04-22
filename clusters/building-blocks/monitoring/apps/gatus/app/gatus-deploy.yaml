@@ -30,27 +30,16 @@ spec:
           env:
             - name: GATUS_CONFIG_PATH
               value: /config
-            - name: TELEGRAM_TOKEN
+            - name: PUSHOVER_STATUS_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: gatus-secret
-                  key: TELEGRAM_TOKEN
-            - name: TELEGRAM_CHAT_ID
+                  key: PUSHOVER_STATUS_TOKEN
+            - name: PUSHOVER_USER_KEY
               valueFrom:
                 secretKeyRef:
                   name: gatus-secret
-                  key: TELEGRAM_CHAT_ID
-            - name: H_CLOUD_PUSHOVER_APP_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: gatus-secret
-                  key: H_CLOUD_PUSHOVER_APP_TOKEN
-            - name: H_CLOUD_PUSHOVER_USER_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: gatus-secret
-                  key: H_CLOUD_PUSHOVER_USER_KEY
-            - name: H_CLOUD_PUSHOVER_CLUSTER_ENDPOINT_TOKEN
+                  key: PUSHOVER_USER_KEY
               valueFrom:
                 secretKeyRef:
                   name: gatus-secret

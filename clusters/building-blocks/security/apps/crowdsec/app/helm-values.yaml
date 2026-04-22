@@ -56,8 +56,11 @@ config:
       log_level: info
       format: |
         {
-        "chat_id": "${TELEGRAM_BOT_CHAT_ID}",
-        "text": "
+        "token": "${PUSHOVER_STATUS_TOKEN}",
+        "user": "${PUSHOVER_USER_KEY}",
+        "title": "CrowdSec Alert",
+        "priority": "0",
+        "message": "
           {{range . -}}
           {{$alert := . -}}
           {{range .Decisions -}}
@@ -65,25 +68,9 @@ config:
           {{end -}}
           {{end -}}
         ",
-        "reply_markup": {
-            "inline_keyboard": [
-                {{ $arrLength := len . -}}
-                {{ range $i, $value := . -}}
-                {{ $V := $value.Source.Value -}}
-                [
-                    {
-                        "text": "See {{ $V }} on shodan.io",
-                        "url": "https://www.shodan.io/host/{{ $V -}}"
-                    },
-                    {
-                        "text": "See {{ $V }} on crowdsec.net",
-                        "url": "https://app.crowdsec.net/cti/{{ $V -}}"
-                    }
-                ]{{if lt $i ( sub $arrLength 1) }},{{end }}
-            {{end -}}
-            ]
+        "html": 0
         }
-      url: https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage
+      url: https://api.pushover.net/1/messages.json
       method: POST
       headers:
         Content-Type: "application/json"

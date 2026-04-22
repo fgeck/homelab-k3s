@@ -38,10 +38,14 @@ spec:
                 - "-c"
               args:
                 - |
-                  send_telegram() {
-                    if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
-                      MESSAGE="❌ *icloudpd-download failed*%0A%0AHost: $(hostname)%0ATime: $(date)%0AError: $1"
-                      wget -q -O /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=Markdown&text=${MESSAGE}"
+                  send_notification() {
+                    if [ -n "$PUSHOVER_ALERTS_TOKEN" ] && [ -n "$PUSHOVER_USER_KEY" ]; then
+                      curl -s -X POST "https://api.pushover.net/1/messages.json" \
+                        -F "token=${PUSHOVER_ALERTS_TOKEN}" \
+                        -F "user=${PUSHOVER_USER_KEY}" \
+                        -F "priority=1" \
+                        -F "title=icloudpd-download failed" \
+                        -F "message=Host: $(hostname)%0ATime: $(date)%0AError: $1" > /dev/null || true
                     fi
                   }
 
@@ -63,7 +67,7 @@ spec:
 
                   EXIT_CODE=$?
                   if [ $EXIT_CODE -ne 0 ]; then
-                    send_telegram "Exit code $EXIT_CODE"
+                    send_notification "Exit code $EXIT_CODE"
                     exit $EXIT_CODE
                   fi
               env:

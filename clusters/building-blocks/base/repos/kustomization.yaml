@@ -19,9 +19,9 @@ resources:
   - jetstack.yaml
   - meilisearch.yaml
   - metrics-server.yaml
-  - portainer.yaml
+  # - portainer.yaml  # inactive - replaced by Beszel
   - stakater.yaml
   - traefik.yaml
-  - uptime-kuma.yaml
+  # - uptime-kuma.yaml  # inactive - replaced by Gatus
   - prometheus-community.yaml
   - seerr.yaml

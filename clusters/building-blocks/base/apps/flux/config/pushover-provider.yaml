@@ -3,11 +3,9 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
 metadata:
-  name: telegram
+  name: pushover
   namespace: flux-system
 spec:
-  type: telegram
-  address: https://api.telegram.org
-  channel: "@${TELEGRAM_BOT_USER}"
+  type: pushover
   secretRef:
-    name: telegram-token
+    name: pushover-token
