@@ -26,6 +26,21 @@ spec:
                   value: "default-postgres"
                 - name: PROXMOX_BACKUP_SERVER_NAMESPACE
                   value: "k3s/databases"
+                - name: POSTGRES_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-vecto-cluster-superuser
+                      key: host
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-vecto-cluster-superuser
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-vecto-cluster-superuser
+                      key: password
               resources:
                 requests:
                   cpu: 50m
