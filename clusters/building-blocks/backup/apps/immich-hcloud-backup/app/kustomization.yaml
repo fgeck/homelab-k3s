@@ -1,0 +1,8 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./immich-hcloud-backup-cj.yaml
+  - ./immich-hcloud-backup-cm.yaml
+  - ./immich-hcloud-backup-secret.yaml
