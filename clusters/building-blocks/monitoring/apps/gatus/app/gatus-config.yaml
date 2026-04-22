@@ -140,3 +140,6 @@ data:
             send-on-resolved: true
             failure-threshold: 10
             success-threshold: 1
+            override:
+              application-token: $${H_CLOUD_PUSHOVER_APP_TOKEN}
+              user-key: $${H_CLOUD_PUSHOVER_USER_KEY}
