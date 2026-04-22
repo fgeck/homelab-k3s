@@ -30,7 +30,7 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
   - [x] Migrate password handling as per [migration doc](./docs/cloudnative-pg/CLOUDNATIVE-PG-PASSWORD-MANAGEMENT.md)
 - [x] ~~[Authentik](https://github.com/goauthentik/helm)~~
 - [x] [PocketID](https://pocket-id.org/docs) 
-- [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts) *Currently inactive - Machine is not exposed to the internert, external Services are exposed via Cloudflared*
+- [x] [Crowdsec](https://github.com/crowdsecurity/helm-charts)
 - [x] [Vaultwarden](https://github.com/guerzon/vaultwarden)
 - [x] ~~[Portainer](https://portainer.github.io/k8s/charts/portainer/)~~
 - [x] ~~[Uptime-Kuma](https://github.com/dirsigler/uptime-kuma-helm)~~
@@ -40,7 +40,6 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Jellyfin](https://jellyfin.org/)
 - [x] [Jellyseerr](https://docs.jellyseerr.dev/)
 - [x] [Radarr](https://radarr.video/)
-- [x] [Readarr](https://readarr.com/)
 - [x] [Sonarr](https://sonarr.tv/)
 - [x] [Configarr](https://github.com/raydak-labs/configarr)
 - [x] [Sabnzbd](https://sabnzbd.org/)
@@ -51,6 +50,8 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Samba](https://github.com/ServerContainers/samba)
 - [x] [Spoolman](https://github.com/Donkie/Spoolman)
 - [x] [Better-Bahn](https://github.com/l2xu/betterbahn)
+- [x] 3D Printer (Creality K1C) exposed via IngressRoute
+- [x] [Meilisearch](https://www.meilisearch.com/)
 - [x] [ICloud Photo Downloader](https://github.com/icloud-photos-downloader/icloud_photos_downloader) as a CronJob
 - [x] Pipeline from Icloud to Immich using [ICloud Photo Downloader](https://github.com/icloud-photos-downloader/icloud_photos_downloader) to extract the photos and [immich-go](https://github.com/simulot/immich-go) to upload them to immich
 - [x] [Immich](https://github.com/immich-app/immich-charts)
