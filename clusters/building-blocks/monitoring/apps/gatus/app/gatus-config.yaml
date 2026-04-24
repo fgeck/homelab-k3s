@@ -148,7 +148,7 @@ data:
         group: 3-H-Cloud
         token: $${H_CLOUD_PUSHOVER_CLUSTER_ENDPOINT_TOKEN}
         heartbeat:
-          interval: 15m
+          interval: 1m
         alerts:
           - type: pushover
             send-on-resolved: true
