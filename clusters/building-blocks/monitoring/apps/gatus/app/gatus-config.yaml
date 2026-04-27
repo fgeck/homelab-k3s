@@ -64,6 +64,11 @@ data:
       - name: Karakeep (bookmarks)
         <<: *defaults-external
         url: https://bookmarks.${DOMAIN_NAME}
+        alerts:
+          - type: pushover
+            failure-threshold: 20
+            success-threshold: 2
+            send-on-resolved: true
       - name: Vaultwarden (vw)
         <<: *defaults-external
         url: https://vw.${DOMAIN_NAME}
