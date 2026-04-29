@@ -156,7 +156,7 @@ Since CloudNativePG manages passwords, you can remove the database init logic:
 ```yaml
 initContainers:
   - name: init-postgres
-    image: bitnami/postgresql:17.6.0
+    image: postgres:17.9
     envFrom:
       - secretRef:
           name: paperless-init-db

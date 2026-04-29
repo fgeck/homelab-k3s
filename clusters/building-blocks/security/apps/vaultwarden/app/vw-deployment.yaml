@@ -94,7 +94,7 @@ spec:
             claimName: vaultwarden-pvc
       initContainers:
         - name: init-postgres
-          image: bitnami/postgresql:17.6.0
+          image: postgres:17.9
           envFrom:
             - secretRef:
                 name: vaultwarden-init-secret-env
