@@ -91,8 +91,8 @@ spec:
               name: jellyfin-cache
             - mountPath: /media
               name: media
-            - mountPath: /dev/dri/renderD128
-              name: render-device
+            # - mountPath: /dev/dri/renderD128
+            #   name: render-device
           securityContext:
             privileged: true
             capabilities:
@@ -115,7 +115,7 @@ spec:
           hostPath:
             path: /mnt/data/media
             type: Directory
-        - name: render-device
-          hostPath:
-            path: /dev/dri/renderD128
-            type: CharDevice
+        # - name: render-device
+        #   hostPath:
+        #     path: /dev/dri/renderD128
+        #     type: CharDevice
