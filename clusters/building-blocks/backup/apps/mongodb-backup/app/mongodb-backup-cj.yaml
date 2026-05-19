@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup
+  namespace: default
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  schedule: "0 22 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: pbs-k8s-backup
+              image: ghcr.io/fgeck/pbs-k8s-backup:latest
+              command:
+                - "/entrypoint.sh"
+                - "mongodb"
+              env:
+                - name: TZ
+                  value: "Europe/Berlin"
+                - name: BACKUP_NAME
+                  value: "mongodb"
+                - name: PROXMOX_BACKUP_SERVER_NAMESPACE
+                  value: "k3s/databases"
+                - name: MONGODB_HOST
+                  value: "mongodb.default.svc.cluster.local"
+                - name: MONGODB_PORT
+                  value: "27017"
+                - name: MONGODB_USER
+                  value: "root"
+                - name: MONGODB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mongodb-backup-secret
+                      key: MONGODB_ROOT_PASSWORD
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              envFrom:
+                - secretRef:
+                    name: mongodb-backup-secret
+              volumeMounts:
+                - name: temp-backup
+                  mountPath: /backup
+          restartPolicy: Never
+          volumes:
+            - name: temp-backup
+              emptyDir:
+                sizeLimit: 5Gi
