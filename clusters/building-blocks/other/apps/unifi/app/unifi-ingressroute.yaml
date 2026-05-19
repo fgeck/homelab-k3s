@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/traefik.io/ingressroute_v1alpha1.json
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: unifi
+  namespace: default
+  labels:
+    app.kubernetes.io/name: unifi
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`unifi.home.${DOMAIN_NAME}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: unifi
+          namespace: default
+          passHostHeader: true
+          port: 8443
+          scheme: https
+          serversTransport: unifi-transport
+  tls:
+    secretName: ${CERTIFICATE_NAME_HOME}
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/traefik.io/serverstransport_v1alpha1.json
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: unifi-transport
+  namespace: default
+  labels:
+    app.kubernetes.io/name: unifi
+spec:
+  insecureSkipVerify: true

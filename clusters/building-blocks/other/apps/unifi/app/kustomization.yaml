@@ -7,3 +7,4 @@ resources:
   - ./unifi-pvc.yaml
   - ./unifi-deploy.yaml
   - ./unifi-svc.yaml
+  - ./unifi-ingressroute.yaml
