@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-lb
+  namespace: default
+  labels:
+    app.kubernetes.io/name: unifi
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "192.168.178.142"
+  selector:
+    app.kubernetes.io/name: unifi
+  ports:
+    - name: web-https
+      port: 8443
+      protocol: TCP
+    - name: device-comm
+      port: 8080
+      protocol: TCP
+    - name: stun
+      port: 3478
+      protocol: UDP
+    - name: ap-discovery
+      port: 10001
+      protocol: UDP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+  namespace: default
+  labels:
+    app.kubernetes.io/name: unifi
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: unifi
+  ports:
+    - name: web-https
+      port: 8443
+      protocol: TCP
+    - name: device-comm
+      port: 8080
+      protocol: TCP

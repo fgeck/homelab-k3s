@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/deployment-apps-v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unifi
+  namespace: default
+  labels:
+    app.kubernetes.io/name: unifi
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: unifi
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: unifi
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: unifi
+          image: lscr.io/linuxserver/unifi-network-application:latest
+          envFrom:
+            - secretRef:
+                name: unifi-secret
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Berlin"
+            - name: MEM_LIMIT
+              value: "1024"
+            - name: MEM_STARTUP
+              value: "512"
+          ports:
+            - name: web-https
+              containerPort: 8443
+              protocol: TCP
+            - name: device-comm
+              containerPort: 8080
+              protocol: TCP
+            - name: stun
+              containerPort: 3478
+              protocol: UDP
+            - name: ap-discovery
+              containerPort: 10001
+              protocol: UDP
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1280Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: unifi-pvc

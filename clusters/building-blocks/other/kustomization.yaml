@@ -10,6 +10,7 @@ resources:
   - ./obsidian-sync/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./samba/ks.yaml
+  - ./unifi/ks.yaml
   - ./spoolman/ks.yaml
   - ./better-bahn/ks.yaml
   - ./donetick/ks.yaml
