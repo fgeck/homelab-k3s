@@ -13,7 +13,10 @@ data:
     else
       mongo_init_bin='mongo'
     fi
-    DB=$MONGO_DBNAME
+    dbname=$MONGO_DBNAME
+    dbstat="${dbname}_stat"
+    dbaudit="${dbname}_audit"
+    dbrestore="${dbname}_restore"
     "$mongo_init_bin" <<EOF
     use $MONGO_AUTHSOURCE
     db.auth("$MONGO_INITDB_ROOT_USERNAME", "$MONGO_INITDB_ROOT_PASSWORD")
@@ -22,10 +25,10 @@ data:
       pwd: "$MONGO_PASS",
       roles: [
         "clusterMonitor",
-        { db: "$DB", role: "dbOwner" },
-        { db: "${DB}_stat", role: "dbOwner" },
-        { db: "${DB}_audit", role: "dbOwner" },
-        { db: "${DB}_restore", role: "dbOwner" }
+        { db: "$dbname", role: "dbOwner" },
+        { db: "$dbstat", role: "dbOwner" },
+        { db: "$dbaudit", role: "dbOwner" },
+        { db: "$dbrestore", role: "dbOwner" }
       ]
     })
     EOF
