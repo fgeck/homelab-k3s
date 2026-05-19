@@ -37,6 +37,26 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secret
+                  key: MONGO_USER
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secret
+                  key: MONGO_PASS
+            - name: MONGO_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secret
+                  key: MONGO_DBNAME
+            - name: MONGO_AUTHSOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secret
+                  key: MONGO_AUTHSOURCE
           resources:
             requests:
               cpu: 100m
