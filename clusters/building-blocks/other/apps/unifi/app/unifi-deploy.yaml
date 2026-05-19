@@ -24,24 +24,26 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: unifi
-          image: lscr.io/linuxserver/unifi-network-application:latest
-          envFrom:
-            - secretRef:
-                name: unifi-secret
+          image: ghcr.io/lemker/unifi-os-server:latest
           env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: TZ
-              value: "Europe/Berlin"
-            - name: MEM_LIMIT
-              value: "1024"
-            - name: MEM_STARTUP
-              value: "512"
+            - name: UOS_SYSTEM_IP
+              value: "unifi.home.${DOMAIN_NAME}"
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/bash
+                  - -c
+                  - echo $HOST_IP host.docker.internal >> /etc/hosts
+          securityContext:
+            privileged: true
           ports:
-            - name: web-https
-              containerPort: 8443
+            - name: web
+              containerPort: 443
               protocol: TCP
             - name: device-comm
               containerPort: 8080
@@ -49,36 +51,54 @@ spec:
             - name: stun
               containerPort: 3478
               protocol: UDP
-            - name: ap-discovery
-              containerPort: 10001
+            - name: discovery
+              containerPort: 10003
               protocol: UDP
-          readinessProbe:
-            httpGet:
-              path: /status
-              port: 8443
-              scheme: HTTPS
-            initialDelaySeconds: 30
-            periodSeconds: 15
-            failureThreshold: 5
           livenessProbe:
             httpGet:
-              path: /status
-              port: 8443
+              path: /api/ping
+              port: 443
               scheme: HTTPS
             initialDelaySeconds: 60
-            periodSeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
             failureThreshold: 3
           resources:
             requests:
-              cpu: 100m
+              cpu: 200m
               memory: 512Mi
             limits:
-              cpu: 1000m
-              memory: 1280Mi
+              cpu: 2000m
+              memory: 2Gi
           volumeMounts:
-            - name: config
-              mountPath: /config
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+            - name: data
+              mountPath: /persistent
+              subPath: persistent
+            - name: data
+              mountPath: /var/log
+              subPath: log
+            - name: data
+              mountPath: /data
+              subPath: data
+            - name: data
+              mountPath: /srv
+              subPath: srv
+            - name: data
+              mountPath: /var/lib/unifi
+              subPath: unifi
+            - name: data
+              mountPath: /var/lib/mongodb
+              subPath: mongodb
+            - name: data
+              mountPath: /etc/rabbitmq/ssl
+              subPath: rabbitmq
       volumes:
-        - name: config
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+            type: Directory
+        - name: data
           persistentVolumeClaim:
             claimName: unifi-pvc

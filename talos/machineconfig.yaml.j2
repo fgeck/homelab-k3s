@@ -1,0 +1,135 @@
+---
+version: v1alpha1
+machine:
+  token: {{ data.machine.token | safe }}
+  ca:
+    crt: {{ data.machine.ca.crt | safe }}
+    key: {{ data.machine.ca.key | safe }}
+  features:
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: false
+      resolveMemberNames: true
+    kubePrism:
+      enabled: true
+      port: 7445
+    kubernetesTalosAPIAccess:
+      allowedKubernetesNamespaces:
+        - system-upgrade
+      allowedRoles:
+        - os:admin
+      enabled: true
+    rbac: true
+  kubelet:
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+    extraConfig:
+      serializeImagePulls: false
+      shutdownGracePeriod: 2m
+      shutdownGracePeriodCriticalPods: 1m
+    image: ghcr.io/siderolabs/kubelet:v1.36.0
+    nodeIP:
+      validSubnets:
+        - 192.168.178.20/29
+  time:
+    servers:
+      - time.cloudflare.com
+      - pool.ntp.org
+      - time.google.com
+  sysctls:
+    fs.inotify.max_user_instances: "8192"
+    fs.inotify.max_user_watches: "1048576"
+cluster:
+  token: {{ data.cluster.token | safe }}
+  ca:
+    crt: {{ data.cluster.ca.crt | safe }}
+    key: {{ data.cluster.ca.key | safe }}
+  clusterName: main
+  controlPlane:
+    endpoint: https://
+  discovery:
+    enabled: true
+    registries:
+      kubernetes:
+        disabled: true
+      service:
+        disabled: false
+  id: {{ data.cluster.id | safe }}
+  network:
+    cni:
+      name: none
+    dnsDomain: cluster.local
+    podSubnets:
+      - 10.42.0.0/16
+    serviceSubnets:
+      - 10.43.0.0/16
+  secret: {{ data.cluster.secret | safe }}
+  token: {{ data.cluster.token | safe }}
+  aggregatorCA:
+    crt: {{ data.cluster.aggregatorCA.crt | safe }}
+    key: {{ data.cluster.aggregatorCA.key | safe }}
+  allowSchedulingOnControlPlanes: true
+  apiServer:
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        - level: Metadata
+    disablePodSecurityPolicy: true
+    extraArgs:
+      enable-aggregator-routing: "true"
+      feature-gates: MutatingAdmissionPolicy=true
+      runtime-config: admissionregistration.k8s.io/v1beta1=true
+      service-cluster-ip-range: 10.43.0.0/16
+    image: registry.k8s.io/kube-apiserver:v1.36.0
+  controllerManager:
+    extraArgs:
+      bind-address: 0.0.0.0
+      cluster-cidr: 10.42.0.0/16
+      service-cluster-ip-range: 10.43.0.0/16
+      node-cidr-mask-size-ipv4: "24"
+    image: registry.k8s.io/kube-controller-manager:v1.36.0
+  coreDNS:
+    disabled: true
+  etcd:
+    advertisedSubnets:
+      - 10.254.0.0/24
+    ca:
+      crt: {{ data.cluster.etcd.ca.crt | safe }}
+      key: {{ data.cluster.etcd.ca.key | safe }}
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+  proxy:
+    disabled: true
+    image: registry.k8s.io/kube-proxy:v1.36.0
+  scheduler:
+    config:
+      apiVersion: kubescheduler.config.k8s.io/v1
+      kind: KubeSchedulerConfiguration
+      profiles:
+        - schedulerName: default-scheduler
+          plugins:
+            score:
+              disabled:
+                - name: ImageLocality
+          pluginConfig:
+            - name: PodTopologySpread
+              args:
+                defaultingType: List
+                defaultConstraints:
+                  - maxSkew: 1
+                    topologyKey: kubernetes.io/hostname
+                    whenUnsatisfiable: ScheduleAnyway
+    extraArgs:
+      bind-address: 0.0.0.0
+    image: registry.k8s.io/kube-scheduler:v1.36.0
+  secretboxEncryptionSecret: {{ data.cluster.secretboxencryptionsecret | safe }}
+  serviceAccount:
+    key: {{ data.serviceAccount.key | safe }}
+---
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 10m

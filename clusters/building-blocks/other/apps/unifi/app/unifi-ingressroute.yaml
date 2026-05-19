@@ -19,7 +19,7 @@ spec:
           name: unifi
           namespace: default
           passHostHeader: true
-          port: 8443
+          port: 443
           scheme: https
           serversTransport: unifi-transport
   tls:

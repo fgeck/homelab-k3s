@@ -13,8 +13,9 @@ spec:
   selector:
     app.kubernetes.io/name: unifi
   ports:
-    - name: web-https
-      port: 8443
+    - name: web
+      port: 11443
+      targetPort: 443
       protocol: TCP
     - name: device-comm
       port: 8080
@@ -22,8 +23,8 @@ spec:
     - name: stun
       port: 3478
       protocol: UDP
-    - name: ap-discovery
-      port: 10001
+    - name: discovery
+      port: 10003
       protocol: UDP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/service-v1.json
@@ -39,9 +40,6 @@ spec:
   selector:
     app.kubernetes.io/name: unifi
   ports:
-    - name: web-https
-      port: 8443
-      protocol: TCP
-    - name: device-comm
-      port: 8080
+    - name: web
+      port: 443
       protocol: TCP
