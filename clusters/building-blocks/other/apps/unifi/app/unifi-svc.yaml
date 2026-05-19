@@ -26,6 +26,9 @@ spec:
     - name: discovery
       port: 10003
       protocol: UDP
+    - name: ap-discovery
+      port: 10001
+      protocol: UDP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/service-v1.json
 apiVersion: v1
