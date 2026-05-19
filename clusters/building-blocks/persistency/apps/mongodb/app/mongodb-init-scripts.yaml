@@ -13,22 +13,11 @@ data:
     else
       mongo_init_bin='mongo'
     fi
-    dbname=$MONGO_DBNAME
-    dbstat="${dbname}_stat"
-    dbaudit="${dbname}_audit"
-    dbrestore="${dbname}_restore"
-    "$mongo_init_bin" <<EOF
-    use $MONGO_AUTHSOURCE
-    db.auth("$MONGO_INITDB_ROOT_USERNAME", "$MONGO_INITDB_ROOT_PASSWORD")
-    db.createUser({
-      user: "$MONGO_USER",
-      pwd: "$MONGO_PASS",
-      roles: [
-        "clusterMonitor",
-        { db: "$dbname", role: "dbOwner" },
-        { db: "$dbstat", role: "dbOwner" },
-        { db: "$dbaudit", role: "dbOwner" },
-        { db: "$dbrestore", role: "dbOwner" }
-      ]
-    })
-    EOF
+    js=$(printf 'db.createUser({user:"%s",pwd:"%s",roles:["clusterMonitor",{db:"%s",role:"dbOwner"},{db:"%s_stat",role:"dbOwner"},{db:"%s_audit",role:"dbOwner"},{db:"%s_restore",role:"dbOwner"}]})' \
+      "$MONGO_USER" "$MONGO_PASS" \
+      "$MONGO_DBNAME" "$MONGO_DBNAME" "$MONGO_DBNAME" "$MONGO_DBNAME")
+    "$mongo_init_bin" admin \
+      -u "$MONGO_INITDB_ROOT_USERNAME" \
+      -p "$MONGO_INITDB_ROOT_PASSWORD" \
+      --authenticationDatabase admin \
+      --eval "$js"
