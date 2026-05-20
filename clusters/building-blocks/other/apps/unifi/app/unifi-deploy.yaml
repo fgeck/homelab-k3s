@@ -22,23 +22,14 @@ spec:
         app.kubernetes.io/name: unifi
     spec:
       automountServiceAccountToken: false
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: unifi
           image: ghcr.io/lemker/unifi-os-server:latest
           env:
             - name: UOS_SYSTEM_IP
               value: "unifi.home.${DOMAIN_NAME}"
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - /bin/bash
-                  - -c
-                  - echo $HOST_IP host.docker.internal >> /etc/hosts
           securityContext:
             privileged: true
           ports:
@@ -66,10 +57,10 @@ spec:
           resources:
             requests:
               cpu: 200m
-              memory: 512Mi
+              memory: 1Gi
             limits:
               cpu: 2000m
-              memory: 2Gi
+              memory: 4Gi
           volumeMounts:
             - name: cgroup
               mountPath: /sys/fs/cgroup
