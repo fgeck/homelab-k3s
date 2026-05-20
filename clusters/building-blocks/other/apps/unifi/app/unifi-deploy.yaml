@@ -22,8 +22,6 @@ spec:
         app.kubernetes.io/name: unifi
     spec:
       automountServiceAccountToken: false
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: unifi
           image: ghcr.io/lemker/unifi-os-server:latest
