@@ -6,6 +6,7 @@ metadata:
   name: &app calibre-web-automated
   namespace: flux-system
 spec:
+  suspend: true
   targetNamespace: media
   commonMetadata:
     labels:
