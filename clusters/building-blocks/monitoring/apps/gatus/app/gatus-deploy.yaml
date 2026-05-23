@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: gatus
-          image: ghcr.io/twin/gatus:v5.35.0
+          image: ghcr.io/twin/gatus:v5.36.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
