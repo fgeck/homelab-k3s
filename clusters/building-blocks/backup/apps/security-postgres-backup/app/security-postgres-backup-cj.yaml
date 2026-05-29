@@ -9,6 +9,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   schedule: "10 23 * * *"
+  suspend: true
   jobTemplate:
     spec:
       template:

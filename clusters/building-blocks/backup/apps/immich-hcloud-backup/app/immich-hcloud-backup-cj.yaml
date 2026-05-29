@@ -11,6 +11,7 @@ metadata:
 spec:
   schedule: "0 3 * * 1" # Every Monday day at 3 AM
   timeZone: "Europe/Berlin"
+  suspend: true
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
