@@ -9,14 +9,14 @@ spec:
   schedule: "0 7 * * *"
   jobTemplate:
     spec:
-      ttlSecondsAfterFinished: 100
+      ttlSecondsAfterFinished: 172800 # 48 hours
       template:
         spec:
           securityContext:
             runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
+            runAsUser: 1100
+            runAsGroup: 1100
+            fsGroup: 1100
             fsGroupChangePolicy: OnRootMismatch
             seccompProfile:
               type: RuntimeDefault
@@ -31,6 +31,8 @@ spec:
                   value: Europe/Berlin
                 - name: BACKUP_KEEP_DAYS
                   value: "14"
+                - name: RCLONE_REMOTE_NAME
+                  value: "BitwardenBackup"
                 - name: RCLONE_REMOTE_DIR
                   value: "Backups/vaultwarden"
               envFrom:
@@ -42,7 +44,7 @@ spec:
                   memory: 32Mi
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
               volumeMounts:
                 - name: vaultwarden
                   mountPath: /bitwarden/data
