@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: couchdb
-          image: couchdb:3.5.1
+          image: couchdb:3.5.2
           ports:
             - containerPort: 5984
           volumeMounts:
