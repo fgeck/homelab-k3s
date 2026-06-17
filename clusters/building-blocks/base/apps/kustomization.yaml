@@ -7,5 +7,6 @@ resources:
   - ./coredns/ks.yaml
   - ./flux/ks.yaml
   - ./local-path-provisioner/ks.yaml
+  - ./nfs-csi-driver/ks.yaml
   - ./reloader/ks.yaml
   # - ./metrics-server/ks.yaml

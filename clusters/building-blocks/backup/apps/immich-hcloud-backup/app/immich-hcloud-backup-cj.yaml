@@ -79,9 +79,9 @@ spec:
               configMap:
                 name: immich-hcloud-backup-config
             - name: photos
-              hostPath:
-                path: /mnt/data/photos
-                type: Directory
+              persistentVolumeClaim:
+                claimName: pvc-nfs-photos
+                readOnly: true
             - name: tmp
               emptyDir:
                 sizeLimit: 5Gi

@@ -117,7 +117,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext:
-        fsGroup: 568
+        fsGroup: 3004
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 568
@@ -130,9 +130,8 @@ spec:
           persistentVolumeClaim:
             claimName: sabnzbd-pvc
         - name: sabnzbd-data
-          hostPath:
-            path: /mnt/data
-            type: Directory
+          persistentVolumeClaim:
+            claimName: pvc-nfs-media
         - emptyDir:
             medium: Memory
             sizeLimit: 2Gi

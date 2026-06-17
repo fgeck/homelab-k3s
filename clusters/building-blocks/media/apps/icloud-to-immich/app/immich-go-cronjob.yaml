@@ -31,7 +31,8 @@ spec:
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
-            fsGroup: 1000
+            fsGroup: 3004
+            fsGroupChangePolicy: OnRootMismatch
           initContainers:
             - name: download-immich-go
               image: alpine:latest
@@ -109,6 +110,7 @@ spec:
               volumeMounts:
                 - name: icloud-staging
                   mountPath: /data
+                  subPath: icloud-staging
                 - name: bin
                   mountPath: /opt/bin
               resources:
@@ -119,8 +121,7 @@ spec:
                   memory: 1Gi
           volumes:
             - name: icloud-staging
-              hostPath:
-                path: /mnt/data/icloud-staging
-                type: DirectoryOrCreate
+              persistentVolumeClaim:
+                claimName: pvc-nfs-photos
             - name: bin
               emptyDir: {}

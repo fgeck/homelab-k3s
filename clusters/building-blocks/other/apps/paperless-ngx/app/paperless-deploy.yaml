@@ -26,7 +26,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
-        fsGroup: 1000
+        fsGroup: 3004
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
@@ -123,8 +123,10 @@ spec:
               name: paperless-media
             - mountPath: :/usr/src/paperless/consume
               name: consume
+              subPath: consume
             - mountPath: /usr/src/paperless/export
               name: export
+              subPath: export
               # reason: https://github.com/paperless-ngx/paperless-ngx/issues/9609 --> https://github.com/just-containers/s6-overlay/issues/600
               # securityContext:
               #   allowPrivilegeEscalation: false
@@ -145,10 +147,8 @@ spec:
           persistentVolumeClaim:
             claimName: paperless-media-pvc
         - name: consume
-          hostPath:
-            path: /mnt/data/media/docs/consume
-            type: Directory
+          persistentVolumeClaim:
+            claimName: pvc-nfs-documents
         - name: export
-          hostPath:
-            path: /mnt/data/media/docs/export
-            type: Directory
+          persistentVolumeClaim:
+            claimName: pvc-nfs-documents

@@ -24,7 +24,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
-        fsGroup: 1000
+        fsGroup: 3004
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
@@ -114,6 +114,5 @@ spec:
           persistentVolumeClaim:
             claimName: sonarr-pvc
         - name: data
-          hostPath:
-            path: /mnt/data/
-            type: Directory
+          persistentVolumeClaim:
+            claimName: pvc-nfs-media

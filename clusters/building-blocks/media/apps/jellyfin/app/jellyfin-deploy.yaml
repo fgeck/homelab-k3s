@@ -24,10 +24,10 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+        fsGroup: 3004
+        fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 104 # render group GID inside the k3s VM — required for /dev/dri/renderD128 access
       automountServiceAccountToken: false
@@ -112,9 +112,8 @@ spec:
           persistentVolumeClaim:
             claimName: jellyfin-cache-pvc
         - name: media
-          hostPath:
-            path: /mnt/data/media
-            type: Directory
+          persistentVolumeClaim:
+            claimName: pvc-nfs-media
             # - name: render-device
             #   hostPath:
             #     path: /dev/dri/renderD128

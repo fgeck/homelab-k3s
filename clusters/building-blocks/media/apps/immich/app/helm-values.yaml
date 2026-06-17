@@ -2,6 +2,10 @@
 # Immich Helm Values
 controllers:
   main:
+    pod:
+      securityContext:
+        fsGroup: 3004
+        fsGroupChangePolicy: OnRootMismatch
     containers:
       main:
         image:
@@ -37,23 +41,21 @@ controllers:
               name: immich-secret
 
 # Global persistence configuration
-# Using hostPath for library storage
-# Mount /mnt/data/photos to /usr/src/app/upload (contains all Immich subdirs)
+# NFS-backed PVC for photo library storage
+# Mount pvc-nfs-photos to /usr/src/app/upload (contains all Immich subdirs)
 persistence:
   library:
     enabled: true
-    type: hostPath
-    hostPath: /mnt/data/photos
-    hostPathType: Directory
+    type: persistentVolumeClaim
+    existingClaim: pvc-nfs-photos
     globalMounts:
       - path: /usr/src/app/upload
 
-# Immich configuration - disable built-in library persistence check
+# Immich configuration
 immich:
   persistence:
     library:
-      # Set a dummy existingClaim to pass validation
-      existingClaim: "-"
+      existingClaim: pvc-nfs-photos
 
 # Disable Valkey - using existing Redis instead
 valkey:

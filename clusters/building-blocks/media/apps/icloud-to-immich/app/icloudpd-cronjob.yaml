@@ -29,7 +29,8 @@ spec:
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
-            fsGroup: 1000
+            fsGroup: 3004
+            fsGroupChangePolicy: OnRootMismatch
           containers:
             - name: icloudpd
               image: icloudpd/icloudpd:latest
@@ -81,6 +82,7 @@ spec:
                   mountPath: /config
                 - name: icloud-staging
                   mountPath: /data
+                  subPath: icloud-staging
               resources:
                 requests:
                   cpu: 100m
@@ -92,6 +94,5 @@ spec:
               persistentVolumeClaim:
                 claimName: icloudpd-config-pvc
             - name: icloud-staging
-              hostPath:
-                path: /mnt/data/icloud-staging
-                type: DirectoryOrCreate
+              persistentVolumeClaim:
+                claimName: pvc-nfs-photos

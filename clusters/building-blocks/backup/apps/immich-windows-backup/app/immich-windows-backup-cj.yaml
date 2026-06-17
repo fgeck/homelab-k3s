@@ -82,9 +82,9 @@ spec:
               configMap:
                 name: immich-windows-backup-config
             - name: photos
-              hostPath:
-                path: /mnt/data/photos
-                type: Directory
+              persistentVolumeClaim:
+                claimName: pvc-nfs-photos
+                readOnly: true
             - name: ssh-key
               secret:
                 secretName: immich-windows-backup-ssh-key
