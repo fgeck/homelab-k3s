@@ -40,17 +40,6 @@ controllers:
           - secretRef:
               name: immich-secret
 
-# Global persistence configuration
-# NFS-backed PVC for photo library storage
-# Mount pvc-nfs-photos to /usr/src/app/upload (contains all Immich subdirs)
-persistence:
-  library:
-    enabled: true
-    type: persistentVolumeClaim
-    existingClaim: pvc-nfs-photos
-    globalMounts:
-      - path: /usr/src/app/upload
-
 # Immich configuration
 immich:
   persistence:
