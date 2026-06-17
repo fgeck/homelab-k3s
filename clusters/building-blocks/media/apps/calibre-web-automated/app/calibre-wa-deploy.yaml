@@ -90,10 +90,8 @@ spec:
               name: calibre-wa-config
             - mountPath: /calibre-library
               name: calibre-library
-              subPath: books
             - mountPath: /cwa-book-ingest
               name: calibre-wa-book-ingest
-              subPath: books/ingest
               # securityContext:
               #   allowPrivilegeEscalation: false
               # capabilities:
@@ -111,7 +109,7 @@ spec:
             claimName: calibre-wa-config-pvc
         - name: calibre-library
           persistentVolumeClaim:
-            claimName: pvc-nfs-media
+            claimName: pvc-nfs-books
         - name: calibre-wa-book-ingest
           persistentVolumeClaim:
-            claimName: pvc-nfs-media
+            claimName: pvc-nfs-books-ingest

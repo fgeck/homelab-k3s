@@ -82,7 +82,7 @@ spec:
                   mountPath: /config
                 - name: icloud-staging
                   mountPath: /data
-                  subPath: icloud-staging
+                  
               resources:
                 requests:
                   cpu: 100m
@@ -95,4 +95,4 @@ spec:
                 claimName: icloudpd-config-pvc
             - name: icloud-staging
               persistentVolumeClaim:
-                claimName: pvc-nfs-photos
+                claimName: pvc-nfs-icloud-staging

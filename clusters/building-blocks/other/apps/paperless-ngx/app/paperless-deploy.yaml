@@ -121,12 +121,10 @@ spec:
               name: paperless-data
             - mountPath: /usr/src/paperless/media
               name: paperless-media
-            - mountPath: :/usr/src/paperless/consume
-              name: consume
-              subPath: consume
+            - mountPath: /usr/src/paperless/consume
+              name: documents-consume
             - mountPath: /usr/src/paperless/export
-              name: export
-              subPath: export
+              name: documents-export
               # reason: https://github.com/paperless-ngx/paperless-ngx/issues/9609 --> https://github.com/just-containers/s6-overlay/issues/600
               # securityContext:
               #   allowPrivilegeEscalation: false
@@ -146,9 +144,9 @@ spec:
         - name: paperless-media
           persistentVolumeClaim:
             claimName: paperless-media-pvc
-        - name: consume
+        - name: documents-consume
           persistentVolumeClaim:
-            claimName: pvc-nfs-documents
-        - name: export
+            claimName: pvc-nfs-documents-consume
+        - name: documents-export
           persistentVolumeClaim:
-            claimName: pvc-nfs-documents
+            claimName: pvc-nfs-documents-export

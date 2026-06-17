@@ -110,7 +110,6 @@ spec:
               volumeMounts:
                 - name: icloud-staging
                   mountPath: /data
-                  subPath: icloud-staging
                 - name: bin
                   mountPath: /opt/bin
               resources:
@@ -122,6 +121,6 @@ spec:
           volumes:
             - name: icloud-staging
               persistentVolumeClaim:
-                claimName: pvc-nfs-photos
+                claimName: pvc-nfs-icloud-staging
             - name: bin
               emptyDir: {}
