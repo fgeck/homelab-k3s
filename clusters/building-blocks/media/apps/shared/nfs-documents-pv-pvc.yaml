@@ -17,9 +17,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/documents#
+    volumeHandle: 192.168.100.50#/mnt/tank/documents#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/documents
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -55,9 +55,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/documents/consume#
+    volumeHandle: 192.168.100.50#/mnt/tank/documents/consume#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/documents/consume
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -93,9 +93,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/documents/export#
+    volumeHandle: 192.168.100.50#/mnt/tank/documents/export#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/documents/export
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json

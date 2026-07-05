@@ -18,9 +18,9 @@ spec:
   csi:
     driver: nfs.csi.k8s.io
     # volumeHandle format: {nfs-server-address}#{share-name}#{sub-dir-name}
-    volumeHandle: 192.168.178.50#/mnt/tank/media#
+    volumeHandle: 192.168.100.50#/mnt/tank/media#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/media
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -56,9 +56,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/photos#
+    volumeHandle: 192.168.100.50#/mnt/tank/photos#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/photos
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -94,9 +94,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/photos/icloud-staging#
+    volumeHandle: 192.168.100.50#/mnt/tank/photos/icloud-staging#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/photos/icloud-staging
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -132,9 +132,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/media/books#
+    volumeHandle: 192.168.100.50#/mnt/tank/media/books#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/media/books
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json
@@ -170,9 +170,9 @@ spec:
     - nfsvers=4.1
   csi:
     driver: nfs.csi.k8s.io
-    volumeHandle: 192.168.178.50#/mnt/tank/media/books/ingest#
+    volumeHandle: 192.168.100.50#/mnt/tank/media/books/ingest#
     volumeAttributes:
-      server: 192.168.178.50
+      server: 192.168.100.50
       share: /mnt/tank/media/books/ingest
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/persistentvolumeclaim-v1.json

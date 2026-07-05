@@ -196,17 +196,6 @@ data:
                   label: Lights On
                 - state: sensor.electricity_consumption_this_month
                   label: Energy consumed this month
-        - Creality K1C:
-            href: https://print.home.geckeler.dev/
-            siteMonitor: http://192.168.178.190:4409/
-            icon: mainsail.png
-            widget:
-              type: moonraker
-              url: http://192.168.178.190:7125
-              fields:
-                - printer_state
-                - print_status
-                - print_progress
         - Spoolman:
             href: https://spools.home.geckeler.dev
             icon: spoolman.png

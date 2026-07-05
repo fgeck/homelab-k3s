@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./better-bahn/ks.yaml
+  - ./donetick/ks.yaml
+  - ./homepage/ks.yaml
+  - ./karakeep/ks.yaml
+  - ./meilisearch/ks.yaml
+  - ./obsidian-sync/ks.yaml
+  - ./paperless-ngx/ks.yaml
+  - ./spoolman/ks.yaml
