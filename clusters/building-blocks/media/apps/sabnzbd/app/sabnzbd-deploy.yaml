@@ -28,9 +28,9 @@ spec:
             - name: TZ
               value: Europe/Berlin
             - name: UMASK
-              value: "0022"
+              value: "0002"
             - name: UMASK_SET
-              value: "0022"
+              value: "0002"
             - name: NVIDIA_VISIBLE_DEVICES
               value: void
             - name: S6_READ_ONLY_ROOT
