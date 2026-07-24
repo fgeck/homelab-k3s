@@ -114,23 +114,20 @@ data:
                     params: # optional - additional params for the service
                       showName: true # optional - show name before event title in event line - defaults to false
     - Network:
-        - FritzBox:
-            href:  http://192.168.178.1
-            icon: avm-fritzbox.png
-            siteMonitor:  http://192.168.178.1
-            widget:
-              type: fritzbox
-              url: http://192.168.178.1
+        - UniFi Cloud Gateway:
+            href: https://192.168.10.1
+            icon: unifi.png
+            siteMonitor: https://192.168.10.1
         - PiHole:
-            href:  http://192.168.178.111/admin
+            href:  http://10.0.20.111/admin
             icon: pi-hole.png
-            proxmoxNode: pve
-            proxmoxVMID: 111
+            proxmoxNode: nas
+            proxmoxVMID: 10111
             proxmoxType: lxc
-            siteMonitor: http://192.168.178.111
+            siteMonitor: http://10.0.20.111
             widget:
               type: pihole
-              url: http://192.168.178.111
+              url: http://10.0.20.111
               key: '{{HOMEPAGE_VAR_PIHOLE_KEY}}'
         - Traefik:
             href:  https://traefik.home.geckeler.dev/dashboard/
@@ -153,12 +150,12 @@ data:
               limit24h: true
     - Infrastructure:
         - Proxmox:
-            href: https://192.168.178.10:8006
+            href: https://10.0.20.10:8006
             icon: proxmox.png
-            siteMonitor: https://192.168.178.10:8006
+            siteMonitor: https://10.0.20.10:8006
             widget:
               type: proxmox
-              url: https://192.168.178.10:8006
+              url: https://10.0.20.10:8006
               username: '{{HOMEPAGE_VAR_PROXMOX_USERNAME}}'
               password: '{{HOMEPAGE_VAR_PROXMOX_PASSWORD}}'
         - Flux:
@@ -180,12 +177,12 @@ data:
         - HomeAssistant:
             href: https://ha.geckeler.dev
             icon: home-assistant.png
-            proxmoxNode: pve
-            proxmoxVMID: 200
-            siteMonitor: http://192.168.178.150:8123/
+            proxmoxNode: nas
+            proxmoxVMID: 10150
+            siteMonitor: http://10.0.20.150:8123/
             widget:
               type: homeassistant
-              url: http://192.168.178.150:8123
+              url: http://10.0.20.150:8123
               key: '{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}'
               custom:
                 - template: "{{ ['person.carolin', 'person.florian'] | select('is_state','home') | map('state_attr', 'friendly_name') | join(', ') }}"
