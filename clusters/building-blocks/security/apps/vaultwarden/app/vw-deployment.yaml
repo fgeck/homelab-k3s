@@ -30,7 +30,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: vaultwarden
-          image: docker.io/vaultwarden/server:1.36.0-alpine
+          image: docker.io/vaultwarden/server:1.37.0-alpine
           imagePullPolicy: IfNotPresent
           env:
             - name: LOG_LEVEL
