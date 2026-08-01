@@ -40,7 +40,7 @@ spec:
               value: "0.0.0.0"
             - name: SPOOLMAN_PORT
               value: "8000"
-          image: ghcr.io/donkie/spoolman:0.25.0
+          image: ghcr.io/donkie/spoolman:0.26.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 5
