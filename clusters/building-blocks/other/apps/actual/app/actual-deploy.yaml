@@ -1,0 +1,108 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/deployment-apps-v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: actual
+  name: actual
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: actual
+  progressDeadlineSeconds: 600
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: actual
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: main
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: NODE_ENV
+              value: production
+            - name: ACTUAL_ALLOWED_LOGIN_METHODS
+              value: password
+            - name: ACTUAL_DATA_DIR
+              value: /data
+            - name: ACTUAL_HOSTNAME
+              value: 0.0.0.0
+            - name: ACTUAL_LOGIN_METHOD
+              value: password
+            - name: ACTUAL_PORT
+              value: "5006"
+            - name: ACTUAL_TRUSTED_PROXIES
+              value: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fc00::/7,::1/128
+          image: actualbudget/actual-server:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 5006
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          volumeMounts:
+            - mountPath: /data
+              name: actual-data
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: actual-data
+          persistentVolumeClaim:
+            claimName: actual-data-pvc

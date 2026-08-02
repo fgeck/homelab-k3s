@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: actual
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+    - web
+  routes:
+    - match: Host(`actual.home.${DOMAIN_NAME}`)
+      kind: Rule
+      middlewares:
+        - name: local-ipallowlist
+          namespace: edge
+      services:
+        - name: actual
+          namespace: default
+          port: 80
