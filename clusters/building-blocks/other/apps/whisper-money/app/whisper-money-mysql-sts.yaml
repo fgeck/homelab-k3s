@@ -28,7 +28,9 @@ spec:
           type: RuntimeDefault
       containers:
         - name: mysql
-          image: mysql:8.0
+          # The moving mysql:8.0/8.4 tags currently resolve to Oracle Linux 9
+          # images, which require x86-64-v2 CPU features this node lacks.
+          image: mysql:8.0.46-debian
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
