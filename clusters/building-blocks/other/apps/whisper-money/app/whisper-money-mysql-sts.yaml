@@ -37,6 +37,15 @@ spec:
               name: mysql
               protocol: TCP
           env:
+            - name: MYSQL_DATABASE
+              value: whisper_money
+            - name: MYSQL_USER
+              value: whisper_money
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whisper-money-mysql-secret
+                  key: MYSQL_PASSWORD
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
