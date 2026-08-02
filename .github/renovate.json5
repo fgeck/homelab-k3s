@@ -49,16 +49,6 @@
   packageRules: [
     {
       description: [
-        'Pin Vaultwarden to 1.37.0 while the Alpine build regression is unresolved',
-      ],
-      matchPackageNames: [
-        'docker.io/vaultwarden/server',
-      ],
-      allowedVersions: '1.37.0',
-      automerge: false,
-    },
-    {
-      description: [
         'Auto-merge GitHub Actions for minor and patch',
       ],
       matchManagers: [

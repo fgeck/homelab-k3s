@@ -30,9 +30,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: vaultwarden
-          # 1.37.0-alpine segfaults with TLS database connections; use the Debian variant.
-          # https://github.com/dani-garcia/vaultwarden/issues/7475
-          image: docker.io/vaultwarden/server:1.37.0
+          image: docker.io/vaultwarden/server:1.37.1-alpine
           imagePullPolicy: IfNotPresent
           env:
             - name: LOG_LEVEL
