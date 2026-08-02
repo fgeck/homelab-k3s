@@ -1,0 +1,152 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.31.0-standalone-strict/deployment-apps-v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whisper-money
+  namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/name: whisper-money
+    app.kubernetes.io/component: app
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: whisper-money
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: whisper-money
+        app.kubernetes.io/component: app
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: main
+          image: ghcr.io/whisper-money/whisper-money:production
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          env:
+            - name: APP_NAME
+              value: "Whisper Money"
+            - name: APP_ENV
+              value: production
+            - name: APP_DEBUG
+              value: "false"
+            - name: APP_URL
+              value: https://money.home.${DOMAIN_NAME}
+            - name: APP_LOCALE
+              value: en
+            - name: APP_FALLBACK_LOCALE
+              value: en
+            - name: APP_FAKER_LOCALE
+              value: en_US
+            - name: TRUSTED_PROXIES
+              value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            - name: LOG_CHANNEL
+              value: stack
+            - name: LOG_STACK
+              value: single
+            - name: LOG_LEVEL
+              value: error
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_HOST
+              value: whisper-money-mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: whisper_money
+            - name: DB_USERNAME
+              value: whisper_money
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whisper-money-mysql-secret
+                  key: MYSQL_PASSWORD
+            - name: CACHE_STORE
+              value: redis
+            - name: SESSION_DRIVER
+              value: redis
+            - name: SESSION_LIFETIME
+              value: "120"
+            - name: SESSION_ENCRYPT
+              value: "true"
+            - name: QUEUE_CONNECTION
+              value: database
+            - name: REDIS_HOST
+              value: 127.0.0.1
+            - name: REDIS_PORT
+              value: "6379"
+            - name: MAIL_MAILER
+              value: resend
+            - name: MAIL_FROM_ADDRESS
+              value: no-reply@${DOMAIN_NAME}
+            - name: MAIL_FROM_NAME
+              value: "Whisper Money"
+            - name: MAIL_DRIP_FROM_ADDRESS
+              value: hi@${DOMAIN_NAME}
+            - name: MAIL_DRIP_FROM_NAME
+              value: "Whisper Money"
+            - name: DRIP_EMAILS_ENABLED
+              value: "false"
+            - name: REGISTRATION_ENABLED
+              value: "true"
+            - name: SUBSCRIPTIONS_ENABLED
+              value: "false"
+            - name: HIDE_AUTH_BUTTONS
+              value: "false"
+            - name: TZ
+              value: Europe/Berlin
+          envFrom:
+            - secretRef:
+                name: whisper-money-secret
+          volumeMounts:
+            - name: storage
+              mountPath: /app/storage
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /up
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /up
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /up
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: whisper-money-storage-pvc

@@ -11,3 +11,4 @@ resources:
   - ./obsidian-sync/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./spoolman/ks.yaml
+  - ./whisper-money/ks.yaml

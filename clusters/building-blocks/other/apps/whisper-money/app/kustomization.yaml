@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./whisper-money-deploy.yaml
+  - ./whisper-money-ingressroute.yaml
+  - ./whisper-money-mysql-secret.yaml
+  - ./whisper-money-mysql-sts.yaml
+  - ./whisper-money-mysql-svc.yaml
+  - ./whisper-money-pvc.yaml
+  - ./whisper-money-secret.yaml
+  - ./whisper-money-svc.yaml
