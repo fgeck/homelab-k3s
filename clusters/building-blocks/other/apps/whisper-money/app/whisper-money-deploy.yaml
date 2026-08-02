@@ -27,6 +27,48 @@ spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: mysql-init
+          # Keep this aligned with the database StatefulSet image.
+          image: mysql:8.0.46-debian
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              sql_escape() {
+                value="${1//\\/\\\\}"
+                value="${value//\'/\'\'}"
+                printf "%s" "$value"
+              }
+
+              until mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do
+                sleep 5
+              done
+
+              escaped_password="$(sql_escape "$DB_PASSWORD")"
+              mysql -h "$DB_HOST" -P "$DB_PORT" -uroot -p"$MYSQL_ROOT_PASSWORD" <<SQL
+              CREATE DATABASE IF NOT EXISTS \`whisper_money\`;
+              CREATE USER IF NOT EXISTS 'whisper_money'@'%' IDENTIFIED BY '$escaped_password';
+              ALTER USER 'whisper_money'@'%' IDENTIFIED BY '$escaped_password';
+              GRANT ALL PRIVILEGES ON \`whisper_money\`.* TO 'whisper_money'@'%';
+              FLUSH PRIVILEGES;
+              SQL
+          env:
+            - name: DB_HOST
+              value: whisper-money-mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whisper-money-mysql-secret
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: whisper-money-mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
       containers:
         - name: main
           image: ghcr.io/whisper-money/whisper-money:production
