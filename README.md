@@ -17,7 +17,6 @@ To facilitate the automation of recurring tasks, several [taskfiles](https://tas
 - [x] [Reloader](https://github.com/stakater/Reloader)
 - [x] [Local-Path-Provisioner](https://github.com/rancher/local-path-provisioner)
 - [x] [Cert-Manager](https://cert-manager.io/)
-- [x] [Fritzbox-Cloudflare-DynDNS](https://github.com/cromefire/fritzbox-cloudflare-dyndns) *Currently inactive - external Services are exposed via Cloudflared*
 - [x] [Cloudflared-Tunnel](https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/)
 - [x] [Traefik](https://doc.traefik.io/)
 - [x] Traefik use IP of VM instead of Cilium's L2 Announcement ([Cilium Node IPAM LB](https://docs.cilium.io/en/latest/network/node-ipam/#node-ipam-lb))
