@@ -11,5 +11,4 @@ resources:
   - ./meilisearch/ks.yaml
   - ./obsidian-sync/ks.yaml
   - ./paperless-ngx/ks.yaml
-  - ./spoolman/ks.yaml
   - ./whisper-money/ks.yaml

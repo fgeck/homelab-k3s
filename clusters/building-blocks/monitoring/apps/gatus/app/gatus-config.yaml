@@ -121,9 +121,6 @@ data:
       - name: Vaultwarden (vw.home)
         <<: *defaults-home
         url: https://vw.home.${DOMAIN_NAME}
-      - name: Spoolman (spools.home)
-        <<: *defaults-home
-        url: https://spools.home.${DOMAIN_NAME}
       - name: Better Bahn (bahn.home)
         group: 2-Home
         interval: 15s
