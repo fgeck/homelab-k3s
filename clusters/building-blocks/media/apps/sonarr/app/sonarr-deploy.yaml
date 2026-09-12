@@ -50,7 +50,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: sonarr-env
-          image: ghcr.io/home-operations/sonarr:4.0.19.3011
+          image: ghcr.io/home-operations/sonarr:4.0.20.3012
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 5
