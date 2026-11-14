@@ -27,7 +27,7 @@ spec:
           operator: Exists
       containers:
         - name: beszel-agent
-          image: henrygd/beszel-agent:0.21.1
+          image: henrygd/beszel-agent:0.21.2
           imagePullPolicy: IfNotPresent
           env:
             - name: KEY
