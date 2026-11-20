@@ -42,7 +42,7 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-          image: crocodilestick/calibre-web-automated:V3.1.4
+          image: crocodilestick/calibre-web-automated:v4.0.8
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 5
